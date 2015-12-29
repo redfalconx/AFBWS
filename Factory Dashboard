@@ -1,0 +1,69 @@
+Sub FactoryDashboard_Click()
+    Dim ws As Worksheet, ws1 As Worksheet
+    Dim b1 As Range, f1 As Range, b3 As Range, b5 As Range, b6 As Range, b7 As Range, b8 As Range
+    Dim f6 As Range, f7 As Range, f8 As Range
+    Dim c38 As Range, c39 As Range, c40 As Range, c41 As Range, c42 As Range, c43 As Range, c44 As Range, c45 As Range
+    Dim b47 As Range, b48 As Range, b49 As Range, d48 As Range, d49 As Range
+    Dim b51 As Range, b52 As Range, b53 As Range, b55 As Range
+    Dim Folder As String
+    Dim Rws As Long, Rng As Range, C As Range
+
+    Set ws = Worksheets("Combined")
+    Set ws1 = Worksheets("Factory Dashboard")
+
+    Set b1 = ws1.Range("B1")
+    Set f1 = ws1.Range("F1")
+    Set b3 = ws1.Range("B3")
+    Set b5 = ws1.Range("B5")
+    Set b6 = ws1.Range("B6")
+    Set b7 = ws1.Range("B7")
+    Set b8 = ws1.Range("B8")
+    Set f6 = ws1.Range("F6")
+    Set f7 = ws1.Range("F7")
+    Set f8 = ws1.Range("F8")
+    Set c38 = ws1.Range("C38")
+    Set c39 = ws1.Range("C39")
+    Set c40 = ws1.Range("C40")
+    Set c41 = ws1.Range("C41")
+    Set c42 = ws1.Range("C42")
+    Set c43 = ws1.Range("C43")
+    Set c44 = ws1.Range("C44")
+    Set c45 = ws1.Range("C45")
+    Set b47 = ws1.Range("B47")
+    Set b48 = ws1.Range("B48")
+    Set b49 = ws1.Range("B49")
+    Set d48 = ws1.Range("D48")
+    Set d49 = ws1.Range("D49")
+    Set b51 = ws1.Range("B51")
+    Set b52 = ws1.Range("B52")
+    Set b53 = ws1.Range("B53")
+    Set b55 = ws1.Range("B55")
+
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+
+    With ws
+        Rws = .Cells(Rows.Count, "A").End(xlUp).Row
+        Set Rng = Range(.Cells(4, 1), .Cells(Rws, 1))
+
+        For Each C In Rng.Cells
+            f1 = C: b1 = C.Offset(0, 1): b3 = C.Offset(0, 4): b5 = C.Offset(0, 5): b6 = C.Offset(0, 6): b7 = C.Offset(0, 7) 'Statuses
+            f6 = C.Offset(0, 28): f7 = C.Offset(0, 29): f8 = C.Offset(0, 31) 'Remediation data
+            c38 = C.Offset(0, 40): c39 = C.Offset(0, 41): c40 = C.Offset(0, 42): c41 = C.Offset(0, 43): c42 = C.Offset(0, 44): c43 = C.Offset(0, 45): c44 = C.Offset(0, 46): c45 = C.Offset(0, 47) 'Plan Review data
+            b47 = b6: b48 = C.Offset(0, 52): b49 = C.Offset(0, 51): d49 = C.Offset(0, 54) 'Training data
+            b51 = b7: b52 = C.Offset(0, 59) + C.Offset(0, 60) + C.Offset(0, 66): b53 = C.Offset(0, 66) 'Helpline data
+            b55 = C.Offset(0, 67) 'OSH Committee data
+            Folder = C.Offset(0, 68)
+            Application.DisplayAlerts = 0
+            ws1.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test\Test Reports\" & b1 & "_" & f1 & "_Dashboard"
+            'ws1.Copy: ActiveWorkbook.SaveAs Folder & b1 & "_" & f1 & "_Dashboard"
+            ActiveWorkbook.Close 'copies and saves new workbook
+        Next C
+
+    End With
+    
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+
+
+End Sub
