@@ -1,0 +1,272 @@
+Sub Insert_into_CAPs()
+    Dim folderPath As String
+    'Dim Statuses As String
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim objFSO As Object
+    Dim objFolder As Object
+    Dim objFile As Object
+    Dim objSubFolder As Object
+     
+    'Statuses = "Completed, In progress - on track, In progress - not on track, Not started"
+    
+    folderPath = "C:\Users\Andrew\Dropbox (AFBWS.org)\Alliance Reports-CAP-Remediation Followup\Z" 'change to suit
+    
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFolder = objFSO.GetFolder(folderPath)
+    
+    For Each objSubFolder In objFolder.SubFolders
+        For Each objFile In objSubFolder.Files
+            If Right(objFile.Name, 3) = "xls" Or Right(objFile.Name, 4) = "xlsx" Then
+            
+    'If Right(folderPath, 1) <> "\" Then folderPath = folderPath + "\"
+     
+    'filename = Dir(folderPath & "*.xl*")
+    'Do While filename <> ""
+                Application.ScreenUpdating = False
+                Application.Calculation = xlCalculationManual
+                Application.DisplayAlerts = False
+                'Set wb = Workbooks.Open(folderPath & filename)
+                Set wb = Workbooks.Open(objFile.path)
+                wb.CheckCompatibility = False
+                
+                If e("Factory Overview") = True Then
+                    Set ws = wb.Worksheets("Factory Overview")
+                    ws.Activate
+                    ws.Range("A25").Value = "Date last updated"
+                    ws.Range("A21:B21").Copy
+                    ws.Range("A25:B25").PasteSpecial xlPasteFormats
+                    Else
+                    If e("Factory Information") = True Then
+                        Set ws = wb.Worksheets("Factory Information")
+                        ws.Activate
+                        ws.Range("A25").Value = "Date last updated"
+                        ws.Range("A21:B21").Copy
+                        ws.Range("A25:B25").PasteSpecial xlPasteFormats
+                    End If
+                End If
+                
+                
+                
+                
+                
+                If e("Electrical") = True Then
+                Set ws = wb.Worksheets("Electrical")
+                ws.Activate
+         
+                'Call a subroutine here to operate on the just-opened workbook
+                
+                
+                
+                
+                Call Validate1
+        
+                ws.Columns("N:Q").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+                ws.Columns("M:M").EntireColumn.Copy
+                ws.Columns("N:Q").PasteSpecial xlPasteFormats
+                Application.CutCopyMode = False
+                ws.Range("N25").Value = "Revised Factory CAP Deadline Date"
+                ws.Range("O25").Value = "Estimated Number of Weeks to Complete"
+                ws.Range("P25").Value = "Date Last Updated"
+                ws.Range("Q25").Value = "Remediation Stage"
+                
+                Call Validate2
+                Call MovePictures(ws)
+                
+                End If
+        
+                If e("Fire") = True Then
+                Set ws = wb.Worksheets("Fire")
+                ws.Activate
+                
+                'Call a subroutine here to operate on the just-opened workbook
+                
+                
+                Call Validate1
+                
+                ws.Columns("N:Q").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+                ws.Columns("M:M").EntireColumn.Copy
+                ws.Columns("N:Q").PasteSpecial xlPasteFormats
+                Application.CutCopyMode = False
+                ws.Range("N25").Value = "Revised Factory CAP Deadline Date"
+                ws.Range("O25").Value = "Estimated Number of Weeks to Complete"
+                ws.Range("P25").Value = "Date Last Updated"
+                ws.Range("Q25").Value = "Remediation Stage"
+                
+                Call Validate2
+                Call MovePictures(ws)
+                
+                End If
+                
+                If e("Structural") = True Then
+                Set ws = wb.Worksheets("Structural")
+                ws.Activate
+                
+                'Call a subroutine here to operate on the just-opened workbook
+                
+                
+                Call Validate1
+                     
+                ws.Columns("N:Q").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+                ws.Columns("M:M").EntireColumn.Copy
+                ws.Columns("N:Q").PasteSpecial xlPasteFormats
+                Application.CutCopyMode = False
+                ws.Range("N25").Value = "Revised Factory CAP Deadline Date"
+                ws.Range("O25").Value = "Estimated Number of Weeks to Complete"
+                ws.Range("P25").Value = "Date Last Updated"
+                ws.Range("Q25").Value = "Remediation Stage"
+                                
+                Call Validate2
+                Call MovePictures(ws)
+                
+                End If
+                
+                wb.Close True
+                'filename = Dir
+            End If
+        Next objFile
+        
+    Next objSubFolder
+    'Loop
+    Application.DisplayAlerts = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+End Sub
+
+Sub Validate1()
+
+    Dim Statuses As String
+    
+    Statuses = "Completed, In progress - on track, In progress - not on track, Not started"
+        
+
+        With Range("R26:R200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("V26:V200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("Z26:Z200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("AD26:AD200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("AH26:AH200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+    
+End Sub
+
+Sub Validate2()
+
+    
+    Range("Q1").Value = "Declared commitment (CAP approved)"
+    Range("Q2").Value = "Engaging qualified assistance"
+    Range("Q3").Value = "Preparing design / analysis"
+    Range("Q4").Value = "Securing financial support"
+    Range("Q5").Value = "Selecting competent contractor"
+    Range("Q6").Value = "Submitting design for review/approval"
+    Range("Q7").Value = "Awaiting delivery of materials"
+    Range("Q8").Value = "Executing work"
+    Range("Q9").Value = "Monitoring/testing performance"
+    Range("Q10").Value = "Evaluating installation completion"
+    Range("Q11").Value = "Completion confirmed"
+    Range("Q12").Value = "Maintaining compliance"
+' Inserts above steps into each sheet at Q1:Q12
+    
+
+        With Range("Q26:Q200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:="=$Q$1:$Q$12"
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+                
+    
+End Sub
+
+Function e(n As String) As Boolean
+  e = False
+  For Each ws In Worksheets
+    If n = ws.Name Then
+      e = True
+      Exit Function
+    End If
+  Next ws
+End Function
+
+Sub MovePictures(ws As Worksheet)
+
+Dim i As Long
+Dim Poce As Range
+
+For i = 1 To ws.Shapes.Count
+    On Error Resume Next
+    With ws.Shapes.Item(i)
+        '.IncrementLeft 500
+        '.Left = .Left + .TopLeftCell.Offset(0, 20).Width
+        Set Poce = .TopLeftCell
+            .Top = Poce.Offset(0, 0).Top
+            .Left = Poce.Offset(0, 4).Left
+
+    End With
+Next i
+On Error GoTo 0
+
+End Sub
