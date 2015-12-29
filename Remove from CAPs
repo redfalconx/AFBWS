@@ -1,0 +1,194 @@
+Sub Remove_from_CAPs()
+    Dim folderPath As String
+    'Dim Statuses As String
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim objFSO As Object
+    Dim objFolder As Object
+    Dim objFile As Object
+    Dim objSubFolder As Object
+     
+    'Statuses = "Completed, In progress - on track, In progress - not on track, Not started"
+    
+    folderPath = "C:\Users\Andrew\Dropbox (AFBWS.org)\Alliance Reports-CAP-Remediation Followup\Z" 'change to suit
+    
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFolder = objFSO.GetFolder(folderPath)
+    
+    For Each objSubFolder In objFolder.SubFolders
+        For Each objFile In objSubFolder.Files
+            If Right(objFile.Name, 3) = "xls" Or Right(objFile.Name, 4) = "xlsx" Then
+            
+    'If Right(folderPath, 1) <> "\" Then folderPath = folderPath + "\"
+     
+    'filename = Dir(folderPath & "*.xl*")
+    'Do While filename <> ""
+                Application.ScreenUpdating = False
+                Application.Calculation = xlCalculationManual
+                Application.DisplayAlerts = False
+                'Set wb = Workbooks.Open(folderPath & filename)
+                Set wb = Workbooks.Open(objFile.path)
+                wb.CheckCompatibility = False
+                
+                
+                
+                If e("Electrical") = True Then
+                Set ws = wb.Worksheets("Electrical")
+                ws.Activate
+         
+                'Call a subroutine here to operate on the just-opened workbook
+                
+                    If ws.Range("Q25").Value = "Remediation Stage" Then
+                        ws.Columns("N:Q").EntireColumn.Delete
+                        
+                        Call MovePictures(ws)
+                    End If
+                    
+                
+                                
+                End If
+        
+                If e("Fire") = True Then
+                Set ws = wb.Worksheets("Fire")
+                ws.Activate
+                
+                'Call a subroutine here to operate on the just-opened workbook
+                
+                    If ws.Range("Q25").Value = "Remediation Stage" Then
+                        ws.Columns("N:Q").EntireColumn.Delete
+                    
+                        Call MovePictures(ws)
+                    End If
+                                
+                
+                                
+                End If
+                
+                If e("Structural") = True Then
+                Set ws = wb.Worksheets("Structural")
+                ws.Activate
+                
+                'Call a subroutine here to operate on the just-opened workbook
+                
+                    If ws.Range("Q25").Value = "Remediation Stage" Then
+                        ws.Columns("N:Q").EntireColumn.Delete
+                    
+                        Call MovePictures(ws)
+                    End If
+                
+                
+                
+                End If
+                
+                wb.Close True
+                'filename = Dir
+            End If
+        Next objFile
+        
+    Next objSubFolder
+    'Loop
+    Application.DisplayAlerts = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+End Sub
+
+Sub Delete_Columns()
+ 
+        With Range("R26:R200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("V26:V200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("Z26:Z200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("AD26:AD200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+        
+        With Range("AH26:AH200").Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Formula1:=Statuses
+        .IgnoreBlank = True
+        .InCellDropdown = True
+        .InputTitle = ""
+        .ErrorTitle = ""
+        .InputMessage = ""
+        .ErrorMessage = ""
+        .ShowInput = True
+        .ShowError = True
+        End With
+    
+End Sub
+
+
+Function e(n As String) As Boolean
+  e = False
+  For Each ws In Worksheets
+    If n = ws.Name Then
+      e = True
+      Exit Function
+    End If
+  Next ws
+End Function
+
+Sub MovePictures(ws As Worksheet)
+
+Dim i As Long
+Dim Poce As Range
+
+For i = 1 To ws.Shapes.Count
+    On Error Resume Next
+    With ws.Shapes.Item(i)
+        '.IncrementLeft 500
+        '.Left = .Left + .TopLeftCell.Offset(0, 20).Width
+        Set Poce = .TopLeftCell
+            .Top = Poce.Offset(0, 0).Top
+            .Left = Poce.Offset(0, -4).Left
+
+    End With
+Next i
+On Error GoTo 0
+
+End Sub
+
