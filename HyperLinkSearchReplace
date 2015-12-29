@@ -1,0 +1,46 @@
+Option Explicit
+
+Sub HyperLinkSearchReplace()
+
+    Dim oSl As Slide
+    Dim oHl As Hyperlink
+    Dim sSearchFor As String
+    Dim sReplaceWith As String
+    Dim oSh As Shape
+
+    sSearchFor = InputBox("What text should I search for?", "Search for ...")
+    If sSearchFor = "" Then
+        Exit Sub
+    End If
+
+    sReplaceWith = InputBox("What text should I replace" & vbCrLf _
+        & sSearchFor & vbCrLf _
+        & "with?", "Replace with ...")
+    If sReplaceWith = "" Then
+        Exit Sub
+    End If
+
+    On Error Resume Next
+
+    For Each oSl In ActivePresentation.Slides
+
+        For Each oHl In oSl.Hyperlinks
+            oHl.Address = Replace(oHl.Address, sSearchFor, sReplaceWith)
+            oHl.SubAddress = Replace(oHl.SubAddress, sSearchFor, sReplaceWith)
+        Next    ' hyperlink
+
+        ' and thanks to several astute user suggestions, let's fix OLE links
+        ' and movie/sound linkes too
+        For Each oSh In oSl.Shapes
+           If oSh.Type = msoLinkedOLEObject _
+            Or oSh.Type = msoMedia Then
+              oSh.LinkFormat.SourceFullName = _
+                   Replace(oSh.LinkFormat.SourceFullName, _
+                   sSearchFor, sReplaceWith)
+           End If
+       Next
+
+    Next    ' slide
+
+End Sub
+
