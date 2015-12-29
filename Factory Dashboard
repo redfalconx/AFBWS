@@ -2,6 +2,7 @@ Sub FactoryDashboard_Click()
     Dim ws As Worksheet, ws1 As Worksheet
     Dim b1 As Range, f1 As Range, b3 As Range, b5 As Range, b6 As Range, b7 As Range, b8 As Range
     Dim f6 As Range, f7 As Range, f8 As Range
+    Dim b11 As Range, c11 As Range, d11 As Range, e11 As Range, f11 As Range
     Dim c38 As Range, c39 As Range, c40 As Range, c41 As Range, c42 As Range, c43 As Range, c44 As Range, c45 As Range
     Dim b47 As Range, b48 As Range, b49 As Range, d48 As Range, d49 As Range
     Dim b51 As Range, b52 As Range, b53 As Range, b55 As Range
@@ -21,6 +22,11 @@ Sub FactoryDashboard_Click()
     Set f6 = ws1.Range("F6")
     Set f7 = ws1.Range("F7")
     Set f8 = ws1.Range("F8")
+    Set b11 = ws1.Range("B11")
+    Set c11 = ws1.Range("C11")
+    Set d11 = ws1.Range("D11")
+    Set e11 = ws1.Range("E11")
+    Set f11 = ws1.Range("F11")
     Set c38 = ws1.Range("C38")
     Set c39 = ws1.Range("C39")
     Set c40 = ws1.Range("C40")
@@ -49,6 +55,7 @@ Sub FactoryDashboard_Click()
         For Each C In Rng.Cells
             f1 = C: b1 = C.Offset(0, 1): b3 = C.Offset(0, 4): b5 = C.Offset(0, 5): b6 = C.Offset(0, 6): b7 = C.Offset(0, 7) 'Statuses
             f6 = C.Offset(0, 28): f7 = C.Offset(0, 29): f8 = C.Offset(0, 31) 'Remediation data
+            'Remediation table and chart data
             c38 = C.Offset(0, 40): c39 = C.Offset(0, 41): c40 = C.Offset(0, 42): c41 = C.Offset(0, 43): c42 = C.Offset(0, 44): c43 = C.Offset(0, 45): c44 = C.Offset(0, 46): c45 = C.Offset(0, 47) 'Plan Review data
             b47 = b6: b48 = C.Offset(0, 52): b49 = C.Offset(0, 51): d49 = C.Offset(0, 54) 'Training data
             b51 = b7: b52 = C.Offset(0, 59) + C.Offset(0, 60) + C.Offset(0, 66): b53 = C.Offset(0, 66) 'Helpline data
