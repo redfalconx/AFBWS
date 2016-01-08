@@ -1,0 +1,91 @@
+Sub MemberFactoryStatusList()
+    Dim ws As Worksheet, ws1 As Worksheet, wbDest As Workbook
+    Dim Member As Range, Members As Range
+    Dim Folder As String
+    Dim rngFilter As Range
+
+    Set ws = Worksheets("Combined")
+    Set ws1 = Worksheets("Summary Data")
+    
+    
+    Set Members = ws1.Range("G1:AH1")
+
+    ' Set the filter range (from A1 to the last used cell in column A, all used columns
+    '(Note: you can change this to meet your requirements)
+    'Set rngFilter = ws.Range("C3", ws.Range("C" & ws.Rows.Count).End(xlUp))
+    Set rngFilter = ws.Range("A3", ws.Range("A" & ws.Rows.Count).End(xlUp)).Resize(, _
+                    ws.Cells.Find("*", [A3], Searchorder:=xlByColumns, Searchdirection:=xlPrevious).Column)
+    
+    
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    
+    
+
+    'With rngFilter
+    
+        For Each Member In Members
+            
+            
+            With ActiveSheet
+                If .AutoFilterMode Then
+                    If .FilterMode Then
+                        .ShowAllData
+                    End If
+                End If
+            End With
+            
+            Set wbDest = Workbooks.Add
+            
+            rngFilter.AutoFilter Field:=3, Criteria1:="=*" & Member & "*"
+            
+            Application.DisplayAlerts = 0
+            ' Copy and paste the filtered data to a new workbook
+            rngFilter.SpecialCells(xlCellTypeVisible).Copy 'Destination:=wbDest.Sheets(1).Range("A1")
+            wbDest.Sheets(1).Range("A1").PasteSpecial Paste:=xlPasteColumnWidths
+            'wbDest.Sheets(1).Paste
+            wbDest.Sheets(1).Range("A1").PasteSpecial (xlPasteAll)
+            wbDest.Sheets(1).Name = Member
+            ' Apply filter
+            wbDest.Sheets(1).Range("A1:GH1").AutoFilter
+            ' Insert header rows
+            wbDest.Sheets(1).Rows("1:2").Insert Shift:=xltoDown
+            ws.Rows("1:2").EntireRow.Copy
+            wbDest.Sheets(1).Paste
+            
+            Application.CutCopyMode = False
+            'Delete unnecessary columns
+            'With wbDest.Sheets(1)
+            '   .Columns("FY:GI").EntireColumn.Delete 'Worker Empowerment and Folder
+            '   .Columns("EZ:FA").EntireColumn.Delete 'Escalation columns not ready for use
+            '   .Columns("DX").EntireColumn.Delete 'From Accord CAP
+            '
+            '
+            '
+            '
+            '    .Columns("C:C").EntireColumn.Delete 'Active members
+            'End With
+                
+            
+                
+            
+            
+            
+            
+            ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Factory List_" & Member & ".xlsx", FileFormat:=51
+            'ActiveWorkbook.SaveAs "C:\Users\Andrew\Dropbox (AFBWS.org)\Member Company Folders\" & Member & "\Factory Status List_" & Member & ".xlsx", FileFormat:=51
+            ActiveWorkbook.Close 'copies and saves new workbook
+            
+            ' Clear the filter
+            ActiveSheet.ShowAllData
+        Next Member
+    'End With
+    
+    
+    
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+
+
+End Sub
+
