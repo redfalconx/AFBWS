@@ -11,7 +11,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance Factory info sheet/MASTER FACTORY STATUS_2016-Jan-06_AR.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance Factory info sheet/MASTER Factory Status_ 2016-Feb- 24_MM.xlsx", "Master Factory List")
 Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 
 # Remove (Active) from members' names
@@ -45,15 +45,15 @@ New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Maste
                                                    paste(New_Master$`New_Number of Active Members`, "*"), New_Master$`New_Number of Active Members`)
 
 # Update Accord Shared Factories
-New_Master$`ACTIVE Accord Shared Factories` <- replace(New_Master$`ACTIVE Accord Shared Factories`, New_Master$`ACTIVE Accord Shared Factories` == "No", "Yes")
+# New_Master$`ACTIVE Accord Shared Factories` <- replace(New_Master$`ACTIVE Accord Shared Factories`, New_Master$`ACTIVE Accord Shared Factories` == "No", "Yes")
 
 # Save the file
-write.csv(New_Master, file = "New_Master.csv")
+write.csv(New_Master, file = "New_Master.csv", na = "")
 
 
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
-Training <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Training Program/Training Implementation Files/Training Implementation_Dec 30 15_Imran.xlsx", 1)
+Training <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Training Program/Training Implementation Files/Training Implementation_Feb 24 16_AR.xlsx", 1)
 # Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 
 # Join the tables
@@ -64,15 +64,19 @@ new_factories = anti_join(New_Actives, Training, by = "Account ID")
 
 # Check if any of the factories have new members or if members left
 New_Training$Diff_Members <- ifelse(New_Training$`Active Members (Display)` != New_Training$`Active Members`, 1, 0)
+sum(New_Training$Diff_Members, na.rm = TRUE)
 
+New_Training$Members <- ifelse(duplicated(New_Training$`Account ID`, fromLast = TRUE) == TRUE, New_Training$`Active Members`, New_Training$`Active Members (Display)`)
+
+New_Training$Diff_Members <- ifelse(New_Training$Members != New_Training$`Active Members`, 1, 0)
 sum(New_Training$Diff_Members, na.rm = TRUE)
 
 # Save the file
-write.csv(New_Training, file = "New_Training.csv")
+write.csv(New_Training, file = "New_Training.csv", na = "")
 
 #### Security Guard Training ####
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
-SG_Training <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Training Program/Training Implementation Files/Security Guard Training Implementation_Dec 30 15_Imran.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Training Program/Training Implementation Files/Security Guard Training Implementation_Feb 24 16_AR.xlsx", 1)
 
 # SG_Training <- subset(SG_Training, `Factory Name` != "NA")
 
@@ -88,7 +92,7 @@ New_SG_Training$Diff_Members <- ifelse(New_SG_Training$`Active Members (Display)
 sum(New_SG_Training$Diff_Members, na.rm = TRUE)
 
 # Save the file
-write.csv(New_SG_Training, file = "New_SG_Training.csv")
+write.csv(New_SG_Training, file = "New_SG_Training.csv", na = "")
 
 
 #### Plan Review Tracker ####
@@ -104,7 +108,7 @@ New_PR$Diff_Members <- ifelse(New_PR$`Active Members (Display)` != New_PR$`BRAND
 sum(New_PR$Diff_Members, na.rm = TRUE)
 
 # Save the file
-write.csv(New_PR, file = "New_PR.csv")
+write.csv(New_PR, file = "New_PR.csv", na = "")
 
 
 #### Inactives ####
@@ -143,7 +147,7 @@ Inactives = left_join(Inactives, Inactive_in_FFC, by = "Account ID")
 Inactives = Inactives[, c(-3:-9, -12, -18, -22, -25:-30, -35, -38, -42:-64, -73)]
 
 # Save the file
-write.csv(Inactives, file = "Inactives.csv")
+write.csv(Inactives, file = "Inactives.csv", na = "")
 
 
 #### Case Managers ####
