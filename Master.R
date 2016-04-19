@@ -11,7 +11,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance Factory info sheet/MASTER Factory Status_ 2016-Feb- 24_MM.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/MASTER Factory Status_ 2016-April-11-JK.xlsx", "Master Factory List")
 Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 
 # Remove (Active) from members' names
@@ -53,7 +53,7 @@ write.csv(New_Master, file = "New_Master.csv", na = "")
 
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
-Training <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Training Program/Training Implementation Files/Training Implementation_Feb 24 16_AR.xlsx", 1)
+Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Training Implementation_Apr 12 16_Imran.xlsx", 1)
 # Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 
 # Join the tables
@@ -76,7 +76,7 @@ write.csv(New_Training, file = "New_Training.csv", na = "")
 
 #### Security Guard Training ####
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
-SG_Training <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Training Program/Training Implementation Files/Security Guard Training Implementation_Feb 24 16_AR.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Security Guard Training Implementation_Apr 12 16_Imran.xlsx", 1)
 
 # SG_Training <- subset(SG_Training, `Factory Name` != "NA")
 
@@ -97,7 +97,7 @@ write.csv(New_SG_Training, file = "New_SG_Training.csv", na = "")
 
 #### Plan Review Tracker ####
 # Fetch the Plan Review Tracker table from the Excel spreadsheet and put the results in a dataframe
-PR <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance Design Approval/Master Tracker/Master Tracker.xls", 1, skip = 1)
+PR <- read_excel("C:/Users/Andrew/Box Sync/Alliance Design Approval/Master Tracker/Master Tracker.xls", 1, skip = 1)
 
 # Join the tables
 New_PR = left_join(PR, Actives, by = c("ID" = "Account ID"))
@@ -152,9 +152,9 @@ write.csv(Inactives, file = "Inactives.csv", na = "")
 
 #### Case Managers ####
 # Fetch the Case Manager tables from the Excel spreadsheet and put the results in a dataframe
-CM1 <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance - Reports and Cap/Case Manager-1 (momtaz ala shibbir ahmed)/3. CAP Tracker/Factory Status of Case Manager-1 till 26 August 15.xls", 1)
-CM2 <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance - Reports and Cap/Case Manager-2 (M M Motiur Rahman)/3. CAP Tracker/Tracker Case Manager 2_02.xlsx", 1)
-CM3 <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Alliance - Reports and Cap/Case Manager-3/3. CAP Tracker/06 Sep Factory Status of Case Manager 3 till September, 2015- Nusrat .xls", 1, skip = 3)
+CM1 <- read_excel("C:/Users/Andrew/Box Sync/Alliance - Reports and Cap/Case Manager-1 (momtaz ala shibbir ahmed)/3. CAP Tracker/Factory Status of Case Manager-1 till 26 August 15.xls", 1)
+CM2 <- read_excel("C:/Users/Andrew/Box Sync/Alliance - Reports and Cap/Case Manager-2 (M M Motiur Rahman)/3. CAP Tracker/Tracker Case Manager 2_02.xlsx", 1)
+CM3 <- read_excel("C:/Users/Andrew/Box Sync/Alliance - Reports and Cap/Case Manager-3/3. CAP Tracker/06 Sep Factory Status of Case Manager 3 till September, 2015- Nusrat .xls", 1, skip = 3)
 
 # CM3 <- CM3[-1:-2,]
 # CM3 <- data.frame(CM3, header = T)
