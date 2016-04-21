@@ -65,11 +65,8 @@ Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date
            "Number of separate buildings belonging to production facility", "Number of stories of each building", "Floors of the building which the factory occupies", "Helpline Launched", "link check 15.10.4")] <- list(NULL)
 Master = Master[, 1:ncol(Master)-1]
 
-
-## Suspended Factories ##
-#Suspended <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/MASTER Factory Status_ 2016-March-25_AR.xlsx", 2)
-
-# Copy Suspended factories from that tab to Master Factory List tab #
+# Clean up Review Panel data 
+Master$`Review Panel` <- ifelse(!is.na(Master$`Recommended to Review Panel?`), Master$`CAP Approved by Alliance`, NA)
 
 # Join the tables
 #Master = rbind(Master, Suspended, use.names = FALSE)
@@ -85,6 +82,7 @@ PR[is.na(PR)] <- "Not Required or N/A"
 
 # Join the tables
 Combined = left_join(Combined, PR, by = "Account ID")
+
 
 #### Basic Fire Safety Training ####
 Training <- read_excel("C:/Users/Andrew/Box Sync/Dashboards/Dashboard Workbook/Training Implementation_Mar 31 16_Imran.xlsx", 1)
@@ -113,9 +111,9 @@ SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Dashboards/Dashboard Workboo
 # Remove unnecessary columns
 SG_Training[, c(3:29, 33:36, 40:53)] <- list(NULL)
 
-
 # Join the tables
 Combined = left_join(Combined, SG_Training, by = "Account ID")
+
 
 #### Helpline ####
 ## Helpline calls ##
@@ -124,12 +122,13 @@ H_calls = H_calls[complete.cases(H_calls$`Row Labels`),]
 
 ## Helpline urgent safety calls by reason ##
 H_reasons <- read_excel("C:/Users/Andrew/Box Sync/Dashboards/Dashboard Workbook/Amader Kotha - Dec1.14 - Feb29.16 (Alliance).xlsx", 3, skip = 2)
-H_reasons = H_reasons[complete.cases(H_reasons$`Row Labels`),]
 H_reasons$`Row Labels` = as.numeric(H_reasons$`Row Labels`)
+H_reasons = H_reasons[complete.cases(H_reasons$`Row Labels`),]
 
 ## Helpline factories ##
-H_factories <- read_excel("C:/Users/Andrew/Box Sync/FFC/FFC Updates/Factory Profile Updates_for helpline.xlsx", 1)
+H_factories <- read_excel("C:/Users/Andrew/Box Sync/Dashboards/Dashboard Workbook/Factory Profile Updates_for helpline.xlsx", 1)
 H_factories = H_factories[, 1]
+H_factories = distinct(H_factories, `Account ID`)
 H_factories$Implemented <- "Yes"
 
 # Join the tables
@@ -137,11 +136,15 @@ Helpline = left_join(H_factories, H_calls, by = c("Account ID" = "Row Labels"))
 Helpline = left_join(Helpline, H_reasons, by = c("Account ID" = "Row Labels"))
 Combined = left_join(Combined, Helpline, by = "Account ID")
 
-#### OSH Committees ####
-OSH <- read_excel("C:/Users/Andrew/Box Sync/Dashboards/Dashboard Workbook/List of Factory for Pilot Safety Committee.xlsx", "Final List for Safety Com.Pilot")
+
+#### Safety Committees ####
+SC <- read_excel("C:/Users/Andrew/Box Sync/Dashboards/Dashboard Workbook/List of Factory for Pilot Safety Committee.xlsx", "Final List for Safety Com.Pilot")
+SC = SC[complete.cases(SC$`FFC Account ID`),]
+SC = SC[, 3]
+SC$`Safety Committee` <- "Yes"
 
 # Join the tables
-Combined = left_join(Combined, OSH, by = c("Account ID" = "FFC Account ID"))
+Combined = left_join(Combined, SC, by = c("Account ID" = "FFC Account ID"))
 
 
 # Save the combined data, then copy and paste into the appropriate columns in the Excel Dashboard Workbook
@@ -163,8 +166,10 @@ for (i in colnames(Factory_Monthly)) {
 }
 colnames(Factory_Monthly) <- nm
 
-# Remove unnecessary columns for Combined
+# Remove unnecessary columns and rows for Combined and Factory_Monthly
 Combined = Combined[, 1:8]
+Combined = Combined[complete.cases(Combined$`Account ID`),]
+Factory_Monthly = Factory_Monthly[complete.cases(Factory_Monthly$`Account ID_1`),]
 
 # Join old Factory Monthly to Combined
 Mon = left_join(Combined, Factory_Monthly, by = c("Account ID" = "Account ID_1"))
