@@ -8,7 +8,7 @@ Sub MemberFactoryStatusList()
     Set ws1 = Worksheets("Summary Data")
     
     
-    Set Members = ws1.Range("G1:AH1")
+    Set Members = ws1.Range("G1:AI1")
 
     ' Set the filter range (from A1 to the last used cell in column A, all used columns
     '(Note: you can change this to meet your requirements)
@@ -27,7 +27,7 @@ Sub MemberFactoryStatusList()
         For Each Member In Members
             
             
-            With ActiveSheet
+            With ws
                 If .AutoFilterMode Then
                     If .FilterMode Then
                         .ShowAllData
@@ -41,51 +41,103 @@ Sub MemberFactoryStatusList()
             
             Application.DisplayAlerts = 0
             ' Copy and paste the filtered data to a new workbook
-            rngFilter.SpecialCells(xlCellTypeVisible).Copy 'Destination:=wbDest.Sheets(1).Range("A1")
-            wbDest.Sheets(1).Range("A1").PasteSpecial Paste:=xlPasteColumnWidths
-            'wbDest.Sheets(1).Paste
-            wbDest.Sheets(1).Range("A1").PasteSpecial (xlPasteAll)
-            wbDest.Sheets(1).Name = Member
+            rngFilter.EntireRow.SpecialCells(xlCellTypeVisible).Copy 'Destination:=wbDest.Sheets(1).Range("A1")
+            
+            With wbDest.Sheets(1)
+                .Range("A3").PasteSpecial Paste:=xlPasteColumnWidths
+                'wbDest.Sheets(1).Paste
+                '.Range("A1").PasteSpecial (xlPasteAll)
+                .Range("A3").PasteSpecial xlPasteFormats
+                .Range("A3").PasteSpecial xlPasteValues
+                .Name = Member
             ' Apply filter
-            wbDest.Sheets(1).Range("A1:GH1").AutoFilter
+                .Range("A3:GR3").AutoFilter
             ' Insert header rows
-            wbDest.Sheets(1).Rows("1:2").Insert Shift:=xltoDown
-            ws.Rows("1:2").EntireRow.Copy
-            wbDest.Sheets(1).Paste
+            '    .Rows("1:2").Insert Shift:=xltoDown
+            End With
             
             Application.CutCopyMode = False
+            
+            ws.Rows("1:2").EntireRow.Copy
+            wbDest.Sheets(1).Rows("1:2").PasteSpecial xlPasteAll
+            
+            Application.CutCopyMode = False
+            
+            With wbDest.Sheets(1)
             'Delete unnecessary columns
-            'With wbDest.Sheets(1)
+            
             '   .Columns("FY:GI").EntireColumn.Delete 'Worker Empowerment and Folder
             '   .Columns("EZ:FA").EntireColumn.Delete 'Escalation columns not ready for use
             '   .Columns("DX").EntireColumn.Delete 'From Accord CAP
             '
-            '
+                Call DeleteColumnbyName
             '
             '
             '    .Columns("C:C").EntireColumn.Delete 'Active members
-            'End With
+            End With
                 
             
-                
+                            
             
             
             
             
-            ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Factory List_" & Member & ".xlsx", FileFormat:=51
-            'ActiveWorkbook.SaveAs "C:\Users\Andrew\Dropbox (AFBWS.org)\Member Company Folders\" & Member & "\Factory Status List_" & Member & ".xlsx", FileFormat:=51
-            ActiveWorkbook.Close 'copies and saves new workbook
+            'wbDest.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Factory Status List_" & Member & ".xlsx", FileFormat:=51
+            wbDest.SaveAs "C:\Users\Andrew\Box Sync\Member Company Folders\" & Member & "\Factory Status List_" & Member & ".xlsx", FileFormat:=51
+            wbDest.Close 'copies and saves new workbook
             
             ' Clear the filter
-            ActiveSheet.ShowAllData
+            ws.ShowAllData
         Next Member
     'End With
     
     
     
-    Application.Calculation = xlCalculationAutomatic
+    'Application.Calculation = xlCalculationAutomatic
     Application.ScreenUpdating = True
 
+
+End Sub
+
+Sub DeleteColumnbyName()
+'Find last column with data in Row 1
+
+v = Array("General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Retaliation or threat of retaliation for use of Helpline", "Grand Total of substantive calls", "Folder", "Status from team", _
+    "Security Guard Training Support Visit", _
+    "Number of urgent life safety issues", "Address issues on the spot", "CCVV % In progress - on track", "CCVV % In progress - not on track", "CCVV % Not started", _
+    "RVV3 % In progress - on track", "RVV3 % In progress - not on track", "RVV3 % Not started", "RVV2 % In progress - on track", "RVV2 % In progress - not on track", "RVV2 % Not started", "RVV1 % In progress - on track", "RVV1 % In progress - not on track", "RVV1 % Not started", _
+    "Completed - Structural", "In progress - On track - Structural", "In progress - Not on track - Structural", "Not Started - Structural", "Structural Total", "% In progress Category - Structural", "% Completed + In progress Category - Structural", "% In progress - on track Category - Structural", "% In progress - not on track Category - Structural", "% Not Started Category - Structural", _
+    "Structural High - Completed", "Structural High - In progress - on track", "Structural High - In progress - not on track", "Structural High - Not Started", "Structural High Total", "Structural Medium - Completed", "Structural Medium - In progress - on track", "Structural Medium - In progress - not on track", "Structural Medium - Not Started", "Structural Medium Total", _
+    "Structural Low - Completed", "Structural Low - In progress - on track", "Structural Low - In progress - not on track", "Structural Low - Not Started", "Structural Low Total", "Structural - No Level - Completed", "Structural - No Level - In progress - on track", "Structural - No Level - In progress - not on track", "Structural - No Level - Not started", "Structural - No Level - Total", _
+    "Completed - Fire", "In progress - On track - Fire", "In progress - Not on track - Fire", "Not Started - Fire", "Fire Total", "% In progress Category - Fire", "% Completed + In progress Category - Fire", "% In progress - on track Category - Fire", "% In progress - not on track Category - Fire", "% Not Started Category - Fire", _
+    "Fire High - Completed", "Fire High - In progress - on track", "Fire High - In progress - not on track", "Fire High - Not Started", "Fire High Total", "Fire Medium - Completed", "Fire Medium - In progress - on track", "Fire Medium - In progress - not on track", "Fire Medium - Not Started", "Fire Medium Total", _
+    "Fire Low - Completed", "Fire Low - In progress - on track", "Fire Low - In progress - not on track", "Fire Low - Not Started", "Fire Low Total", "Fire - No Level - Completed", "Fire - No Level - In progress - on track", "Fire - No Level - In progress - not on track", "Fire - No Level - Not started", "Fire - No Level - Total", _
+    "Completed - Electrical", "In progress - On track - Electrical", "In progress - Not on track - Electrical", "Not Started - Electrical", "Electrical Total", "% In progress Category - Electrical", "% Completed + In progress Category - Electrical", "% In progress - on track Category - Electrical", "% In progress - not on track Category - Electrical", "% Not Started Category - Electrical", _
+    "Electrical High - Completed", "Electrical High - In progress - on track", "Electrical High - In progress - not on track", "Electrical High - Not Started", "Electrical High Total", "Electrical Medium - Completed", "Electrical Medium - In progress - on track", "Electrical Medium - In progress - not on track", "Electrical Medium - Not Started", "Electrical Medium Total", _
+    "Electrical Low - Completed", "Electrical Low - In progress - on track", "Electrical Low - In progress - not on track", "Electrical Low - Not Started", "Electrical Low Total", "Electrical - No Level - Completed", "Electrical - No Level - In progress - on track", "Electrical - No Level - In progress - not on track", "Electrical - No Level - Not started", "Electrical - No Level - Total", _
+    "Overall % In progress - on track", "Overall % In progress - not on track", "Overall % Complete Category", "Overall % In progress Category", "Overall % Complete + In progress Category", "Overall % In progress - On track Category", "Overall % In progress - Not on track Category", "Overall % Not started Category", _
+    "Category 2 & 3 deficiencies not corrected", _
+    "Active Members")
+    
+    '"Plan Reviews Not Received", "Plan Reviews Returned for Correction", "DEA", "Design Report", "Central Fire Detection System Drawing", "Hydrant", "Sprinkler", "Fire Door", "Lightning Protection System", "Single Line Diagram", _
+
+lastCol = Cells(3, Columns.Count).End(xlToLeft).Column 'Loop through columns, starting at the last one
+
+For delCol = lastCol To 1 Step -1
+'Delete columns with specific Name in Row 3
+
+    bFound = False
+    For i = LBound(v) To UBound(v)
+        If InStr(1, Cells(3, delCol), v(i), vbTextCompare) And Len(Cells(3, delCol)) = Len(v(i)) Then
+            bFound = True
+            Exit For
+        End If
+    Next i
+    
+    If bFound Then _
+        Cells(3, delCol).EntireColumn.Delete
+
+Next delCol
 
 End Sub
 
