@@ -1,11 +1,13 @@
-Sub FactoryDashboard_Click()
+Sub FactoryDashboard()
     Dim ws As Worksheet, ws1 As Worksheet
     Dim b1 As Range, f1 As Range, b3 As Range, b5 As Range, b6 As Range, b7 As Range, b8 As Range
     Dim f6 As Range, f7 As Range, f8 As Range
-    Dim b11 As Range, c11 As Range, d11 As Range, e11 As Range, f11 As Range
-    Dim c38 As Range, c39 As Range, c40 As Range, c41 As Range, c42 As Range, c43 As Range, c44 As Range, c45 As Range
-    Dim b47 As Range, b48 As Range, b49 As Range, d48 As Range, d49 As Range
-    Dim b51 As Range, b52 As Range, b53 As Range, b55 As Range
+    Dim b11 As Range, c11 As Range, d11 As Range, e11 As Range, b12 As Range, c12 As Range, d12 As Range, e12 As Range, b13 As Range, c13 As Range, d13 As Range, e13 As Range, b14 As Range, c14 As Range, d14 As Range, e14 As Range, b15 As Range, c15 As Range, d15 As Range, e15 As Range
+    Dim b33 As Range, b34 As Range, b35 As Range, c33 As Range, c34 As Range, c35 As Range, d33 As Range, d34 As Range, d35 As Range, e33 As Range, e34 As Range, e35 As Range
+    Dim d38 As Range, d39 As Range, d40 As Range, d41 As Range, d42 As Range, d43 As Range, d44 As Range, d45 As Range
+    Dim b47 As Range, b48 As Range, b49 As Range, d48 As Range, d49 As Range, e47 As Range
+    Dim b50 As Range, b51 As Range, b52 As Range, d51 As Range
+    Dim b54 As Range, b55 As Range, b56 As Range, b58 As Range
     Dim Folder As String
     Dim Rws As Long, Rng As Range, C As Range
 
@@ -26,24 +28,56 @@ Sub FactoryDashboard_Click()
     Set c11 = ws1.Range("C11")
     Set d11 = ws1.Range("D11")
     Set e11 = ws1.Range("E11")
-    Set f11 = ws1.Range("F11")
-    Set c38 = ws1.Range("C38")
-    Set c39 = ws1.Range("C39")
-    Set c40 = ws1.Range("C40")
-    Set c41 = ws1.Range("C41")
-    Set c42 = ws1.Range("C42")
-    Set c43 = ws1.Range("C43")
-    Set c44 = ws1.Range("C44")
-    Set c45 = ws1.Range("C45")
+    Set b12 = ws1.Range("B12")
+    Set c12 = ws1.Range("C12")
+    Set d12 = ws1.Range("D12")
+    Set e12 = ws1.Range("E12")
+    Set b13 = ws1.Range("B13")
+    Set c13 = ws1.Range("C13")
+    Set d13 = ws1.Range("D13")
+    Set e13 = ws1.Range("E13")
+    Set b14 = ws1.Range("B14")
+    Set c14 = ws1.Range("C14")
+    Set d14 = ws1.Range("D14")
+    Set e14 = ws1.Range("E14")
+    Set b15 = ws1.Range("B15")
+    Set c15 = ws1.Range("C15")
+    Set d15 = ws1.Range("D15")
+    Set e15 = ws1.Range("E15")
+    Set b33 = ws1.Range("B33")
+    Set b34 = ws1.Range("B34")
+    Set b35 = ws1.Range("B35")
+    Set c33 = ws1.Range("C33")
+    Set c34 = ws1.Range("C34")
+    Set c35 = ws1.Range("C35")
+    Set d33 = ws1.Range("D33")
+    Set d34 = ws1.Range("D34")
+    Set d35 = ws1.Range("D35")
+    Set e33 = ws1.Range("E33")
+    Set e34 = ws1.Range("E34")
+    Set e35 = ws1.Range("E35")
+    Set d38 = ws1.Range("D38")
+    Set d39 = ws1.Range("D39")
+    Set d40 = ws1.Range("D40")
+    Set d41 = ws1.Range("D41")
+    Set d42 = ws1.Range("D42")
+    Set d43 = ws1.Range("D43")
+    Set d44 = ws1.Range("D44")
+    Set d45 = ws1.Range("D45")
     Set b47 = ws1.Range("B47")
     Set b48 = ws1.Range("B48")
     Set b49 = ws1.Range("B49")
     Set d48 = ws1.Range("D48")
     Set d49 = ws1.Range("D49")
+    Set e47 = ws1.Range("E47")
+    Set b50 = ws1.Range("B50")
     Set b51 = ws1.Range("B51")
     Set b52 = ws1.Range("B52")
-    Set b53 = ws1.Range("B53")
+    Set d51 = ws1.Range("D51")
+    Set b54 = ws1.Range("B54")
     Set b55 = ws1.Range("B55")
+    Set b56 = ws1.Range("B56")
+    Set b58 = ws1.Range("B58")
 
     Application.ScreenUpdating = False
     Application.Calculation = xlCalculationManual
@@ -53,18 +87,40 @@ Sub FactoryDashboard_Click()
         Set Rng = Range(.Cells(4, 1), .Cells(Rws, 1))
 
         For Each C In Rng.Cells
-            f1 = C: b1 = C.Offset(0, 1): b3 = C.Offset(0, 4): b5 = C.Offset(0, 5): b6 = C.Offset(0, 6): b7 = C.Offset(0, 7) 'Statuses
-            f6 = C.Offset(0, 28): f7 = C.Offset(0, 29): f8 = C.Offset(0, 31) 'Remediation data
-            'Remediation table and chart data
-            c38 = C.Offset(0, 40): c39 = C.Offset(0, 41): c40 = C.Offset(0, 42): c41 = C.Offset(0, 43): c42 = C.Offset(0, 44): c43 = C.Offset(0, 45): c44 = C.Offset(0, 46): c45 = C.Offset(0, 47) 'Plan Review data
-            b47 = b6: b48 = C.Offset(0, 52): b49 = C.Offset(0, 51): d49 = C.Offset(0, 54) 'Training data
-            b51 = b7: b52 = C.Offset(0, 59) + C.Offset(0, 60) + C.Offset(0, 66): b53 = C.Offset(0, 66) 'Helpline data
-            b55 = C.Offset(0, 67) 'OSH Committee data
-            Folder = C.Offset(0, 68)
-            Application.DisplayAlerts = 0
-            ws1.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test\Test Reports\" & b1 & "_" & f1 & "_Dashboard"
-            'ws1.Copy: ActiveWorkbook.SaveAs Folder & b1 & "_" & f1 & "_Dashboard"
-            ActiveWorkbook.Close 'copies and saves new workbook
+            
+            Folder = C.Offset(0, 189)
+        
+            If Folder <> "#N/A" Then
+                'Statuses
+                f1 = C: b1 = C.Offset(0, 1): b3 = C.Offset(0, 4): b5 = C.Offset(0, 5): b6 = C.Offset(0, 6): b7 = C.Offset(0, 7)
+                'Remediation data
+                f6 = C.Offset(0, 23): f7 = C.Offset(0, 24): f8 = C.Offset(0, 28)
+                'Remediation table and chart data
+                b11 = C.Offset(0, 132): c11 = C.Offset(0, 138): d11 = C.Offset(0, 144): e11 = C.Offset(0, 150)
+                b12 = C.Offset(0, 133): b13 = C.Offset(0, 134): b14 = C.Offset(0, 135): b15 = C.Offset(0, 136)
+                c12 = C.Offset(0, 139): c13 = C.Offset(0, 140): c14 = C.Offset(0, 141): c15 = C.Offset(0, 142)
+                d12 = C.Offset(0, 145): d13 = C.Offset(0, 146): d14 = C.Offset(0, 147): d15 = C.Offset(0, 148)
+                e12 = C.Offset(0, 151): e13 = C.Offset(0, 152): e14 = C.Offset(0, 153): e15 = C.Offset(0, 154)
+                'Remediation priority level data
+                b33 = (C.Offset(0, 46) + C.Offset(0, 77) + C.Offset(0, 108)) / (C.Offset(0, 50) + C.Offset(0, 81) + C.Offset(0, 112)): c33 = (C.Offset(0, 47) + C.Offset(0, 78) + C.Offset(0, 109)) / (C.Offset(0, 50) + C.Offset(0, 81) + C.Offset(0, 112)): d33 = (C.Offset(0, 48) + C.Offset(0, 79) + C.Offset(0, 110)) / (C.Offset(0, 50) + C.Offset(0, 81) + C.Offset(0, 112)): e33 = (C.Offset(0, 49) + C.Offset(0, 80) + C.Offset(0, 111)) / (C.Offset(0, 50) + C.Offset(0, 81) + C.Offset(0, 112))
+                b34 = (C.Offset(0, 51) + C.Offset(0, 82) + C.Offset(0, 113)) / (C.Offset(0, 55) + C.Offset(0, 86) + C.Offset(0, 117)): c34 = (C.Offset(0, 52) + C.Offset(0, 83) + C.Offset(0, 114)) / (C.Offset(0, 55) + C.Offset(0, 86) + C.Offset(0, 117)): d34 = (C.Offset(0, 53) + C.Offset(0, 84) + C.Offset(0, 115)) / (C.Offset(0, 55) + C.Offset(0, 86) + C.Offset(0, 117)): e34 = (C.Offset(0, 54) + C.Offset(0, 85) + C.Offset(0, 116)) / (C.Offset(0, 55) + C.Offset(0, 86) + C.Offset(0, 117))
+                b35 = (C.Offset(0, 56) + C.Offset(0, 87) + C.Offset(0, 108)) / (C.Offset(0, 60) + C.Offset(0, 91) + C.Offset(0, 122)): c35 = (C.Offset(0, 57) + C.Offset(0, 88) + C.Offset(0, 119)) / (C.Offset(0, 60) + C.Offset(0, 91) + C.Offset(0, 122)): d35 = (C.Offset(0, 58) + C.Offset(0, 89) + C.Offset(0, 120)) / (C.Offset(0, 60) + C.Offset(0, 91) + C.Offset(0, 122)): e35 = (C.Offset(0, 59) + C.Offset(0, 90) + C.Offset(0, 121)) / (C.Offset(0, 60) + C.Offset(0, 91) + C.Offset(0, 122))
+                'Plan Review data
+                d38 = C.Offset(0, 162): d39 = C.Offset(0, 163): d40 = C.Offset(0, 164): d41 = C.Offset(0, 165): d42 = C.Offset(0, 166): d43 = C.Offset(0, 167): d44 = C.Offset(0, 168): d45 = C.Offset(0, 169)
+                'Training data
+                b47 = C.Offset(0, 173): b48 = C.Offset(0, 172): b49 = C.Offset(0, 171): d48 = C.Offset(0, 174): d49 = C.Offset(0, 175): e47 = C.Offset(0, 170)
+                b50 = C.Offset(0, 178): b51 = C.Offset(0, 177): b52 = C.Offset(0, 176): d51 = C.Offset(0, 179)
+                'Helpline data
+                b54 = b7: b55 = C.Offset(0, 182) + C.Offset(0, 183) + C.Offset(0, 189): b56 = C.Offset(0, 189)
+                'OSH Committee data
+                b58 = C.Offset(0, 199)
+                
+                Application.DisplayAlerts = 0
+                ws1.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\" & b1 & "_" & f1 & "_Dashboard" & ".xlsx", FileFormat:=51
+                'ws1.Copy: ActiveWorkbook.SaveAs Folder & b1 & "_" & f1 & "_Dashboard"
+                ActiveWorkbook.Close 'copies and saves new workbook
+            
+            End If
         Next C
 
     End With
