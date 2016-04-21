@@ -1,0 +1,114 @@
+Sub MemberSummaryStatistics()
+    Dim ws As Worksheet, ws1 As Worksheet, ws2 As Worksheet
+    Dim Member As Range, Members As Range, Members2 As Range
+    Dim Folder As String
+    Dim Rws As Long, Rng As Range, C As Range
+    
+
+    Set ws = Worksheets("Summary Data")
+    Set ws1 = Worksheets("Member Monthly")
+    Set ws2 = Worksheets("Member Dashboard")
+    Set ws3 = Worksheets("Combined")
+    
+    Set Members = ws.Range("G1:AI1")
+    
+    'Rws = ws1.Cells(ws1.Rows.Count, "A").End(xlUp).Row
+    'Set Members2 = ws1.Range(ws1.Cells(1, 1), ws1.Cells(Rws, 1))
+    
+    
+    
+
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    
+    
+
+    With ws
+        
+        
+    
+        For Each Member In Members
+            
+            Application.DisplayAlerts = 0
+            
+            .Range("A1:A451").Copy
+            'ws2.Copy
+            
+            With ws2
+                .Range("A1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("A1").PasteSpecial xlPasteFormats
+                .Range("A1").PasteSpecial xlPasteValues
+            End With
+            
+'            .Range("A339:A414").Copy
+            
+'            With ws2
+'                .Range("A331").PasteSpecial Paste:=xlPasteColumnWidths
+'                .Range("A331").PasteSpecial xlPasteFormats
+'                .Range("A331").PasteSpecial xlPasteValues
+'            End With
+            
+                        
+            .Range("C1:F451").Copy
+            'ws2.Copy
+            
+            With ws2
+                .Range("B1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("B1").PasteSpecial xlPasteFormats
+                .Range("B1").PasteSpecial xlPasteValues
+            End With
+            
+'            .Range("C339:F414").Copy
+            
+'            With ws2
+'                .Range("B331").PasteSpecial Paste:=xlPasteColumnWidths
+'                .Range("B331").PasteSpecial xlPasteFormats
+'                .Range("B331").PasteSpecial xlPasteValues
+'            End With
+            
+            
+            .Range(.Cells(1, Member.Column), .Cells(451, Member.Column)).Copy
+            
+            With ws2
+                .Range("F1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("F1").PasteSpecial xlPasteFormats
+                .Range("F1").PasteSpecial xlPasteValues
+            End With
+            
+'            .Range(.Cells(339, Member.Column), .Cells(414, Member.Column)).Copy
+            
+            
+            Application.CutCopyMode = False
+            
+            'With ws2
+            '    .Rows("261:272").EntireRow.Delete
+            '    .Rows("195:248").EntireRow.Delete
+            '    .Rows("15:16").EntireRow.Delete
+            'End With
+                
+            ws3.Range("A2").Copy
+                            
+            With ws2
+                .Range("G1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("G1").PasteSpecial xlPasteFormats
+                .Range("G1").PasteSpecial xlPasteValues
+            End With
+            
+            
+            
+            'ws2.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Summary Statistics_" & Member & ".xlsx", FileFormat:=51
+            ws2.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Box Sync\Member Company Folders\" & Member & "\Summary Statistics_" & Member & ".xlsx", FileFormat:=51
+            ActiveWorkbook.Close 'copies and saves new workbook
+            
+            
+        Next Member
+    End With
+    
+    
+    
+    Application.ScreenUpdating = True
+
+
+End Sub
+
+
