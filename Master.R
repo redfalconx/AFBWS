@@ -11,7 +11,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/MASTER Factory Status_ 2016-April-11-JK.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/MASTER Factory Status_2016-April-26_MM.xlsx", "Master Factory List")
 Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 
 # Remove (Active) from members' names
@@ -53,7 +53,7 @@ write.csv(New_Master, file = "New_Master.csv", na = "")
 
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
-Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Training Implementation_Apr 12 16_Imran.xlsx", 1)
+Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Training Implementation_Apr 21 16_Imran.xlsx", 1)
 # Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 
 # Join the tables
@@ -76,7 +76,7 @@ write.csv(New_Training, file = "New_Training.csv", na = "")
 
 #### Security Guard Training ####
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
-SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Security Guard Training Implementation_Apr 12 16_Imran.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Security Guard Training Implementation_Apr 21 16_Imran.xlsx", 1)
 
 # SG_Training <- subset(SG_Training, `Factory Name` != "NA")
 
