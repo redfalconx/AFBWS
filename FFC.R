@@ -1,48 +1,15 @@
 # Created by Andrew Russell, 2015.
 # These packages are used at various points: 
-# install.packages("RSelenium", "readxl")
+# install.packages("RSelenium")
 
 #### Load packages ####
 library(RCurl)
-library(readxl) # reads Excel files
 library(rvest)
 library(RSelenium)
+library(data.table) # converts to data tables
+library(dplyr) # data manipulation
+library(tidyr) # a few pivot-table functions
 
-#### RCurl code ####
-curl = getCurlHandle()
-curlSetOpt(cookiejar = 'cookies.txt', followlocation = TRUE, autoreferer = TRUE, curl = curl)
-
-html <- getURL('http://sfi.fairfactories.org/ffcweb/Web/Common/LogonPage.aspx', curl = curl)
-
-viewstate <- as.character(sub('.*id="__VIEWSTATE" value="([0-9a-zA-Z+/=]*).*', '\\1', html))
-
-params <- list(
-  'ctl00$ContentPlaceHolder3$Login1$UserName'    = '<arussell@afbws.org>',
-  'ctl00$ContentPlaceHolder3$Login1$Password'    = '<Master00>',
-  'ctl00$ContentPlaceHolder3$Login1$LoginButton' = 'Log In',
-  '__VIEWSTATE'                                  = viewstate
-)
-
-html = postForm('http://sfi.fairfactories.org/ffcweb/Web/Common/LogonPage.aspx', .params = params, curl = curl)
-
-# grepl('Logout', html)
-
-#### rvest code ####
-s <- html_session("http://sfi.fairfactories.org/ffcweb/Web/Utilities/Dispatcher.aspx?responsepage=CONFIGURED_REPORT_INDEX_PAGE")
-s1 <- s %>% jump_to("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
-s1 %>% follow_link("Alliance Factory Report 2")
-s2 <- s1 %>% jump_to("javascript:__doPostBack('ctl00$ContentPlaceHolder1$dgReport$ctl11$ctl00','')")
-s1 %>% follow_link(url = "javascript:__doPostBack('ctl00$ContentPlaceHolder1$dgReport$ctl11$ctl00','')", css = ".mainContent a")
-
-
-
-s <- html_session("http://sfi.fairfactories.org/ffcweb/Web/Common/HomePage.aspx")
-s1 <- s %>% jump_to("http://sfi.fairfactories.org/ffcweb/Web/Utilities/Dispatcher.aspx?responsepage=CONFIGURED_REPORT_INDEX_PAGE")
-s2 <- s1 %>% jump_to("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
-s3 <- s2 %>% jump_to("javascript:__doPostBack('ctl00$ContentPlaceHolder1$dgReport$ctl11$ctl00','')")
-s4 <- 
-s1 %>% follow_link("Alliance Factory Report 2")
-s2 <- s1 %>% jump_to("javascript:__doPostBack('ctl00$ContentPlaceHolder1$dgReport$ctl11$ctl00','')")
 
 #### RSelenium code ####
 # RSelenium::checkForServer() # install server if needed
@@ -77,12 +44,19 @@ Export <- remDr$findElement("id", "btnExport")
 Export$clickElement()
 
 # Download the file
-Master <- remDr$findElement("xpath", "//*[@id='flexExportStatus']/a")
-file <- as.data.frame(Master$clickElement())
+Alink <- remDr$findElement("xpath", "//*[@id='flexExportStatus']/a")
 
-rawHTML <- paste(readLines(Master$clickElement()), collapse="\n")
+Aurl <- Mlink$getElementAttribute("href")[[1]]
+Alink$clickElement()
 
-file <- readHTMLTable(Master$clickElement())
+# Open the file
+Afile <- sub(".*filename=", "", Aurl)
+Afile <- "C:/Users/Andrew/Downloads/" & Actives
+Actives <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
 
-file <- read_excel(Master$clickElement(), "Sheet1")
+# Change column names
+setnames(Actives, names(Actives), gsub("NULL.", "", names(Actives)))
+setnames(Actives, names(Actives), gsub("\\.", " ", names(Actives)))
 
+# Change ID column to numeric
+Actives$`Account ID` <- as.numeric(Actives$`Account ID`)
