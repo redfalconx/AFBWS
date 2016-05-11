@@ -1,0 +1,44 @@
+Sub MemberMonthly()
+    Dim ws As Worksheet, ws1 As Worksheet
+    Dim Member As Range, Members As Range, Month As Range
+    Dim Col As Range
+   
+
+    Set ws = Worksheets("Summary Data")
+    Set ws1 = Worksheets("Member Monthly")
+
+    Set Members = ws1.Range("B1:ARL1")
+    Set Month = ws.Range("B1")
+    Set Col = ws1.Range("A2:AJ2").Find(Month, , xlValues, xlWhole)
+    
+
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+   
+
+    With ws1
+        
+
+        For Each Member In Members
+        
+            If Member <> "" Then
+            
+            Application.DisplayAlerts = 0
+
+            .Range(.Cells(5, Member.Column), .Cells(500, Member.Column)).Copy
+                       
+            Member.Offset(4, Col.Column - 2).PasteSpecial xlPasteValues
+                       
+            Application.CutCopyMode = False
+            
+            End If
+                           
+        Next Member
+    End With
+
+    
+    Application.ScreenUpdating = True
+
+
+End Sub
+
