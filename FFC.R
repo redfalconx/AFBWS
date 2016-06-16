@@ -3,12 +3,8 @@
 # install.packages("RSelenium")
 
 #### Load packages ####
-library(RCurl)
-library(rvest)
 library(RSelenium)
 library(data.table) # converts to data tables
-library(dplyr) # data manipulation
-library(tidyr) # a few pivot-table functions
 
 
 #### RSelenium code ####
@@ -46,17 +42,19 @@ Export$clickElement()
 # Download the file
 Alink <- remDr$findElement("xpath", "//*[@id='flexExportStatus']/a")
 
-Aurl <- Mlink$getElementAttribute("href")[[1]]
+Aurl <- Alink$getElementAttribute("href")[[1]]
 Alink$clickElement()
 
 # Open the file
 Afile <- sub(".*filename=", "", Aurl)
-Afile <- "C:/Users/Andrew/Downloads/" & Actives
 Actives <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
 
 # Change column names
 setnames(Actives, names(Actives), gsub("NULL.", "", names(Actives)))
 setnames(Actives, names(Actives), gsub("\\.", " ", names(Actives)))
+setnames(Actives, "Active Members  Display ", "Active Members (Display)")
 
 # Change ID column to numeric
-Actives$`Account ID` <- as.numeric(Actives$`Account ID`)
+Actives$`Account ID` <- as.numeric(levels(Actives$`Account ID`))[Actives$`Account ID`]
+Actives$`Number of Active Members` <- as.numeric(levels(Actives$`Number of Active Members`))[Actives$`Number of Active Members`]
+Actives$`Active Members (Display)` <- as.character(Actives$`Active Members (Display)`)

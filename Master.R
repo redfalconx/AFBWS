@@ -11,11 +11,13 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/MASTER Factory Status_2016-April-26_MM.xlsx", "Master Factory List")
-Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-June 8.xlsx", "Master Factory List")
+# Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 
 # Remove (Active) from members' names
 Actives$`Active Members (Display)` <- gsub(" (Active)", "", Actives$`Active Members (Display)`, fixed = TRUE)
+# Remove " ," from members' names
+Actives$`Active Members (Display)` <- gsub(" ,", ",", Actives$`Active Members (Display)`, fixed = TRUE)
 
 # Join the tables
 New_Master = left_join(Master, Actives, by = "Account ID")
@@ -24,7 +26,8 @@ New_Master = left_join(Master, Actives, by = "Account ID")
 # Remove Li & Fung
 New_Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 # Remove NAs
-New_Actives = New_Actives[complete.cases(Actives$`Active Members (Display)`),]
+# New_Actives = New_Actives[complete.cases(Actives$`Active Members (Display)`),]
+New_Actives = subset(Actives, Actives$`Active Members (Display)` != "")
 new_factories = anti_join(New_Actives, Master, by = "Account ID")
 
 # Check if any of the factories have new members or if members left
@@ -33,13 +36,13 @@ New_Master$Diff_Members <- ifelse(New_Master$`Active Members (Display)` != New_M
 # If there are differences, the sum will be more than zero
 sum(New_Master$Diff_Members, na.rm = TRUE)
 
-# Remove Li & Fung
-# New_Master$`Active Members (Display)`[New_Master$`Active Members (Display)` == "Li & Fung"] <- ""
-New_Master$`Active Members (Display)` <- replace(New_Master$`Active Members (Display)`, New_Master$`Active Members (Display)` == "Li & Fung", NA)
 
 # If Li & Fung is one of the members, substract 1 from number of brands and add *
 New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Master$`Active Members (Display)`) == TRUE, 
                                                    New_Master$`Number of Active Members.y` - 1, New_Master$`Number of Active Members.y`)
+# Remove Li & Fung
+New_Master$`Active Members (Display)` <- replace(New_Master$`Active Members (Display)`, New_Master$`Active Members (Display)` == "Li & Fung", NA)
+# Add *
 New_Master$`New_Number of Active Members` <- as.character(New_Master$`New_Number of Active Members`)
 New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Master$`Active Members (Display)`) == TRUE, 
                                                    paste(New_Master$`New_Number of Active Members`, "*"), New_Master$`New_Number of Active Members`)
@@ -53,7 +56,7 @@ write.csv(New_Master, file = "New_Master.csv", na = "")
 
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
-Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Training Implementation_Apr 21 16_Imran.xlsx", 1)
+Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation_Imran.xlsx", 1)
 # Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 
 # Join the tables
@@ -76,7 +79,7 @@ write.csv(New_Training, file = "New_Training.csv", na = "")
 
 #### Security Guard Training ####
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
-SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training Program/Training Implementation Files/Security Guard Training Implementation_Apr 21 16_Imran.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Security Guard Training Implementation_Imran.xlsx", 1)
 
 # SG_Training <- subset(SG_Training, `Factory Name` != "NA")
 
@@ -93,6 +96,22 @@ sum(New_SG_Training$Diff_Members, na.rm = TRUE)
 
 # Save the file
 write.csv(New_SG_Training, file = "New_SG_Training.csv", na = "")
+
+
+#### Safety Committees ####
+# Fetch the Safety Committees table from the Excel spreadsheet and put the results in a dataframe
+SC <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation_Imran.xlsx", 1)
+
+# Join the tables
+New_SC = left_join(SC, Actives, by = "Account ID")
+
+# Check if any of the factories have new members or if members left
+New_SC$Diff_Members <- ifelse(New_SC$`Active Members (Display)` != New_SC$`Active Members`, 1, 0)
+
+sum(New_SC$Diff_Members, na.rm = TRUE)
+
+# Save the file
+write.csv(New_SC, file = "New_SC.csv", na = "")
 
 
 #### Plan Review Tracker ####

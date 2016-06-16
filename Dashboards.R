@@ -12,7 +12,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Fetch the Remediation Workbook spreadsheets and put the results in dataframes ####
 # CAPs <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
-CAPs_pivot <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 1, skip = 3)
+CAPs_pivot <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Current Status Pivot", skip = 3)
 # Remove Grand Total row and change column names
 CAPs_pivot = CAPs_pivot[1:nrow(CAPs_pivot)-1, ]
 # Set names if not including "no level" Accord CAPs
@@ -27,7 +27,7 @@ setnames(CAPs_pivot, c(2:62),
            "Fire High - Completed",	"Fire High - In progress - on track",	"Fire High - In progress - not on track",	"Fire High Not Started",	"Fire High Total",	"Fire Medium - Completed",	"Fire Medium - In progress - on track",	"Fire Medium - In progress - not on track",	"Fire Medium - Not Started",	"Fire Medium Total",	"Fire Low - Completed",	"Fire Low - In progress - on track",	"Fire Low - In progress - not on track",	"Fire Low - Not Started",	"Fire Low Total", "Fire - No Level - Completed", "Fire - No Level - In progress - on track", "Fire - No Level - Not started", "Fire - No Level - Total", "Fire Total",
            "Structural High - Completed",	"Structural High - In progress - on track",	"Structural High - In progress - not on track",	"Structural High Not Started",	"Structural High Total",	"Structural Medium - Completed",	"Structural Medium - In progress - on track",	"Structural Medium - In progress - not on track",	"Structural Medium - Not Started",	"Structural Medium Total",	"Structural Low - Completed",	"Structural Low - In progress - on track",	"Structural Low - In progress - not on track",	"Structural Low - Not Started",	"Structural Low Total", "Structural - No Level - Completed", "Structural - No Level - In progress - on track", "Structural - No Level - Not started", "Structural - No Level - Total", "Structural Total", "Grand Total"))
 # Fetch statuses of each RVV and CCVV, remove Grand Total row, and change column names
-CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
+CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "RVV Pivots", skip = 3)
 RVV1 = CAPs_RVVs[,1:5]
 setnames(RVV1, names(RVV1), c("Account ID", "Completed - RVV1", "In progress - on track - RVV1", "In progress - not on track - RVV1", "Not started - RVV1"))
 RVV1 = RVV1[1:nrow(RVV1)-1,]
@@ -40,22 +40,22 @@ setnames(RVV3, names(RVV3), c("Account ID", "Completed - RVV3", "In progress - o
 RVV3 = RVV3[complete.cases(RVV3$`Account ID`),]
 RVV3 = RVV3[1:nrow(RVV3)-1,]
 RVV3$`Account ID` <- as.numeric(RVV3$`Account ID`)
-CCVV = CAPs_RVVs[,19:23]
-setnames(CCVV, names(CCVV), c("Account ID", "Completed - CCVV", "In progress - on track - CCVV", "In progress - not on track - CCVV", "Not started - CCVV"))
-CCVV = CCVV[complete.cases(CCVV$`Account ID`),]
-CCVV = CCVV[1:nrow(CCVV)-1,]
-CCVV$`Account ID` <- as.numeric(CCVV$`Account ID`)
+RVV4 = CAPs_RVVs[,19:23]
+setnames(RVV4, names(RVV4), c("Account ID", "Completed - RVV4", "In progress - on track - RVV4", "In progress - not on track - RVV4", "Not started - RVV4"))
+RVV4 = RVV4[complete.cases(RVV4$`Account ID`),]
+RVV4 = RVV4[1:nrow(RVV4)-1,]
+RVV4$`Account ID` <- as.numeric(RVV4$`Account ID`)
 
 # Join the CAP tables
 CAPs = left_join(CAPs_pivot, RVV1, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV2, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV3, by = c("Row Labels" = "Account ID"))
-CAPs = left_join(CAPs, CCVV, by = c("Row Labels" = "Account ID"))
+CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
 
 
 
 #### Master Factory List ####
-Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status_2016-April-26_AR.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
 Master = Master[complete.cases(Master$`Account ID`),]
 
 #Remove unnecessary columns !!! Double Check to make sure columns are correct !!!
@@ -93,7 +93,7 @@ Combined = left_join(Combined, PR, by = "Account ID")
 
 
 #### Basic Fire Safety Training ####
-Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Training Implementation_Apr 26 16_AR.xlsx", 1)
+Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Basic Fire Safety & Helpline Training Implementation.xlsx", 1)
 
 # Remove unnecessary columns
 Training[, c(4:32, 38:41, 48:57)] <- list(NULL)
@@ -106,15 +106,17 @@ Training$`Refresher Training` <- "No"
 # Training$`Refresher Training`[Training$`Training Phase` == 3] <- "Yes"
 Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 3] <- "Yes"
 Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 4] <- "Yes"
-#Training$STATUS <- gsub("Refresher Training", "Retraining", Training$STATUS)
 
 table(Training$STATUS)
 
 # Join the tables
 Combined = left_join(Combined, Training, by = "Account ID")
 
+#Combined$`Refresher Training` = ifelse(Combined$`Refresher Training` != "Yes", "No")
+
+
 ##### Security Guard Training ####
-SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation_Apr 26 16_AR.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation.xlsx", 1)
 
 # Remove unnecessary columns
 SG_Training[, c(3:29, 33:36, 40:53)] <- list(NULL)
@@ -146,17 +148,38 @@ Combined = left_join(Combined, Helpline, by = "Account ID")
 
 
 #### Safety Committees ####
-SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/List of Factory for Pilot Safety Committee.xlsx", "Final List for Safety Com.Pilot")
-SC = SC[complete.cases(SC$`FFC Account ID`),]
-SC = SC[, 3]
-SC$`Safety Committee` <- "Yes"
+SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/SC Implementation.xlsx", 1)
+
+SC = SC[complete.cases(SC$`Account ID`),]
+setnames(SC, names(SC), gsub("\\r\\n", " ", names(SC)))
+SC = SC[SC$`SC Formation  (Yes/No) %` > 0,]
+SC = SC[!is.na(SC$`SC Formation  (Yes/No) %`),]
+SC = SC[, c(-2:-11, -15, -17, -26:-52, -55:-70)]
+
+setnames(SC, "TtT Received from Alliance (Yes/No) %", "TtT Received from Alliance")
+setnames(SC, "SC Activity Implementation Completion Date (Total - 100 Days)", "SC Activity Implementation Completion Date")
+SC$Status[agrep("ON TRACK", SC$Status)] <- "On track"
+
+SC$`TtT Received from Alliance` = ifelse(is.na(SC$`TtT Received from Alliance`) == TRUE, "No", "Yes")
 
 # Join the tables
-Combined = left_join(Combined, SC, by = c("Account ID" = "FFC Account ID"))
+Combined = left_join(Combined, SC, by = "Account ID")
 
+
+# Remove Duplicate rows
+Combined = unique(Combined)
 
 # Save the combined data, then copy and paste into the appropriate columns in the Excel Dashboard Workbook
 write.csv(Combined, "Combined.csv", na="")
+
+
+#### Lockable Gates ####
+LG <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Statement of Lockable Exit.xls", "Statement Lockable exits_Total", skip = 2)
+LG = LG[complete.cases(LG$`Factory ID`),]
+LG = LG[, c(4, 9)]
+
+# Join the tables
+Combined = left_join(Combined, LG, by = c("Account ID" = "Factory ID"))
 
 
 #### Dashboard Workbook ####
