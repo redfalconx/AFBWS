@@ -10,6 +10,93 @@ library(tidyr) # a few pivot-table functions
 # library(reshape2) # a few pivot-table functions
 
 
+#### Tracking individual NCs over time ####
+# Load raw CAP data #
+CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1))
+CAPs_Data = CAPs_Data[, -c("Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date", "Active Brands")]
+
+# Load Master Factory List #
+Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
+
+# Clean up Master, remove unnecessary columns
+Master = Master[complete.cases(Master$`Account ID`),]
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date", "Active Brands"))
+
+# Clean up / consolidate variations of NCs into same NC
+CAPs_Data$Question[CAPs_Data$Question == "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review? \r\n"] <- "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review?"
+CAPs_Data$Question[CAPs_Data$Question == "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review?\r\n"] <- "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review?"
+CAPs_Data$Question[CAPs_Data$Question == "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review? "] <- "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Combustible materials are not stored within the substation room.\r\n"] <- "Combustible materials are not stored within the substation room."
+CAPs_Data$Question[CAPs_Data$Question == "Combustible materials are not stored within the substation room. \r\n"] <- "Combustible materials are not stored within the substation room."
+
+CAPs_Data$Question[CAPs_Data$Question == "Electrical connections at equipment, fixtures, etc are properly secured."] <- "Electrical connections at equipment, fixtures, etc. are properly secured."
+CAPs_Data$Question[CAPs_Data$Question == "Electrical connections at equipment, fixtures, etc are properly secured.\r\n"] <- "Electrical connections at equipment, fixtures, etc. are properly secured."
+CAPs_Data$Question[CAPs_Data$Question == "Electrical connections at equipment, fixtures, etc. are properly secured.\r\n"] <- "Electrical connections at equipment, fixtures, etc. are properly secured."
+
+CAPs_Data$Question[CAPs_Data$Question == "Indications of overheating, overloading, or signs of burning were not observed. \r\n"] <- "Indications of overheating, overloading, or signs of burning were not observed."
+CAPs_Data$Question[CAPs_Data$Question == "Indications of overheating, overloading, or signs of burning were not observed.\r\n"] <- "Indications of overheating, overloading, or signs of burning were not observed."
+
+CAPs_Data$Question[CAPs_Data$Question == "Is a lightning protection system installed on the buildind\r\n"] <- "Is a lightning protection system installed on the building?"
+CAPs_Data$Question[CAPs_Data$Question == "Is a lightning protection system installed on the building? \r\n"] <- "Is a lightning protection system installed on the building?"
+CAPs_Data$Question[CAPs_Data$Question == "Is a lightning protection system installed on the building?\r\n"] <- "Is a lightning protection system installed on the building?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)? "] <- "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)?"
+CAPs_Data$Question[CAPs_Data$Question == "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)? \r\n"] <- "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)?"
+CAPs_Data$Question[CAPs_Data$Question == "Is electrical wiring/cables sized according to CAPacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)? \r\n"] <- "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)?"
+CAPs_Data$Question[CAPs_Data$Question == "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)?\r\n"] <- "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)?"
+CAPs_Data$Question[CAPs_Data$Question == "Is electrical wiring/cables sized according to d8acity of circuit breakers (No higher rated circuit breakers with lower rated wiring)? \r\n"] <- "Is electrical wiring/cables sized according to capacity of circuit breakers (No higher rated circuit breakers with lower rated wiring)?"
+
+CAPs_Data$Question[CAPs_Data$Question == "No circuits are drawn for loads without the incorporation of a overcurrent protection device (circuit breaker).\r\n"] <- "No circuits are drawn for loads without the incorporation of a overcurrent protection device (circuit breaker)."
+
+CAPs_Data$Question[CAPs_Data$Question == "Aisles are provided with the minimum unobstructed clear width of 0.9 m (36 in) based on occupant loads.\r\n"] <- "Aisles are provided with the minimum unobstructed clear width of 0.9 m (36 in) based on occupant loads."
+
+CAPs_Data$Question[CAPs_Data$Question == "All doors in a means of egress are of the side-hinged swinging type.\r\n"] <- "All doors in a means of egress are of the side-hinged swinging type."
+
+CAPs_Data$Question[CAPs_Data$Question == "Are exit enclosures provided with fire-resistive rated construction barriers?\r\n"] <- "Are exit enclosures provided with fire-resistive rated construction barriers?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Doors are not locked in the direction of egress under any conditions. All hasps, locks, slide bolts, and other locking devices have been removed where required.\r\n"] <- "Doors are not locked in the direction of egress under any conditions. All hasps, locks, slide bolts, and other locking devices have been removed where required."
+
+CAPs_Data$Question[CAPs_Data$Question == "Illuminated exit signs are provided with battery backup or emergency power and are continuously illuminated.\r\n"] <- "Illuminated exit signs are provided with battery backup or emergency power and are continuously illuminated."
+
+CAPs_Data$Question[CAPs_Data$Question == "Means of egress have a minimum ceiling height of 2.3 m (7 ft 6 in.) no projections from ceiling not less than 2.03 m (6 ft 8 in.)"] <- "Means of egress have a minimum ceiling height of 2.3 m (7 ft. 6 in.) with projections from the ceiling not less than 2.03 m (6 ft. 8 in.)."
+CAPs_Data$Question[CAPs_Data$Question == "Means of egress have a minimum ceiling height of 2.3 m (7 ft 6 in.) with projections from the ceiling not less than 2.03 m (6 ft 8 in.)."] <- "Means of egress have a minimum ceiling height of 2.3 m (7 ft. 6 in.) with projections from the ceiling not less than 2.03 m (6 ft. 8 in.)."
+CAPs_Data$Question[CAPs_Data$Question == "Means of egress should have a minimum ceiling height of 2.3 m (7 ft 6 in.) with projections from the ceiling not less than 2.03 m (6 ft 8 in.)."] <- "Means of egress have a minimum ceiling height of 2.3 m (7 ft. 6 in.) with projections from the ceiling not less than 2.03 m (6 ft. 8 in.)."
+
+CAPs_Data$Question[CAPs_Data$Question == "Stairwells are not utilized as storage spaces"] <- "Stairwells are not utilized as storage spaces."
+CAPs_Data$Question[CAPs_Data$Question == "Stairwells are not utilized as storage spaces. \r\n"] <- "Stairwells are not utilized as storage spaces."
+CAPs_Data$Question[CAPs_Data$Question == "Stairwells are not utilized as storage spaces.\r\n"] <- "Stairwells are not utilized as storage spaces."
+
+CAPs_Data$Question[CAPs_Data$Question == "The path of egress along the means of egress is not reduced at any point along the path of travel and is sufficient for the occupant load.\r\n"] <- "The path of egress along the means of egress is not reduced at any point along the path of travel and is sufficient for the occupant load."
+
+CAPs_Data$Question[CAPs_Data$Question == "Travel distance to reach an exit does not exceed the maximum distance allowed by Occupancy Type.\r\n"] <- "Travel distance to reach an exit does not exceed the maximum distance allowed by Occupancy Type."
+
+CAPs_Data$Question[CAPs_Data$Question == "Are the available For for the columns adequate based on Preliminary calculation?"] <- "Are the available FoS for the columns adequate based on Preliminary calculation?"
+CAPs_Data$Question[CAPs_Data$Question == "Are the available FoS for the columns adequate based on Preliminary calculation?+B17:B23"] <- "Are the available FoS for the columns adequate based on Preliminary calculation?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Are the performance of key structural elements such as columns, slender\r\ncolumns, flat plates and transfer structures satisfactory?"] <- "Are the performance of key structural elements such as columns, slender columns, flat plates and transfer structures satisfactory?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Is a program in place to ensure that the live loads for which a floor or roof is or has been designed will not be exceeded? "] <- "Is a program in place to ensure that the live loads for which a floor or roof is or has been designed will not be exceeded?"
+CAPs_Data$Question[CAPs_Data$Question == "Is a program in place to ensure that the live loads for which a floor or roof is or has been designed will not be exceeded? \r\n"] <- "Is a program in place to ensure that the live loads for which a floor or roof is or has been designed will not be exceeded?"
+CAPs_Data$Question[CAPs_Data$Question == "Is a program in place to ensure that the live loads for which a floor or roof is or has been designed will not be exceeded?\r\n"] <- "Is a program in place to ensure that the live loads for which a floor or roof is or has been designed will not be exceeded?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, separations, or cracking that indicates lack of performance or overstress of the lateral load-carrying system? "] <- "Is the structural system free of distress, separations, or cracking that indicates lack of performance or overstress of the lateral load-carrying system?"
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, separations, or cracking that indicates lack of performance or overstress of the lateral load-carrying system? \r\n"] <- "Is the structural system free of distress, separations, or cracking that indicates lack of performance or overstress of the lateral load-carrying system?"
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, separations, or cracking that indicates lack of performance or overstress of the lateral load-carrying system?\r\n"] <- "Is the structural system free of distress, separations, or cracking that indicates lack of performance or overstress of the lateral load-carrying system?"
+
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls? "] <- "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls?"
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls? \r\n"] <- "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls?"
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls?\r\n"] <- "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls?"
+CAPs_Data$Question[CAPs_Data$Question == "Is the structural system free of distress, settlement, shifting, or cracking in\r\ncolumns or walls?"] <- "Is the structural system free of distress, settlement, shifting, or cracking in columns or walls?"
+
+# Join Master to CAPs_Data
+CAPs_Data = left_join(CAPs_Data, Master, by = "Account ID")
+
+# Save the file
+write.csv(CAPs_Data, "CAP Data with RVV dates.csv", na="")
+
+
 #### Fetch the Remediation Workbook spreadsheets and put the results in dataframes ####
 # CAPs <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
 CAPs_pivot <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Current Status Pivot", skip = 3)
@@ -57,6 +144,15 @@ CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
 #### Master Factory List ####
 Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
 Master = Master[complete.cases(Master$`Account ID`),]
+# Suspended <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Suspended Factories")
+Suspended = Suspended[, c("Account Name", "Account ID", "Escalation Status", "Remediation Factory Status")]
+Suspended$`Escalation Status` <- "Suspended Approval Notification"
+Suspended$`Remediation Factory Status` <- "Critical"
+Master = full_join(Master, Suspended)
+# Transferred <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Moved to Accord")
+Transferred = Transferred[, c("Account Name", "Account ID", "Remediation Factory Status")]
+Transferred$`Remediation Factory Status` <- "Transferred to Accord"
+Master = full_join(Master, Transferred)
 
 #Remove unnecessary columns !!! Double Check to make sure columns are correct !!!
 Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date Added to FFC (Activated as Pending)", "Deactivated brands (Date)", "Building Expanded? \r\n(if yes, list date)", "Date Approved (for factories added after April 2015)", "Thermal Scan Report Sending Date", "Linked Factories Building", "Linked Factories Compound",
@@ -209,19 +305,4 @@ Mon = left_join(Combined, Factory_Monthly, by = c("Account ID" = "Account ID_1")
 write.csv(Mon, "Factory Monthly.csv", na="")
 
 
-#### Tracking individual NCs over time ####
-# Load raw CAP data #
-CAPs_Data <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1)
 
-# Load Master Factory List #
-Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status_2016-April-26_AR.xlsx", "Master Factory List")
-
-# Clean up Master, remove unnecessary columns
-Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date")]
-
-# Join Master to CAPs_Data
-CAPs_Data = left_join(CAPs_Data, Master, by = "Account ID")
-
-# Save the file
-write.csv(CAPs_Data, "CAP Data with RVV dates.csv", na="")
