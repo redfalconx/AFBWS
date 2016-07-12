@@ -11,7 +11,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-June 8.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-June 30_FN.xlsx", "Master Factory List")
 # Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 
 # Remove (Active) from members' names
@@ -29,6 +29,8 @@ New_Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 # New_Actives = New_Actives[complete.cases(Actives$`Active Members (Display)`),]
 New_Actives = subset(Actives, Actives$`Active Members (Display)` != "")
 new_factories = anti_join(New_Actives, Master, by = "Account ID")
+
+write.csv(new_factories, "New_Factories.csv", na = "")
 
 # Check if any of the factories have new members or if members left
 New_Master$Diff_Members <- ifelse(New_Master$`Active Members (Display)` != New_Master$`Active Brands`, 1, 0)
@@ -54,6 +56,34 @@ New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Maste
 write.csv(New_Master, file = "New_Master.csv", na = "")
 
 
+#### Suspended Factories ####
+# Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
+Suspended <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-July 11_lj.xlsx", "Suspended Factories")
+
+# Join the tables
+New_Suspended = left_join(Suspended, Actives, by = "Account ID")
+
+# Check if any of the factories have new members or if members left
+New_Suspended$Diff_Members <- ifelse(New_Suspended$`Active Members (Display)` != New_Suspended$`Active Brands`, 1, 0)
+
+# If there are differences, the sum will be more than zero
+sum(New_Suspended$Diff_Members, na.rm = TRUE)
+
+
+# If Li & Fung is one of the members, substract 1 from number of brands and add *
+New_Suspended$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Suspended$`Active Members (Display)`) == TRUE, 
+                                                    New_Suspended$`Number of Active Members.y` - 1, New_Suspended$`Number of Active Members.y`)
+# Remove Li & Fung
+New_Suspended$`Active Members (Display)` <- replace(New_Suspended$`Active Members (Display)`, New_Suspended$`Active Members (Display)` == "Li & Fung", NA)
+# Add *
+New_Suspended$`New_Number of Active Members` <- as.character(New_Suspended$`New_Number of Active Members`)
+New_Suspended$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Suspended$`Active Members (Display)`) == TRUE, 
+                                                    paste(New_Suspended$`New_Number of Active Members`, "*"), New_Suspended$`New_Number of Active Members`)
+
+# Save the file
+write.csv(New_Suspended, file = "New_Suspended.csv", na = "")
+
+
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
 Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation_Imran.xlsx", 1)
@@ -65,6 +95,10 @@ New_Training = left_join(Training, Actives, by = "Account ID")
 # Do an anti-join to check if there are new factories
 new_factories = anti_join(New_Actives, Training, by = "Account ID")
 
+# Add row names column (because arrange removes it), then arrange by Training Phase
+New_Training$rn = as.numeric(rownames(New_Training))
+New_Training = arrange(New_Training, `Training Phase`)
+
 # Check if any of the factories have new members or if members left
 New_Training$Diff_Members <- ifelse(New_Training$`Active Members (Display)` != New_Training$`Active Members`, 1, 0)
 sum(New_Training$Diff_Members, na.rm = TRUE)
@@ -74,8 +108,12 @@ New_Training$Members <- ifelse(duplicated(New_Training$`Account ID`, fromLast = 
 New_Training$Diff_Members <- ifelse(New_Training$Members != New_Training$`Active Members`, 1, 0)
 sum(New_Training$Diff_Members, na.rm = TRUE)
 
+# Reorder by original order when it was imported
+New_Training <- New_Training[order(New_Training$rn),]
+
 # Save the file
 write.csv(New_Training, file = "New_Training.csv", na = "")
+
 
 #### Security Guard Training ####
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
@@ -100,7 +138,7 @@ write.csv(New_SG_Training, file = "New_SG_Training.csv", na = "")
 
 #### Safety Committees ####
 # Fetch the Safety Committees table from the Excel spreadsheet and put the results in a dataframe
-SC <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation_Imran.xlsx", 1)
+SC <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation_MM.xlsx", 1)
 
 # Join the tables
 New_SC = left_join(SC, Actives, by = "Account ID")

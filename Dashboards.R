@@ -7,21 +7,20 @@ library(data.table) # converts to data tables
 library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
-# library(reshape2) # a few pivot-table functions
 
 
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
 CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1))
-CAPs_Data = CAPs_Data[, -c("Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date", "Active Brands")]
+CAPs_Data[, (41:ncol(CAPs_Data))] <- list(NULL)
 
 # Load Master Factory List #
 Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date")]
-setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV Date", "Active Brands"))
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV 1 Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV 1 Date", "Active Brands"))
 
 # Clean up / consolidate variations of NCs into same NC
 CAPs_Data$Question[CAPs_Data$Question == "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review? \r\n"] <- "Are as-built electrical drawings indicating information such as panel and circuit locations throughout the building(s) available for review?"
@@ -96,6 +95,8 @@ CAPs_Data = left_join(CAPs_Data, Master, by = "Account ID")
 # Save the file
 write.csv(CAPs_Data, "CAP Data with RVV dates.csv", na="")
 
+## Open the csv file, paste only the Question column and the join from Master into Remediation Workbook ##
+
 
 #### Fetch the Remediation Workbook spreadsheets and put the results in dataframes ####
 # CAPs <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
@@ -114,7 +115,7 @@ setnames(CAPs_pivot, c(2:62),
            "Fire High - Completed",	"Fire High - In progress - on track",	"Fire High - In progress - not on track",	"Fire High Not Started",	"Fire High Total",	"Fire Medium - Completed",	"Fire Medium - In progress - on track",	"Fire Medium - In progress - not on track",	"Fire Medium - Not Started",	"Fire Medium Total",	"Fire Low - Completed",	"Fire Low - In progress - on track",	"Fire Low - In progress - not on track",	"Fire Low - Not Started",	"Fire Low Total", "Fire - No Level - Completed", "Fire - No Level - In progress - on track", "Fire - No Level - Not started", "Fire - No Level - Total", "Fire Total",
            "Structural High - Completed",	"Structural High - In progress - on track",	"Structural High - In progress - not on track",	"Structural High Not Started",	"Structural High Total",	"Structural Medium - Completed",	"Structural Medium - In progress - on track",	"Structural Medium - In progress - not on track",	"Structural Medium - Not Started",	"Structural Medium Total",	"Structural Low - Completed",	"Structural Low - In progress - on track",	"Structural Low - In progress - not on track",	"Structural Low - Not Started",	"Structural Low Total", "Structural - No Level - Completed", "Structural - No Level - In progress - on track", "Structural - No Level - Not started", "Structural - No Level - Total", "Structural Total", "Grand Total"))
 # Fetch statuses of each RVV and CCVV, remove Grand Total row, and change column names
-CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "RVV Pivots", skip = 3)
+CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "RVV Pivots", skip = 2)
 RVV1 = CAPs_RVVs[,1:5]
 setnames(RVV1, names(RVV1), c("Account ID", "Completed - RVV1", "In progress - on track - RVV1", "In progress - not on track - RVV1", "Not started - RVV1"))
 RVV1 = RVV1[1:nrow(RVV1)-1,]
@@ -126,7 +127,6 @@ RVV3 = CAPs_RVVs[,13:17]
 setnames(RVV3, names(RVV3), c("Account ID", "Completed - RVV3", "In progress - on track - RVV3", "In progress - not on track - RVV3", "Not started - RVV3"))
 RVV3 = RVV3[complete.cases(RVV3$`Account ID`),]
 RVV3 = RVV3[1:nrow(RVV3)-1,]
-RVV3$`Account ID` <- as.numeric(RVV3$`Account ID`)
 RVV4 = CAPs_RVVs[,19:23]
 setnames(RVV4, names(RVV4), c("Account ID", "Completed - RVV4", "In progress - on track - RVV4", "In progress - not on track - RVV4", "Not started - RVV4"))
 RVV4 = RVV4[complete.cases(RVV4$`Account ID`),]
@@ -139,20 +139,36 @@ CAPs = left_join(CAPs, RVV2, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV3, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
 
+# Fetch Highest Priority (Urgent Life Safety) NCs
+HPNCs_all <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "All Factories", skip = 2)
+HPNCs_com <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Completed", skip = 18)
 
+# Remove unnecessary columns
+HPNCs_all = HPNCs_all[complete.cases(HPNCs_all$`Row Labels`),]
+HPNCs_all = HPNCs_all[, c("Row Labels", "Grand Total")]
+HPNCs_com = HPNCs_com[complete.cases(HPNCs_com$`Row Labels`),]
+HPNCs_com = HPNCs_com[, c("Row Labels", "Grand Total")]
+
+# Combined datasets, then calculate % completed
+HPNCs = left_join(HPNCs_all, HPNCs_com, by = "Row Labels")
+HPNCs = HPNCs %>% mutate("% of Highest Priority NCs completed" = `Grand Total.y`/`Grand Total.x`)
+HPNCs$`% of Highest Priority NCs completed` = ifelse(is.na(HPNCs$`% of Highest Priority NCs completed`) == TRUE, 0, HPNCs$`% of Highest Priority NCs completed`)
+
+# Join to CAPs
+CAPs = left_join(CAPs, HPNCs, by = "Row Labels")
 
 #### Master Factory List ####
 Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
 Master = Master[complete.cases(Master$`Account ID`),]
-# Suspended <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Suspended Factories")
+Suspended <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Suspended Factories")
 Suspended = Suspended[, c("Account Name", "Account ID", "Escalation Status", "Remediation Factory Status")]
 Suspended$`Escalation Status` <- "Suspended Approval Notification"
 Suspended$`Remediation Factory Status` <- "Critical"
-Master = full_join(Master, Suspended)
-# Transferred <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Moved to Accord")
+Transferred <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Moved to Accord")
 Transferred = Transferred[, c("Account Name", "Account ID", "Remediation Factory Status")]
 Transferred$`Remediation Factory Status` <- "Transferred to Accord"
-Master = full_join(Master, Transferred)
+
+Master = Reduce(full_join, list(Master, Suspended, Transferred))
 
 #Remove unnecessary columns !!! Double Check to make sure columns are correct !!!
 Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date Added to FFC (Activated as Pending)", "Deactivated brands (Date)", "Building Expanded? \r\n(if yes, list date)", "Date Approved (for factories added after April 2015)", "Thermal Scan Report Sending Date", "Linked Factories Building", "Linked Factories Compound",
@@ -196,7 +212,7 @@ Training[, c(4:32, 38:41, 48:57)] <- list(NULL)
 
 # If factory is in phase 3 or 4 and had phase 1 or 2, remove phase 1 or 2 rows
 Training = arrange(Training, desc(`Training Phase`))
-Training = distinct(Training, `Account ID`)
+Training = distinct(Training, `Account ID`, .keep_all = TRUE)
 Training$`Refresher Training` <- "No"
 # Training$`Training Phase`[is.na(Training$`Training Phase`)] <- "NA"
 # Training$`Refresher Training`[Training$`Training Phase` == 3] <- "Yes"
@@ -232,7 +248,7 @@ H_reasons$`Row Labels` = as.numeric(H_reasons$`Row Labels`)
 H_reasons = H_reasons[complete.cases(H_reasons$`Row Labels`),]
 
 ## Helpline factories ##
-H_factories <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Factory Profile Updates_for helpline.xlsx", 1)
+H_factories <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Factory Profile Update_Helpline.xlsx", 1)
 H_factories = H_factories[, 1]
 H_factories = distinct(H_factories, `Account ID`)
 H_factories$Implemented <- "Yes"
@@ -248,9 +264,9 @@ SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard
 
 SC = SC[complete.cases(SC$`Account ID`),]
 setnames(SC, names(SC), gsub("\\r\\n", " ", names(SC)))
-SC = SC[SC$`SC Formation  (Yes/No) %` > 0,]
+# SC = SC[SC$`SC Formation  (Yes/No) %` > 0,]
 SC = SC[!is.na(SC$`SC Formation  (Yes/No) %`),]
-SC = SC[, c(-2:-11, -15, -17, -26:-52, -55:-70)]
+SC = SC[, c("Account ID", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "Total SC members", "TtT Received from Alliance (Yes/No) %", "SC Activity Implementation Completion Date (Total - 100 Days)", "Status")]
 
 setnames(SC, "TtT Received from Alliance (Yes/No) %", "TtT Received from Alliance")
 setnames(SC, "SC Activity Implementation Completion Date (Total - 100 Days)", "SC Activity Implementation Completion Date")
@@ -276,6 +292,10 @@ LG = LG[, c(4, 9)]
 
 # Join the tables
 Combined = left_join(Combined, LG, by = c("Account ID" = "Factory ID"))
+
+# Remove Duplicate rows
+Combined = unique(Combined)
+C = unique(Combined, by = "Account ID")
 
 
 #### Dashboard Workbook ####
