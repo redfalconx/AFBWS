@@ -2,6 +2,9 @@
 # These packages are used at various points: 
 # install.packages("data.table", "readxl", "dplyr", "tidyr")
 
+# Load Active factories from FFC.R script
+source('~/R/AFBWS/FFC.R', echo=TRUE)
+
 #### Load packages ####
 library(data.table) # converts to data tables
 library(readxl) # reads Excel files
@@ -11,7 +14,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-June 30_FN.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-July 21.xlsx", "Master Factory List")
 # Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 
 # Remove (Active) from members' names
@@ -58,7 +61,7 @@ write.csv(New_Master, file = "New_Master.csv", na = "")
 
 #### Suspended Factories ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Suspended <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-July 11_lj.xlsx", "Suspended Factories")
+Suspended <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-July 21.xlsx", "Suspended Factories")
 
 # Join the tables
 New_Suspended = left_join(Suspended, Actives, by = "Account ID")

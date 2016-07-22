@@ -3,15 +3,18 @@ library(data.table) # converts to data tables
 library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
+library(zoo) # time-series functions
 library(ggplot2) # plotting
 library(scales) # works with ggplot2 to properly label axes on plots
 library(dygraphs)
 library(xts)
 
 #### Load Helpline data ####
-Helpline <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/AK_Full Dataset/Comprehensive Helpline Issues (Updated Monthly)/Amader Kotha - Dec1 - July31 (Alliance) - AR.xlsx")
+Helpline <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 1)
 # Helpline_PreDec <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/AK_Full Dataset/Comprehensive Helpline Issues (Updated Monthly)/Amader Kotha - Pre Dec 2014 (Alliance).xlsx", "Workers")
 
+# Create new column that combines Caller Group and Reason
+Helpline = mutate(Helpline, `Caller Group: Reason` = paste(`Caller Group`, Reason, sep = ": "))
 
 calls <- Helpline %>% group_by(`Factory FFC Number`) %>% summarise(count = n_distinct(Sl.))
 calls <- calls[-nrow(calls),]
@@ -43,6 +46,39 @@ Helpline_sub_sum = Helpline %>%
   group_by(`Call Date`, `Caller Group`) %>% 
   summarise(count = n_distinct(Sl.)) %>%
   spread(`Caller Group`, count, fill = 0)
+
+H_caller_group_reason_count = Helpline %>%
+  group_by(`Factory FFC Number`, year = year(`Call Date`), month = month(`Call Date`), `Caller Group: Reason`) %>%
+  summarise(count = n_distinct(Sl.)) %>%
+  spread(`Caller Group: Reason`, count, fill = 0) %>%
+  arrange(`Factory FFC Number`, year, month)
+
+H_caller_group_reason_count = mutate(H_caller_group_reason_count, Date = as.POSIXct(paste(year, month, "01", sep = "-")))
+
+
+# Convert to data table
+H_caller_group_reason_count <- as.data.table(H_caller_group_reason_count)
+
+# All of the relevant dates
+ts <- seq.POSIXt(as.POSIXlt("2014-12-01"), as.POSIXlt(Sys.Date() - 30), by="month")
+dates.all = H_caller_group_reason_count[, ts, by = `Factory FFC Number`]
+
+# Set the key and merge filling in the blanks with missing dates
+setkey(H_caller_group_reason_count, `Factory FFC Number`, Date)
+H_caller_group_reason_count <- H_caller_group_reason_count[dates.all, roll = T]
+
+# Format Timestamp to yyyy-mm
+H_caller_group_reason_count$Date <- format(H_caller_group_reason_count$Date, "%b-%Y")
+
+# Remove year and month columns
+H_caller_group_reason_count[, 2:3] <- list(NULL)
+
+# Move Date to second column
+H_caller_group_reason_count <- subset(H_caller_group_reason_count, select=c(1, 78, 2:77))
+
+# Save the file
+write.csv(H_caller_group_reason_count, "Helpline calls by factory by month.csv", na = "0")
+
 
 # Plot it!
 substantive_calls$Month <- as.Date(cut(substantive_calls$`Call Date`, breaks = "month"))

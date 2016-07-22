@@ -37,17 +37,25 @@ remDr$executeScript("arguments[0].click();", list(Alliance_Factory_Report_2))
 
 # Click on the Export button
 Export <- remDr$findElement("id", "btnExport")
+Export$highlightElement()
 Export$clickElement()
+Sys.sleep(5)
 
 # Download the file
 Alink <- remDr$findElement("xpath", "//*[@id='flexExportStatus']/a")
 
 Aurl <- Alink$getElementAttribute("href")[[1]]
+Alink$highlightElement()
 Alink$clickElement()
 
 # Open the file
 Afile <- sub(".*filename=", "", Aurl)
+Sys.sleep(5)
 Actives <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
+Sys.sleep(5)
+
+# Close the browser
+remDr$close()
 
 # Change column names
 setnames(Actives, names(Actives), gsub("NULL.", "", names(Actives)))

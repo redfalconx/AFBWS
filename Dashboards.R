@@ -160,12 +160,13 @@ CAPs = left_join(CAPs, HPNCs, by = "Row Labels")
 #### Master Factory List ####
 Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
 Master = Master[complete.cases(Master$`Account ID`),]
+Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Review Panel?`)
 Suspended <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Suspended Factories")
-Suspended = Suspended[, c("Account Name", "Account ID", "Escalation Status", "Remediation Factory Status")]
+Suspended = Suspended[, c("Account Name", "Account ID", "Recommended to Review Panel?", "CAP Approved by Alliance", "Escalation Status", "Remediation Factory Status")]
 Suspended$`Escalation Status` <- "Suspended Approval Notification"
 Suspended$`Remediation Factory Status` <- "Critical"
 Transferred <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Moved to Accord")
-Transferred = Transferred[, c("Account Name", "Account ID", "Remediation Factory Status")]
+Transferred = Transferred[, c("Account Name", "Account ID", "Recommended to Review Panel?", "CAP Approved by Alliance", "Remediation Factory Status")]
 Transferred$`Remediation Factory Status` <- "Transferred to Accord"
 
 Master = Reduce(full_join, list(Master, Suspended, Transferred))
