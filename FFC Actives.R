@@ -1,6 +1,6 @@
 # Created by Andrew Russell, 2015.
 # These packages are used at various points: 
-# install.packages("RSelenium")
+# install.packages("RSelenium", "data.table")
 
 #### Load packages ####
 library(RSelenium)
@@ -10,6 +10,7 @@ library(data.table) # converts to data tables
 #### RSelenium code ####
 # RSelenium::checkForServer() # install server if needed
 RSelenium::startServer() # if needed
+Sys.sleep(3)
 remDr <- remoteDriver(browserName = "chrome")
 remDr$open()
 remDr$getStatus() # Checks the status

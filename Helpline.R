@@ -6,8 +6,8 @@ library(tidyr) # a few pivot-table functions
 library(zoo) # time-series functions
 library(ggplot2) # plotting
 library(scales) # works with ggplot2 to properly label axes on plots
-library(dygraphs)
-library(xts)
+library(dygraphs) # for making interactive graphs
+library(xts) # time-series functions
 
 #### Load Helpline data ####
 Helpline <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 1)
@@ -78,6 +78,7 @@ H_caller_group_reason_count <- subset(H_caller_group_reason_count, select=c(1, 7
 
 # Save the file
 write.csv(H_caller_group_reason_count, "Helpline calls by factory by month.csv", na = "0")
+
 
 
 # Plot it!

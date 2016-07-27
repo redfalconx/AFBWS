@@ -3,7 +3,7 @@
 # install.packages("data.table", "readxl", "dplyr", "tidyr")
 
 # Load Active factories from FFC.R script
-source('~/R/AFBWS/FFC.R', echo=TRUE)
+source('~/R/AFBWS/FFC Actives.R', echo=TRUE)
 
 #### Load packages ####
 library(data.table) # converts to data tables
