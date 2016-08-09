@@ -1,0 +1,190 @@
+Sub MemberVisualSummary()
+    Dim ws As Worksheet, ws1 As Worksheet, ws2 As Worksheet
+    Dim Member As Range, Members As Range, Members2 As Range
+    Dim Folder As String
+    Dim Rws As Long, Rng As Range, C As Range
+    Dim iCht As Integer
+    
+
+    Set ws = Worksheets("Summary Data")
+    Set ws1 = Worksheets("Member Monthly")
+    Set ws2 = Worksheets("Member Dashboard")
+    Set ws3 = Worksheets("Combined")
+    
+    Set Members = ws.Range("G1")
+    
+    'Rws = ws1.Cells(ws1.Rows.Count, "A").End(xlUp).Row
+    'Set Members2 = ws1.Range(ws1.Cells(1, 1), ws1.Cells(Rws, 1))
+    
+    
+    
+
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    
+    
+
+    With ws
+        
+        
+    
+        For Each Member In Members
+            
+            Application.DisplayAlerts = 0
+            
+            .Range("A1:A500").Copy
+            'ws2.Copy
+            
+            With ws2
+                .Range("A1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("A1").PasteSpecial xlPasteFormats
+                .Range("A1").PasteSpecial xlPasteValues
+            End With
+            
+'            .Range("A339:A414").Copy
+            
+'            With ws2
+'                .Range("A331").PasteSpecial Paste:=xlPasteColumnWidths
+'                .Range("A331").PasteSpecial xlPasteFormats
+'                .Range("A331").PasteSpecial xlPasteValues
+'            End With
+            
+                        
+            .Range("C1:F500").Copy
+            'ws2.Copy
+            
+            With ws2
+                .Range("B1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("B1").PasteSpecial xlPasteFormats
+                .Range("B1").PasteSpecial xlPasteValues
+            End With
+            
+'            .Range("C339:F414").Copy
+            
+'            With ws2
+'                .Range("B331").PasteSpecial Paste:=xlPasteColumnWidths
+'                .Range("B331").PasteSpecial xlPasteFormats
+'                .Range("B331").PasteSpecial xlPasteValues
+'            End With
+            
+            
+            .Range(.Cells(1, Member.Column), .Cells(500, Member.Column)).Copy
+            
+            With ws2
+                .Range("F1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("F1").PasteSpecial xlPasteFormats
+                .Range("F1").PasteSpecial xlPasteValues
+            End With
+            
+'            .Range(.Cells(339, Member.Column), .Cells(414, Member.Column)).Copy
+            
+            
+            Application.CutCopyMode = False
+            
+            'With ws2
+            '    .Rows("261:272").EntireRow.Delete
+            '    .Rows("195:248").EntireRow.Delete
+            '    .Rows("15:16").EntireRow.Delete
+            'End With
+                
+            ws3.Range("A2").Copy
+                            
+            With ws2
+                .Range("G1").PasteSpecial Paste:=xlPasteColumnWidths
+                .Range("G1").PasteSpecial xlPasteFormats
+                .Range("G1").PasteSpecial xlPasteValues
+            End With
+            
+            
+            
+            
+            ws2.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Factory Status Visual Summary_" & Member & ".xlsx", FileFormat:=51
+            'ws2.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Box Sync\Member Reporting\Member Company Folders\" & Member & "\Factory Status Visual Summary_" & Member & ".xlsx", FileFormat:=51
+            
+            ' Create new Charts tab
+            With ActiveWorkbook
+                .Sheets.Add
+                .Sheets(1).Name = "Charts"
+                .Sheets(2).Name = "Statistics"
+            End With
+            
+            ' Copy / paste all charts to new Charts tab
+            
+            For iCht = 1 To Sheets(2).ChartObjects.Count
+
+                ActiveWorkbook.Sheets(2).ChartObjects(iCht).Chart.ChartArea.Copy
+
+                ActiveWorkbook.Sheets(1).Paste
+                
+            Next
+            
+            Call ArrangeMyCharts
+            
+            With ActiveWorkbook.Sheets(1)
+                .Range("M2") = Member
+                .Range("M3") = "Alliance active factories"
+                .Range("M4") = "Alliance members"
+                .Range("P1") = "Average % Remediation Completed"
+                .Range("P1").HorizontalAlignment = xlCenter
+                ActiveWorkbook.Sheets(2).Range("F120").Copy
+                .Range("R2").PasteSpecial xlPasteAllExceptBorders
+                .Range("R2").Font.Color = RGB(155, 187, 89)
+                ActiveWorkbook.Sheets(2).Range("C120").Copy
+                .Range("R3").PasteSpecial xlPasteAllExceptBorders
+                .Range("R3").Font.Color = RGB(79, 129, 189)
+                ActiveWorkbook.Sheets(2).Range("E120").Copy
+                .Range("R4").PasteSpecial xlPasteAllExceptBorders
+                .Range("R4").Font.Color = RGB(128, 100, 162)
+                .Range("M1:R4").Font.Bold = True
+                .Range("M1:R4").Font.Size = 14
+            End With
+                
+            ActiveWindow.DisplayGridlines = False
+            
+            ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Factory Status Visual Summary_" & Member & ".xlsx", FileFormat:=51
+            'ActiveWorkbook.SaveAs "C:\Users\Andrew\Box Sync\Member Reporting\Member Company Folders\" & Member & "\Factory Status Visual Summary_" & Member & ".xlsx", FileFormat:=51
+            ActiveWorkbook.Close 'copies and saves new workbook
+            
+            
+        Next Member
+    End With
+    
+    
+    
+    Application.ScreenUpdating = True
+
+
+End Sub
+
+Sub ArrangeMyCharts()
+    Dim iChart As Long
+    Dim nCharts As Long
+    Dim dTop As Double
+    Dim dLeft As Double
+    Dim dHeight As Double
+    Dim dWidth As Double
+    Dim dSpace As Double
+    Dim iTop As Double
+    Dim iLeft As Double
+    Dim nColumns As Long
+
+    dTop = 75      ' top of first row of charts
+    dLeft = 100    ' left of first column of charts
+    dHeight = 225  ' height of all charts
+    dWidth = 375   ' width of all charts
+    dSpace = 50    ' space between charts
+    nColumns = 3   ' number of columns of charts
+    nCharts = ActiveWorkbook.ActiveSheet.ChartObjects.Count
+    
+    
+    For iChart = 1 To nCharts
+        With ActiveWorkbook.ActiveSheet.ChartObjects(iChart)
+            iTop = Int((iChart - 1) / nColumns)
+            iLeft = ((iChart - 1) Mod nColumns)
+            .Height = dHeight
+            .Width = dWidth
+            .Top = dTop + iTop * dHeight + iTop * dSpace
+            .Left = dLeft + iLeft * dWidth + iLeft * dSpace
+        End With
+    Next
+End Sub
