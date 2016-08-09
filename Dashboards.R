@@ -315,7 +315,7 @@ for (i in colnames(Factory_Monthly)) {
 colnames(Factory_Monthly) <- nm
 
 # Remove unnecessary columns and rows for Combined and Factory_Monthly
-Combined = Combined[, 1:8]
+Combined = Combined[, 1:10]
 Combined = Combined[complete.cases(Combined$`Account ID`),]
 Factory_Monthly = Factory_Monthly[complete.cases(Factory_Monthly$`Account ID_1`),]
 
