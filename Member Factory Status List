@@ -83,7 +83,7 @@ Sub MemberFactoryStatusList()
             
             
             'wbDest.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\Factory Status List_" & Member & ".xlsx", FileFormat:=51
-            wbDest.SaveAs "C:\Users\Andrew\Box Sync\Member Company Folders\" & Member & "\Factory Status List_" & Member & ".xlsx", FileFormat:=51
+            wbDest.SaveAs "C:\Users\Andrew\Box Sync\Member Reporting\Member Company Folders\" & Member & "\Factory Status List_" & Member & ".xlsx", FileFormat:=51
             wbDest.Close 'copies and saves new workbook
             
             ' Clear the filter
@@ -102,9 +102,11 @@ End Sub
 Sub DeleteColumnbyName()
 'Find last column with data in Row 1
 
-v = Array("General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Retaliation or threat of retaliation for use of Helpline", "Grand Total of substantive calls", "Folder", "Status from team", _
-    "Security Guard Training Support Visit", _
-    "Number of urgent life safety issues", "Address issues on the spot", "CCVV % In progress - on track", "CCVV % In progress - not on track", "CCVV % Not started", _
+v = Array("General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Retaliation or threat of retaliation for use of Helpline", "Grand Total of substantive calls", "Folder", _
+    "# High NCs incomplete", "Projected Completion Date", "PCD with DEA/Sprinkler", "PCD with average completion times", "PCD with High NCs", "At Risk New Plan Review Criteria", "At Risk New Progress Criteria", "At Risk New High NCs Criteria", "Count of Critical in each category", "% High NCs Completed", _
+    "New Plan Review Criteria", "New Progress Criteria", "New High NCs Criteria", "New Urgent Life Safety NCs Criteria", "New Overall Rem Status", _
+    "Security Guard Training Support Visit", "Strucutral Documents Not Received", "Fire and Electrical Documents Not Received", _
+    "Number of urgent life safety issues", "Address issues on the spot", "Remediation Stage", "CCVV % In progress - on track", "CCVV % In progress - not on track", "CCVV % Not started", "RVV4 % In progress - on track", "RVV4 % In progress - not on track", "RVV4 % Not started", _
     "RVV3 % In progress - on track", "RVV3 % In progress - not on track", "RVV3 % Not started", "RVV2 % In progress - on track", "RVV2 % In progress - not on track", "RVV2 % Not started", "RVV1 % In progress - on track", "RVV1 % In progress - not on track", "RVV1 % Not started", _
     "Completed - Structural", "In progress - On track - Structural", "In progress - Not on track - Structural", "Not Started - Structural", "Structural Total", "% In progress Category - Structural", "% Completed + In progress Category - Structural", "% In progress - on track Category - Structural", "% In progress - not on track Category - Structural", "% Not Started Category - Structural", _
     "Structural High - Completed", "Structural High - In progress - on track", "Structural High - In progress - not on track", "Structural High - Not Started", "Structural High Total", "Structural Medium - Completed", "Structural Medium - In progress - on track", "Structural Medium - In progress - not on track", "Structural Medium - Not Started", "Structural Medium Total", _
@@ -116,7 +118,8 @@ v = Array("General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urg
     "Electrical High - Completed", "Electrical High - In progress - on track", "Electrical High - In progress - not on track", "Electrical High - Not Started", "Electrical High Total", "Electrical Medium - Completed", "Electrical Medium - In progress - on track", "Electrical Medium - In progress - not on track", "Electrical Medium - Not Started", "Electrical Medium Total", _
     "Electrical Low - Completed", "Electrical Low - In progress - on track", "Electrical Low - In progress - not on track", "Electrical Low - Not Started", "Electrical Low Total", "Electrical - No Level - Completed", "Electrical - No Level - In progress - on track", "Electrical - No Level - In progress - not on track", "Electrical - No Level - Not started", "Electrical - No Level - Total", _
     "Overall % In progress - on track", "Overall % In progress - not on track", "Overall % Complete Category", "Overall % In progress Category", "Overall % Complete + In progress Category", "Overall % In progress - On track Category", "Overall % In progress - Not on track Category", "Overall % Not started Category", _
-    "Category 2 & 3 deficiencies not corrected", _
+    "Overall % Completion and In progress", "% Completed Category - Electrical", "% Completed Category - Fire", "% Completed Category - Structural", _
+    "Category 2 & 3 deficiencies not corrected", "Case Manager Number", "Rented", "Mixed Occupancy", "Factory housing in multi-factory building", _
     "Active Members")
     
     '"Plan Reviews Not Received", "Plan Reviews Returned for Correction", "DEA", "Design Report", "Central Fire Detection System Drawing", "Hydrant", "Sprinkler", "Fire Door", "Lightning Protection System", "Single Line Diagram", _
