@@ -1,0 +1,86 @@
+Sub FactoryHelplineDashboard()
+    Dim ws As Worksheet, ws1 As Worksheet, ws2 As Worksheet
+    Dim b1 As Range, b2 As Range
+    Dim Folder As String
+    Dim Factory As Range, Factories As Range
+    Dim rngFilter As Range
+    Dim chtObj As ChartObject
+
+    Set ws = Worksheets("Helpline calls by factory")
+    Set ws1 = Worksheets("Template")
+    Set ws2 = Worksheets("Helpline Dashboard")
+
+    Set b1 = ws2.Range("B1")
+    Set b2 = ws2.Range("B2")
+    
+    Set Factories = ws.Range("A2", ws.Range("A" & ws.Rows.Count).End(xlUp))
+    
+    Set rngFilter = ws.Range("D1", ws.Range("D" & ws.Rows.Count).End(xlUp)).Resize(, _
+                    ws.Cells.Find("*", [D1], Searchorder:=xlByColumns, Searchdirection:=xlPrevious).Column)
+
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationAutomatic
+
+
+        For Each Factory In Factories
+        
+            With ws
+                If .AutoFilterMode Then
+                    If .FilterMode Then
+                        .ShowAllData
+                    End If
+                End If
+            End With
+            
+            
+            
+            rngFilter.AutoFilter Field:=4, Criteria1:=Factory
+            
+            Application.DisplayAlerts = 0
+            ' Copy and paste the filtered data to a new workbook
+            A = ws.Range("F2:CQ50").SpecialCells(xlCellTypeVisible)
+            ws.Range("F2:CQ50").SpecialCells(xlCellTypeVisible).Copy
+           
+            ws1.Range("AB5").PasteSpecial xlPasteValues
+            
+            Application.CutCopyMode = False
+                                
+            'Factory Name and ID
+            B = ws.Columns("D:D").Find(Factory, , xlValues, xlWhole).Offset(0, -1)
+            b1 = ws.Columns("D:D").Find(Factory, , xlValues, xlWhole).Offset(0, -1): b2 = Factory
+            
+            
+            
+            ws2.Copy: ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\" & b1 & "_" & b2 & "_Helpline Dashboard" & ".xlsx", FileFormat:=51
+            'ws1.Copy: ActiveWorkbook.SaveAs Folder & b1 & "_" & f1 & "_Dashboard"
+            
+            ActiveWorkbook.Sheets(1).Activate
+           
+            
+            
+            
+            For Each chtObj In ActiveSheet.ChartObjects
+                
+                A = chtObj.TopLeftCell.Address
+                chtObj.CopyPicture
+                ActiveSheet.Range(A).PasteSpecial
+                chtObj.Delete
+                
+            Next
+            
+            
+            ActiveWorkbook.SaveAs "C:\Users\Andrew\Desktop\Database Test\Test Reports\" & b1 & "_" & b2 & "_Helpline Dashboard" & ".xlsx", FileFormat:=51
+            ActiveWorkbook.Close 'copies and saves new workbook
+            
+            ws.ShowAllData
+        Next Factory
+
+    
+    
+    Application.ScreenUpdating = True
+
+
+
+
+End Sub
+
