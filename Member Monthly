@@ -1,6 +1,6 @@
 Sub MemberMonthly()
     Dim ws As Worksheet, ws1 As Worksheet
-    Dim Member As Range, Members As Range, Month As Range
+    Dim Member As Range, Members As Range, Members2 As Range, Month As Range
     Dim Col As Range
    
 
@@ -9,7 +9,7 @@ Sub MemberMonthly()
 
     Set Members = ws1.Range("B1:ARL1")
     Set Month = ws.Range("B1")
-    Set Col = ws1.Range("A2:AJ2").Find(Month, , xlValues, xlWhole)
+    Set Col = ws1.Range("C2:AJ2").Find(Month, , xlValues, xlWhole)
     
 
     Application.ScreenUpdating = False
@@ -25,7 +25,7 @@ Sub MemberMonthly()
             
             Application.DisplayAlerts = 0
 
-            .Range(.Cells(5, Member.Column), .Cells(500, Member.Column)).Copy
+            .Range(.Cells(5, Member.Column), .Cells(1000, Member.Column)).Copy
                        
             Member.Offset(4, Col.Column - 2).PasteSpecial xlPasteValues
                        
@@ -41,4 +41,5 @@ Sub MemberMonthly()
 
 
 End Sub
+
 
