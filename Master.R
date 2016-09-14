@@ -14,8 +14,12 @@ library(tidyr) # a few pivot-table functions
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-Aug 04_FN.xlsx", "Master Factory List")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-Sep 08_FN.xlsx", "Master Factory List")
 # Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
+Master = Master[, 1:89]
+Master = Master[complete.cases(Master$`Account ID`), ]
+# Master$`Account ID` <- as.numeric(Master$`Account ID`)
+Actives$`Account ID` <- as.character(Actives$`Account ID`)
 
 # Remove (Active) from members' names
 Actives$`Active Members (Display)` <- gsub(" (Active)", "", Actives$`Active Members (Display)`, fixed = TRUE)
@@ -52,6 +56,9 @@ New_Master$`New_Number of Active Members` <- as.character(New_Master$`New_Number
 New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Master$`Active Members (Display)`) == TRUE, 
                                                    paste(New_Master$`New_Number of Active Members`, "*"), New_Master$`New_Number of Active Members`)
 
+# If expansion (i.e. an E in the Account ID), then put previous member data back in
+New_Master$`Active Members (Display)` <- ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master$`Active Brands`, New_Master$`Active Members (Display)`)
+
 # Update Accord Shared Factories
 # New_Master$`ACTIVE Accord Shared Factories` <- replace(New_Master$`ACTIVE Accord Shared Factories`, New_Master$`ACTIVE Accord Shared Factories` == "No", "Yes")
 
@@ -61,7 +68,10 @@ write.csv(New_Master, file = "New_Master.csv", na = "")
 
 #### Suspended Factories ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Suspended <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-July 21.xlsx", "Suspended Factories")
+Suspended <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status 2016/MASTER Factory Status_2016-Sep 08_FN.xlsx", "Suspended Factories")
+Suspended = Suspended[ , c(2,8, 9)]
+Suspended = Suspended[complete.cases(Suspended$`Account ID`), ]
+Suspended$`Account ID` <- as.character(Suspended$`Account ID`)
 
 # Join the tables
 New_Suspended = left_join(Suspended, Actives, by = "Account ID")
@@ -89,13 +99,14 @@ write.csv(New_Suspended, file = "New_Suspended.csv", na = "")
 
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
-Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation_Imran.xlsx", 1)
-# Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
+Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation.xlsx", 1)
+Actives$`Account ID` <- as.numeric(Actives$`Account ID`)
 
 # Join the tables
 New_Training = left_join(Training, Actives, by = "Account ID")
 
 # Do an anti-join to check if there are new factories
+New_Actives$`Account ID` <- as.numeric(New_Actives$`Account ID`)
 new_factories = anti_join(New_Actives, Training, by = "Account ID")
 
 # Add row names column (because arrange removes it), then arrange by Training Phase
@@ -120,7 +131,7 @@ write.csv(New_Training, file = "New_Training.csv", na = "")
 
 #### Security Guard Training ####
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
-SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Security Guard Training Implementation_Imran.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Security Guard Training Implementation.xlsx", 1)
 
 # SG_Training <- subset(SG_Training, `Factory Name` != "NA")
 
@@ -141,7 +152,7 @@ write.csv(New_SG_Training, file = "New_SG_Training.csv", na = "")
 
 #### Safety Committees ####
 # Fetch the Safety Committees table from the Excel spreadsheet and put the results in a dataframe
-SC <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation_MM.xlsx", 1)
+SC <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation.xlsx", 1)
 
 # Join the tables
 New_SC = left_join(SC, Actives, by = "Account ID")

@@ -32,9 +32,9 @@ logIn$clickElement()
 remDr$navigate("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
 
 # Click on the Monthly Factory List for website query
-Monthly_Factory_List <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl42$ctl00"]')
-Monthly_Factory_List$highlightElement()
-remDr$executeScript("arguments[0].click();", list(Monthly_Factory_List))
+Expansions <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl21$ctl00"]')
+Expansions$highlightElement()
+remDr$executeScript("arguments[0].click();", list(Expansions))
 
 # Click on the Export button
 Export <- remDr$findElement("id", "btnExport")
@@ -52,35 +52,13 @@ Alink$clickElement()
 # Open the file
 Afile <- sub(".*filename=", "", Aurl)
 Sys.sleep(5)
-MFL <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
+Expansions <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
 Sys.sleep(5)
 
 # Close the browser
 remDr$close()
 
 # Change column names
-setnames(MFL, names(MFL), gsub("NULL.", "", names(MFL)))
-setnames(MFL, names(MFL), gsub("\\.", " ", names(MFL)))
-setnames(MFL, "Active Members  Display ", "Active Members (Display)")
-
-# Remove Blanks and Li & Fung factories
-MFL = MFL[MFL$`Active Members (Display)` != "" ,]
-MFL = MFL[MFL$`Active Members (Display)` != "Li & Fung (Active)" ,]
-
-# Change Shared with Accord to "*"
-MFL$`ACTIVE Accord Shared Factories` = ifelse(MFL$`ACTIVE Accord Shared Factories` != "", "*", "")
-
-# Merge address columns, then remove them, then change order of columns
-MFL$Address = paste(MFL$Address1, MFL$Address2, sep = " ")
-MFL = MFL[, -c(5:6)]
-MFL <- subset(MFL, select=c(1:4, 16, 5:15))
-
-# Save as Confidential
-write.csv(MFL, "Factory List_Confidential.csv", na = "")
-
-# Remove Designation, ID, City, Active Members columns
-MFL = MFL[, -c(2:3, 6, 16)]
-
-# Save as Public
-write.csv(MFL, "Factory List_Public.csv", na = "")
+setnames(Expansions, names(Expansions), gsub("NULL.", "", names(Expansions)))
+setnames(Expansions, names(Expansions), gsub("\\.", " ", names(Expansions)))
 
