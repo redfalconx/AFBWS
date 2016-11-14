@@ -65,7 +65,7 @@ setnames(MFL, "Active Members  Display ", "Active Members (Display)")
 
 # Remove Blanks and Li & Fung factories
 MFL = MFL[MFL$`Active Members (Display)` != "" ,]
-MFL = MFL[MFL$`Active Members (Display)` != "Li & Fung (Active)" ,]
+# MFL = MFL[MFL$`Active Members (Display)` != "Li & Fung (Active)" ,]
 
 # Change Shared with Accord to "*"
 MFL$`ACTIVE Accord Shared Factories` = ifelse(MFL$`ACTIVE Accord Shared Factories` != "", "*", "")
