@@ -245,10 +245,18 @@ Combined = left_join(Combined, DEA, by = "Account ID")
 
 
 #### Basic Fire Safety Training ####
+## Before loading, put in descending order with 4a and 3a first ##
 Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Basic Fire Safety & Helpline Training Implementation.xlsx", 1)
+# Check to make sure 3a and 4a phases are included
+table(Training$`Training Phase`, useNA = "ifany")
 
 # Remove unnecessary columns
 Training[, c(4:24, 26:31, 36:41, 47:57)] <- list(NULL)
+
+# Subset initial training (phase 1 and 2)
+IT = Training[Training$`Training Phase` %in% c("1","2"),]
+IT = IT[, c("Account ID", "Total number of employees trained so far.")]
+setnames(IT, "Total number of employees trained so far.", "Initial Basic Fire Safety Workers Trained")
 
 # If factory is in phase 3 or 4 and had phase 1 or 2, remove phase 1 or 2 rows
 Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
@@ -260,9 +268,10 @@ Training$`Refresher Training` <- "No"
 Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 3] <- "Yes"
 Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 4] <- "Yes"
 
-table(Training$STATUS)
+table(Training$STATUS, useNA = "ifany")
 
 # Join the tables
+Training = left_join(Training, IT, by = "Account ID")
 Combined = left_join(Combined, Training, by = "Account ID")
 
 #Combined$`Refresher Training` = ifelse(Combined$`Refresher Training` != "Yes", "No")
@@ -406,7 +415,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - on track - RVV4", "In progress - not on track - RVV4", "Not started - RVV4",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 1 Result", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
-             "Refresher Training", "Total number of employees trained so far.", "Total number of employees trained (Duplicates Removed)", "Percentage of Workers Trained", "STATUS", "Spot Check Results \r\n(Pass or Fail)", "Support Visit Required?",
+             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Total number of employees trained (Duplicates Removed)", "Percentage of Workers Trained", "STATUS", "Spot Check Results \r\n(Pass or Fail)", "Support Visit Required?",
              " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS ", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) %", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",
