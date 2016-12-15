@@ -4,6 +4,7 @@
 
 #### Load packages ####
 library(RSelenium)
+library(XML)
 library(data.table) # converts to data tables
 
 
