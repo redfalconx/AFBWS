@@ -202,6 +202,10 @@ Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date
            "Number of separate buildings belonging to production facility", "Number of stories of each building", "Floors of the building which the factory occupies", "Helpline Launched", "link check 15.10.4")] <- list(NULL)
 #Master = Master[, 1:ncol(Master)-1]
 
+# Change Subs. Completion to Initial CAP Completed
+table(Master$`Remediation Factory Status`)
+Master$`Remediation Factory Status` = ifelse(grepl("Subs", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE, "Initial CAP Completed", Master$`Remediation Factory Status`)
+
 # Clean up Review Panel data 
 Master$`Review Panel` <- ifelse(!is.na(Master$`Recommended to Review Panel?`), Master$`CAP Approved by Alliance`, NA)
 
@@ -323,7 +327,7 @@ SC = SC[, c("Account ID", "PC / CBA or TU / WWA (Yes/No) %" , "SC Formation  (Ye
 
 # setnames(SC, "TtT Received from Alliance (Yes/No) %", "TtT Received from Alliance")
 setnames(SC, "SC Activity Implementation Completion Date (Total - 100 Days)", "SC Activity Implementation Completion Date")
-SC$Status <- gsub("^([a-z])", "\\U\\1", tolower(SC$Status), perl=TRUE)
+# SC$Status <- gsub("^([a-z])", "\\U\\1", tolower(SC$Status), perl=TRUE)
 
 # Change all to characters
 SC[] <- lapply(SC, as.character)
@@ -333,8 +337,7 @@ SC$`Total Number of Participants in Factory Training for rest of SC members by F
 SC$`Account ID` <- as.numeric(SC$`Account ID`)
 
 # Change time values to completed, in progress, or NA
-SC[SC == "1900-01-09"] <- "10"
-SC[SC == "10"] <- "Completed"
+SC[SC == "1900-01-09"] <- "Completed"
 SC[SC == "1900-01-01"] <- "In progress"
 SC[SC == "1900-01-02"] <- "In progress"
 SC[SC == "1900-01-03"] <- "In progress"
