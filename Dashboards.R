@@ -13,7 +13,7 @@ library(tidyr) # a few pivot-table functions
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
 CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1))
-CAPs_Data[, (41:ncol(CAPs_Data))] <- list(NULL)
+CAPs_Data[, (45:ncol(CAPs_Data))] <- list(NULL)
 
 
 # CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
@@ -127,10 +127,10 @@ CAPs_pivot = CAPs_pivot[1:nrow(CAPs_pivot)-1, ]
 #           "Structural High - Completed",	"Structural High - In progress - on track",	"Structural High - In progress - not on track",	"Structural High Not Started",	"Structural High Total",	"Structural Medium - Completed",	"Structural Medium - In progress - on track",	"Structural Medium - In progress - not on track",	"Structural Medium - Not Started",	"Structural Medium Total",	"Structural Low - Completed",	"Structural Low - In progress - on track",	"Structural Low - In progress - not on track",	"Structural Low - Not Started",	"Structural Low Total"))
 
 # Set names if including "no level" Accord CAPs !!! Double Check to make sure headers are correct !!!
-setnames(CAPs_pivot, c(2:64), 
-         c("Electrical High - Completed",	"Electrical High - In progress - on track",	"Electrical High - In progress - not on track",	"Electrical High - Not Started",	"Electrical High Total",	"Electrical Medium - Completed",	"Electrical Medium - In progress - on track",	"Electrical Medium - In progress - not on track",	"Electrical Medium - Not Started",	"Electrical Medium Total",	"Electrical Low - Completed",	"Electrical Low - In progress - on track",	"Electrical Low - In progress - not on track",	"Electrical Low - Not Started",	"Electrical Low Total", "Electrical - No Level - Completed", "Electrical - No Level - In progress - on track", "Electrical - No Level - Not started", "Electrical - No Level - Total", "Electrical Total",
-           "Fire High - Completed",	"Fire High - In progress - on track",	"Fire High - In progress - not on track",	"Fire High - Not Started",	"Fire High Total",	"Fire Medium - Completed",	"Fire Medium - In progress - on track",	"Fire Medium - In progress - not on track",	"Fire Medium - Not Started",	"Fire Medium Total",	"Fire Low - Completed",	"Fire Low - In progress - on track",	"Fire Low - In progress - not on track",	"Fire Low - Not Started",	"Fire Low Total", "Fire - No Level - Completed", "Fire - No Level - In progress - not on track", "Fire - No Level - In progress - on track", "Fire - No Level - Not started", "Fire - No Level - Total", "Fire Total",
-           "Structural High - Completed",	"Structural High - In progress - on track",	"Structural High - In progress - not on track",	"Structural High - Not Started",	"Structural High Total",	"Structural Medium - Completed",	"Structural Medium - In progress - on track",	"Structural Medium - In progress - not on track",	"Structural Medium - Not Started",	"Structural Medium Total",	"Structural Low - Completed",	"Structural Low - In progress - on track",	"Structural Low - In progress - not on track",	"Structural Low - Not Started",	"Structural Low Total", "Structural - No Level - Completed", "Structural - No Level - In progress - not on track", "Structural - No Level - In progress - on track", "Structural - No Level - Not started", "Structural - No Level - Total", "Structural Total", "Grand Total"))
+setnames(CAPs_pivot, c(2:65), 
+         c("Electrical High - Completed",	"Electrical High - In progress - not on track",	"Electrical High - In progress - on track",	"Electrical High - Not Started",	"Electrical High Total",	"Electrical Medium - Completed",	"Electrical Medium - In progress - not on track",	"Electrical Medium - In progress - on track",	"Electrical Medium - Not Started",	"Electrical Medium Total",	"Electrical Low - Completed",	"Electrical Low - In progress - not on track",	"Electrical Low - In progress - on track",	"Electrical Low - Not Started",	"Electrical Low Total", "Electrical - No Level - Completed", "Electrical - No Level - In progress - not on track", "Electrical - No Level - In progress - on track", "Electrical - No Level - Not started", "Electrical - No Level - Total", "Electrical Total",
+           "Fire High - Completed",	"Fire High - In progress - not on track",	"Fire High - In progress - on track",	"Fire High - Not Started",	"Fire High Total",	"Fire Medium - Completed",	"Fire Medium - In progress - not on track",	"Fire Medium - In progress - on track",	"Fire Medium - Not Started",	"Fire Medium Total",	"Fire Low - Completed",	"Fire Low - In progress - not on track",	"Fire Low - In progress - on track",	"Fire Low - Not Started",	"Fire Low Total", "Fire - No Level - Completed", "Fire - No Level - In progress - not on track", "Fire - No Level - In progress - on track", "Fire - No Level - Not started", "Fire - No Level - Total", "Fire Total",
+           "Structural High - Completed",	"Structural High - In progress - not on track",	"Structural High - In progress - on track",	"Structural High - Not Started",	"Structural High Total",	"Structural Medium - Completed",	"Structural Medium - In progress - not on track",	"Structural Medium - In progress - on track",	"Structural Medium - Not Started",	"Structural Medium Total",	"Structural Low - Completed",	"Structural Low - In progress - not on track",	"Structural Low - In progress - on track",	"Structural Low - Not Started",	"Structural Low Total", "Structural - No Level - Completed", "Structural - No Level - In progress - not on track", "Structural - No Level - In progress - on track", "Structural - No Level - Not started", "Structural - No Level - Total", "Structural Total", "Grand Total"))
 
 # Fetch statuses of each RVV and CCVV, remove Grand Total row, and change column names
 CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "RVV Pivots", skip = 2)
@@ -150,12 +150,18 @@ setnames(RVV4, names(RVV4), c("Account ID", "Completed - RVV4", "In progress - o
 RVV4 = RVV4[complete.cases(RVV4$`Account ID`),]
 RVV4 = RVV4[1:nrow(RVV4)-1,]
 RVV4$`Account ID` <- as.numeric(RVV4$`Account ID`)
+RVV5 = CAPs_RVVs[,25:29]
+setnames(RVV5, names(RVV5), c("Account ID", "Completed - RVV5", "In progress - on track - RVV5", "In progress - not on track - RVV5", "Not started - RVV5"))
+RVV5 = RVV5[complete.cases(RVV5$`Account ID`),]
+RVV5 = RVV5[1:nrow(RVV5)-1,]
+RVV5$`Account ID` <- as.numeric(RVV5$`Account ID`)
 
 # Join the CAP tables
 CAPs = left_join(CAPs_pivot, RVV1, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV2, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV3, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
+CAPs = left_join(CAPs, RVV5, by = c("Row Labels" = "Account ID"))
 
 # Fetch Highest Priority (Urgent Life Safety) NCs
 HPNCs_all <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "All Factories", skip = 3)
@@ -184,11 +190,14 @@ Master$`Account ID` = as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Review Panel?`)
 Master = Master[, 1:91]
+
 Suspended <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Suspended Factories")
 Suspended = Suspended[complete.cases(Suspended$`Account ID`),]
 Suspended = Suspended[, c("Account Name", "Account ID", "Active Brands", "Shared with Accord", "Inspected by Alliance / Accord / All&Acc", "Recommended to Review Panel?", "CAP Approved by Alliance", "Escalation Status", "Remediation Factory Status")]
 Suspended$`Escalation Status` <- "Suspended Approval Notification"
 Suspended$`Remediation Factory Status` <- "Critical"
+Suspended$`Active Brands` <- as.character(Suspended$`Active Brands`)
+
 #Transferred <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Moved to Accord")
 #Transferred = Transferred[, c("Account Name", "Account ID", "Active Brands", "Recommended to Review Panel?", "CAP Approved by Alliance", "Remediation Factory Status")]
 #Transferred$`Remediation Factory Status` <- "Transferred to Accord"
@@ -256,7 +265,7 @@ Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Das
 table(Training$`Training Phase`, useNA = "ifany")
 
 # Remove unnecessary columns
-Training[, c(4:24, 26:31, 36:42, 52:60)] <- list(NULL)
+Training[, c(4:24, 26:31, 36:42, 63:72)] <- list(NULL)
 
 # Subset initial training (phase 1 and 2)
 IT = Training[Training$`Training Phase` %in% c("1","2"),]
@@ -404,7 +413,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Electrical High - Completed", "Electrical High - In progress - on track", "Electrical High - In progress - not on track", "Electrical High - Not Started", "Electrical High Total",
              "Electrical Medium - Completed", "Electrical Medium - In progress - on track", "Electrical Medium - In progress - not on track", "Electrical Medium - Not Started", "Electrical Medium Total",
              "Electrical Low - Completed", "Electrical Low - In progress - on track", "Electrical Low - In progress - not on track", "Electrical Low - Not Started", "Electrical Low Total",
-             "Electrical - No Level - Completed", "Electrical - No Level - In progress - on track", "Electrical - No Level - Not started", "Electrical - No Level - Total",
+             "Electrical - No Level - Completed", "Electrical - No Level - In progress - on track", "Electrical - No Level - In progress - not on track", "Electrical - No Level - Not started", "Electrical - No Level - Total",
              "Fire High - Completed", "Fire High - In progress - on track", "Fire High - In progress - not on track", "Fire High - Not Started", "Fire High Total",
              "Fire Medium - Completed", "Fire Medium - In progress - on track", "Fire Medium - In progress - not on track", "Fire Medium - Not Started", "Fire Medium Total",
              "Fire Low - Completed", "Fire Low - In progress - on track", "Fire Low - In progress - not on track", "Fire Low - Not Started", "Fire Low Total",
@@ -419,13 +428,17 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - on track - RVV4", "In progress - not on track - RVV4", "Not started - RVV4",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 1 Result", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
-             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Total number of employees trained (Duplicates Removed)", "Percentage of Workers Trained", "STATUS", "Spot Check Results \r\n(Pass or Fail)", "Support Visit Required?",
+             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Total number of employees trained (Duplicates Removed)", "Percentage of Workers Trained", "STATUS", "Regular Spot Check Results \r\n(Pass or Fail)", "Support Visit Required?",
              " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS ", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) %", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",
-             "Fire - Active (factory)", "Fire - Danger (factory)", "Locked factory exit or blocked egress route", "Other", "Sparking / short circuit", "Structural - Cracks in beams, columns or walls", "Structural - walls or windows shaking", "Unattended / bare electric wires", "Unauthorized subcontracting", "Undisclosed")
+             "Fire - Active (factory)", "Fire - Danger (factory)", "Locked factory exit or blocked egress route", "Other", "Sparking / short circuit", "Structural - Cracks in beams, columns or walls", "Structural - walls or windows shaking", "Unattended / bare electric wires", "Unauthorized subcontracting", "Undisclosed",
+             "Box Folder Link")
 
 setcolorder(Combined, c(someCol, colnames(Combined)[!(colnames(Combined) %in% someCol)]))
+
+#if the above failed, try this to see which of someCol is not in Combined. Then change the name to match.
+setdiff(someCol, colnames(Combined))
 
 # Save the combined data, then copy and paste into the appropriate columns in the Excel Dashboard Workbook
 write.csv(Combined, "Combined.csv", na="")
