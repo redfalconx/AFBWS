@@ -10,10 +10,12 @@ library(data.table) # converts to data tables
 
 #### RSelenium code ####
 # RSelenium::checkForServer() # install server if needed
-RSelenium::startServer() # if needed
+#RSelenium::startServer() # if needed
+rD <- rsDriver()
+remDr <- rD[["client"]]
 Sys.sleep(3)
-remDr <- remoteDriver(browserName = "chrome")
-remDr$open()
+# remDr <- remoteDriver(browserName = "chrome")
+# remDr$open()
 remDr$getStatus() # Checks the status
 
 # Navigate to the FFC and log in
@@ -33,7 +35,7 @@ logIn$clickElement()
 remDr$navigate("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
 
 # Click on the Monthly Factory List for website query
-Monthly_Factory_List <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl43$ctl00"]')
+Monthly_Factory_List <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl44$ctl00"]')
 Monthly_Factory_List$highlightElement()
 remDr$executeScript("arguments[0].click();", list(Monthly_Factory_List))
 
