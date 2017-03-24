@@ -1,0 +1,69 @@
+Sub CreateSheetsFromAList()
+    Dim MyCell As Range, MyRange As Range
+    Dim rngFilter As Range
+    Dim ws As Worksheet, ws2 As Worksheet, wbDest As Workbook
+    Dim Folder As String
+    
+    Set ws = Worksheets(1)
+    Set ws2 = Worksheets(2)
+    
+    Set MyRange = ws2.Range("A1:AD1")
+    
+    Set rngFilter = ws.Range("A1", ws.Range("A" & ws.Rows.Count).End(xlUp)).Resize(, _
+                    ws.Cells.Find("*", [A1], Searchorder:=xlByColumns, Searchdirection:=xlPrevious).Column)
+    
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+
+    For Each MyCell In MyRange
+        
+        With ws
+            If .AutoFilterMode Then
+                If .FilterMode Then
+                    .ShowAllData
+                End If
+            End If
+        End With
+        
+        ' Sheets.Add After:=Sheets(Sheets.Count) 'creates a new worksheet
+        ' Sheets(Sheets.Count).Name = MyCell ' renames the new worksheet
+        
+        Set wbDest = Workbooks.Add
+        
+        rngFilter.AutoFilter Field:=3, Criteria1:="=*" & MyCell & "*"
+            
+            Application.DisplayAlerts = 0
+            ' Copy and paste the filtered data to a new workbook
+            rngFilter.EntireRow.SpecialCells(xlCellTypeVisible).Copy 'Destination:=wbDest.Sheets(1).Range("A1")
+            
+            ' With Sheets(Sheets.Count)
+            With wbDest.Sheets(1)
+                .Range("A1").PasteSpecial Paste:=xlPasteColumnWidths
+                'wbDest.Sheets(1).Paste
+                '.Range("A1").PasteSpecial (xlPasteAll)
+                .Range("A1").PasteSpecial xlPasteFormats
+                .Range("A1").PasteSpecial xlPasteValues
+            ' Apply filter
+                '.Range("A2:AK2").AutoFilter
+            ' Insert header rows
+            '    .Rows("1:2").Insert Shift:=xltoDown
+                .Columns("C").EntireColumn.Delete
+                ' .Columns("C").EntireColumn.Delete
+            End With
+            
+            Application.CutCopyMode = False
+                       
+            
+            
+            wbDest.SaveAs "C:\Users\Andrew\Desktop\Accord Reports\Factory Contacts_" & MyCell & ".xlsx", FileFormat:=51
+            wbDest.Close 'copies and saves new workbook
+            
+            ' Clear the filter
+            ws.ShowAllData
+    
+    Next MyCell
+
+    Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+    
+End Sub
