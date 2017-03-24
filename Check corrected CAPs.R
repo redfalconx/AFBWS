@@ -12,7 +12,9 @@ library(tidyr) # a few pivot-table functions
 
 
 # Load raw CAP data #
-CAP_Tracker <- read_excel("C:/Users/Andrew/Box Sync/Database/Excel/CAP Trackers.xlsm", "CAP Trackers", skip = 1)
+CAP_Tracker <- read_excel("C:/Users/Andrew/Box Sync/Database/Excel/CAP Trackers.xlsm", "CAP Trackers", skip = 1, col_types = rep("text", 46))
+CAP_Tracker$`FFC ID` = as.numeric(CAP_Tracker$`FFC ID`)
+CAP_Tracker = CAP_Tracker[ , 1:43]
 
 # Load Audit Scope #
 Electrical <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit Scope.xlsx", "Electrical")
@@ -51,7 +53,7 @@ table(CAPs$`Alliance Remarks 1`)
 table(CAPs$`Alliance Remarks 2`)
 table(CAPs$`Alliance Remarks 3`)
 table(CAPs$`Alliance Remarks 4`)
-table(CAPs$`Alliance Remarks 5`)
+table(CAPs$`Alliance Remarks 5`, useNA = "ifany")
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "completed"] <- "Completed"
 CAPs$`Alliance Remarks 2`[CAPs$`Alliance Remarks 2` == "completed"] <- "Completed"
@@ -96,9 +98,10 @@ CAPs$RVV5_check = CAPs$`Alliance Remarks 5` %in% Statuses
 CAPs$RVV2_check = ifelse(CAPs$`Alliance Remarks 1` != 0 & CAPs$`Alliance Remarks 3` != 0 & CAPs$`Alliance Remarks 2` == 0, FALSE, CAPs$RVV2_check)
 CAPs$RVV3_check = ifelse(CAPs$`Alliance Remarks 2` != 0 & CAPs$`Alliance Remarks 4` != 0 & CAPs$`Alliance Remarks 3` == 0, FALSE, CAPs$RVV3_check)
 CAPs$RVV4_check = ifelse(CAPs$`Alliance Remarks 3` != 0 & CAPs$`Alliance Remarks 5` != 0 & CAPs$`Alliance Remarks 4` == 0, FALSE, CAPs$RVV4_check)
+CAPs$RVV5_check = ifelse(CAPs$`Alliance Remarks 4` != 0 & is.na(CAPs$`Alliance Remarks 5`) == TRUE, FALSE, CAPs$RVV5_check)
 
 # Remove unnecessary columns
-CAPs[, c(1:2, 44)] <- list(NULL)
+CAPs[, c(1:2)] <- list(NULL)
 
 # Remove rows with TRUE for all checks
 CAPs = CAPs[CAPs$Question_check == FALSE | CAPs$Subheader_check == FALSE | CAPs$Level_check == FALSE 
@@ -108,3 +111,10 @@ CAPs = CAPs[complete.cases(CAPs$`FFC ID`),]
 
 # Save the file in FFC > Data Migration
 write.csv(CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Errors in CAPs.csv", na="")
+
+# Created list of validated CAPs
+V = as.data.table(setdiff(l, CAPs$`FFC ID`))
+
+setnames(V, "V1", "Validated Factories")
+
+write.csv(V, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated Factories.csv", na="")
