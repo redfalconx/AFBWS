@@ -3,6 +3,7 @@ library(data.table) # converts to data tables
 library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
+library(plyr) # data manipulation
 library(zoo) # time-series functions
 library(ggplot2) # plotting
 library(scales) # works with ggplot2 to properly label axes on plots

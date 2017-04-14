@@ -12,20 +12,19 @@ library(tidyr) # a few pivot-table functions
 
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
-CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1))
-CAPs_Data[, (45:ncol(CAPs_Data))] <- list(NULL)
+CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1, col_types = rep("text", 63)))
+CAPs_Data[, (44:ncol(CAPs_Data))] <- list(NULL)
 
-
-# CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
-# CAPs_Data$`Account ID` <- as.numeric(CAPs_Data$`Account ID`)
+CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
+CAPs_Data$`Account ID` <- as.numeric(CAPs_Data$`Account ID`)
 
 # Load Master Factory List #
 Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", "Master Factory List")
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV 1 Date")]
-setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "CCVV 1 Date", "Active Brands"))
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "CCVV 1 Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "CCVV 1 Date", "Active Brands"))
 Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 
@@ -262,7 +261,7 @@ Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Das
 table(Training$`Training Phase`, useNA = "ifany")
 
 # Remove unnecessary columns
-Training[, c(4:24, 26:31, 36:42, 63:72)] <- list(NULL)
+Training[, c(4:25, 27:32, 37:43, 63:72)] <- list(NULL)
 
 # Subset initial training (phase 1 and 2)
 IT = Training[Training$`Training Phase` %in% c("1","2"),]
@@ -279,6 +278,8 @@ Training$`Refresher Training` <- "No"
 Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 3] <- "Yes"
 Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 4] <- "Yes"
 
+Training$`Total number of employees trained so far.`[Training$`Refresher Training` == "No"] <- 0
+
 table(Training$STATUS, useNA = "ifany")
 
 # Join the tables
@@ -292,7 +293,7 @@ Combined = left_join(Combined, Training, by = "Account ID")
 SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation.xlsx", 1)
 
 # Remove unnecessary columns
-SG_Training[, c(4:29, 33:36, 46:58)] <- list(NULL)
+SG_Training[, c(4:30, 34:37, 47:59)] <- list(NULL)
 
 # Subset initial training (phase 1)
 SG_IT = SG_Training[SG_Training$`Training Phase` == 1,]
@@ -305,6 +306,8 @@ SG_Training = arrange(SG_Training, desc(`Training Phase`))
 SG_Training = distinct(SG_Training, `Account ID`, .keep_all = TRUE)
 SG_Training$`Security Guard Refresher Training` <- "No"
 SG_Training$`Security Guard Refresher Training`[!is.na(SG_Training$`Training Phase`) & SG_Training$`Training Phase` == 2] <- "Yes"
+
+SG_Training$` Total number of security staff trained so far`[SG_Training$`Security Guard Refresher Training` == "No"] <- 0
 
 # Join the tables
 SG_Training = left_join(SG_Training, SG_IT, by = "Account ID")
@@ -427,7 +430,7 @@ Combined = Combined[!duplicated(Combined[,"Account ID"]),]
 
 
 #### Reorder the columns of Combined to match the Dashboard Workbook more closely ####
-someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion", "Number of employees to be trained.", "Number of workers employed by factory (all buildings)", "Province", "RENTED ", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
+someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion", "Number of employees to be trained.", "Province", "RENTED ", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
              "Escalation Date", "Escalation Status", "Review Panel", 
              "Electrical High - Completed", "Electrical High - In progress", "Electrical High - Not Started", "Electrical High Total",
              "Electrical Medium - Completed", "Electrical Medium - In progress", "Electrical Medium - Not Started", "Electrical Medium Total",
@@ -449,7 +452,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 1 Result", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
-             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Total number of employees trained (Duplicates Removed)", "Percentage of Workers Trained", "STATUS", "Latest Spot Check Results \r\n(Pass or Fail)", "Support Visit Required?",
+             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
              "Initial Security Guards Trained", "Security Guard Refresher Training", " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS ", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",

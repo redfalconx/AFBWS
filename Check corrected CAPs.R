@@ -13,6 +13,7 @@ library(tidyr) # a few pivot-table functions
 
 # Load raw CAP data #
 CAP_Tracker <- read_excel("C:/Users/Andrew/Box Sync/Database/Excel/CAP Trackers.xlsm", "CAP Trackers", skip = 1, col_types = rep("text", 46))
+CAP_Tracker$`FFC ID` <- gsub("/E", "", CAP_Tracker$`FFC ID`)
 CAP_Tracker$`FFC ID` = as.numeric(CAP_Tracker$`FFC ID`)
 CAP_Tracker = CAP_Tracker[ , 1:43]
 
@@ -47,12 +48,10 @@ CAPs$Subheader_check = ifelse(CAPs$Subheader == Audit_Scope[match(CAPs$Question,
 CAPs$Level_check = ifelse(CAPs$Level == Audit_Scope[match(CAPs$Question, Audit_Scope$Question), 4], TRUE, FALSE)
 
 # Correct some misspellings of Completed, In-progress, Not Started, or N/A
-CAPs$`Alliance Remarks 5` = as.character(CAPs$`Alliance Remarks 5`)
-
-table(CAPs$`Alliance Remarks 1`)
-table(CAPs$`Alliance Remarks 2`)
-table(CAPs$`Alliance Remarks 3`)
-table(CAPs$`Alliance Remarks 4`)
+table(CAPs$`Alliance Remarks 1`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 2`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 3`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 4`, useNA = "ifany")
 table(CAPs$`Alliance Remarks 5`, useNA = "ifany")
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "completed"] <- "Completed"
@@ -100,6 +99,13 @@ CAPs$RVV3_check = ifelse(CAPs$`Alliance Remarks 2` != 0 & CAPs$`Alliance Remarks
 CAPs$RVV4_check = ifelse(CAPs$`Alliance Remarks 3` != 0 & CAPs$`Alliance Remarks 5` != 0 & CAPs$`Alliance Remarks 4` == 0, FALSE, CAPs$RVV4_check)
 CAPs$RVV5_check = ifelse(CAPs$`Alliance Remarks 4` != 0 & is.na(CAPs$`Alliance Remarks 5`) == TRUE, FALSE, CAPs$RVV5_check)
 
+# Mark each RVV check as FALSE if all are blank
+CAPs$RVV1_check = ifelse(CAPs$`Alliance Remarks 1` == 0 & CAPs$`Alliance Remarks 2` == 0 & CAPs$`Alliance Remarks 3` == 0 & CAPs$`Alliance Remarks 4` == 0 & CAPs$`Alliance Remarks 5` == 0, FALSE, TRUE)
+CAPs$RVV2_check = ifelse(CAPs$`Alliance Remarks 1` == 0 & CAPs$`Alliance Remarks 2` == 0 & CAPs$`Alliance Remarks 3` == 0 & CAPs$`Alliance Remarks 4` == 0 & CAPs$`Alliance Remarks 5` == 0, FALSE, TRUE)
+CAPs$RVV3_check = ifelse(CAPs$`Alliance Remarks 1` == 0 & CAPs$`Alliance Remarks 2` == 0 & CAPs$`Alliance Remarks 3` == 0 & CAPs$`Alliance Remarks 4` == 0 & CAPs$`Alliance Remarks 5` == 0, FALSE, TRUE)
+CAPs$RVV4_check = ifelse(CAPs$`Alliance Remarks 1` == 0 & CAPs$`Alliance Remarks 2` == 0 & CAPs$`Alliance Remarks 3` == 0 & CAPs$`Alliance Remarks 4` == 0 & CAPs$`Alliance Remarks 5` == 0, FALSE, TRUE)
+CAPs$RVV5_check = ifelse(CAPs$`Alliance Remarks 1` == 0 & CAPs$`Alliance Remarks 2` == 0 & CAPs$`Alliance Remarks 3` == 0 & CAPs$`Alliance Remarks 4` == 0 & CAPs$`Alliance Remarks 5` == 0, FALSE, TRUE)
+
 # Remove unnecessary columns
 CAPs[, c(1:2)] <- list(NULL)
 
@@ -113,8 +119,70 @@ CAPs = CAPs[complete.cases(CAPs$`FFC ID`),]
 write.csv(CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Errors in CAPs.csv", na="")
 
 # Created list of validated CAPs
-V = as.data.table(setdiff(l, CAPs$`FFC ID`))
+Validated_Factories = as.data.table(setdiff(l, CAPs$`FFC ID`))
 
-setnames(V, "V1", "Validated Factories")
+setnames(Validated_Factories, "V1", "Validated Factories")
 
-write.csv(V, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated Factories.csv", na="")
+write.csv(Validated_Factories, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated Factories.csv", na="")
+
+
+
+#### Filter CAP Tracker for validated CAPs only ####
+Validated_CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% Validated_Factories$`Validated Factories`,]
+
+# Remove rows with no Question
+Validated_CAPs = Validated_CAPs[Validated_CAPs$Question != 0,]
+
+# Change 0 to NA to for matching to Audit Scope
+Validated_CAPs$Level[Validated_CAPs$Level == 0] <- NA
+
+# Correct some misspellings of Completed, In-progress, Not Started, or N/A
+Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 3`[Validated_CAPs$`Alliance Remarks 3` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "completed"] <- "Completed"
+
+Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 3`[Validated_CAPs$`Alliance Remarks 3` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "In-Progress"] <- "In-progress"
+
+Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 3`[Validated_CAPs$`Alliance Remarks 3` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "Not started"] <- "Not Started"
+
+Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 3`[Validated_CAPs$`Alliance Remarks 3` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "Not Applicable"] <- "N/A"
+
+Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 3`[Validated_CAPs$`Alliance Remarks 3` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "NA"] <- "N/A"
+
+table(Validated_CAPs$`Alliance Remarks 1`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 2`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 3`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 4`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 5`, useNA = "ifany")
+
+# Remove unnecessary columns and rows
+Validated_CAPs[, c(1:2)] <- list(NULL)
+Validated_CAPs = Validated_CAPs[complete.cases(Validated_CAPs$`FFC ID`),]
+
+# Add Audit IDs
+Audit_IDs <- read.csv("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit IDs.csv")
+Validated_CAPs = left_join(Validated_CAPs, Audit_IDs, by = c("FFC ID" = "Account.ID", "Sheet" = "Audit.Scope"))
+
+# Move new columns to the front
+Validated_CAPs = Validated_CAPs[c((ncol(Validated_CAPs)-1):ncol(Validated_CAPs), 1:(ncol(Validated_CAPs)-2))]
+
+# Save the file in FFC > Data Migration
+write.csv(Validated_CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated_CAPs.csv", na="")
