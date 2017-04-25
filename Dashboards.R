@@ -12,7 +12,7 @@ library(tidyr) # a few pivot-table functions
 
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
-CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1, col_types = rep("text", 63)))
+CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1, col_types = "text"))
 CAPs_Data[, (44:ncol(CAPs_Data))] <- list(NULL)
 
 CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
@@ -452,7 +452,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 1 Result", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
-             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
+             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
              "Initial Security Guards Trained", "Security Guard Refresher Training", " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS ", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",

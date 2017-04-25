@@ -12,7 +12,7 @@ library(tidyr) # a few pivot-table functions
 
 
 # Load raw CAP data #
-CAP_Tracker <- read_excel("C:/Users/Andrew/Box Sync/Database/Excel/CAP Trackers.xlsm", "CAP Trackers", skip = 1, col_types = rep("text", 46))
+CAP_Tracker <- read_excel("C:/Users/Andrew/Box Sync/Database/Excel/CAP Trackers.xlsm", "CAP Trackers", skip = 1, col_types = "text")
 CAP_Tracker$`FFC ID` <- gsub("/E", "", CAP_Tracker$`FFC ID`)
 CAP_Tracker$`FFC ID` = as.numeric(CAP_Tracker$`FFC ID`)
 CAP_Tracker = CAP_Tracker[ , 1:43]
@@ -44,8 +44,10 @@ CAPs$Level[CAPs$Level == 0] <- NA
 CAPs$Question_check = CAPs$Question %in% Audit_Scope$Question
 
 CAPs$Subheader_check = ifelse(CAPs$Subheader == Audit_Scope[match(CAPs$Question, Audit_Scope$Question), 1], TRUE, FALSE)
+CAPs$Subheader_check = ifelse(CAPs$Subheader == "Fire Safety Programs" & CAPs$Question == "Are there additional areas of non-compliance to report?", TRUE, CAPs$Subheader_check)
 
 CAPs$Level_check = ifelse(CAPs$Level == Audit_Scope[match(CAPs$Question, Audit_Scope$Question), 4], TRUE, FALSE)
+#CAPs$Level_check = ifelse(is.na(Audit_Scope[match(CAPs$Question, Audit_Scope$Question), 4]), TRUE, CAPs$Level_check)
 
 # Correct some misspellings of Completed, In-progress, Not Started, or N/A
 table(CAPs$`Alliance Remarks 1`, useNA = "ifany")
@@ -181,8 +183,33 @@ Validated_CAPs = Validated_CAPs[complete.cases(Validated_CAPs$`FFC ID`),]
 Audit_IDs <- read.csv("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit IDs.csv")
 Validated_CAPs = left_join(Validated_CAPs, Audit_IDs, by = c("FFC ID" = "Account.ID", "Sheet" = "Audit.Scope"))
 
-# Move new columns to the front
+# Move new columns to the front, delete unnecessary columns
 Validated_CAPs = Validated_CAPs[c((ncol(Validated_CAPs)-1):ncol(Validated_CAPs), 1:(ncol(Validated_CAPs)-2))]
+Validated_CAPs = Validated_CAPs[c(1, 3, 2, (4:ncol(Validated_CAPs)))]
+
+Validated_CAPs = Validated_CAPs[, -c(5, 24, 25, 27:29, 31:33, 35:37, 39:41, 43)]
+
+setnames(Validated_CAPs, "FFC ID", "Account ID")
+
+# Load Master Factory List #
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", "Master Factory List")
+
+# Clean up Master, remove unnecessary columns
+Master = Master[complete.cases(Master$`Account ID`),]
+Master = Master[, c("Account ID", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "CCVV 1 Date")]
+setcolorder(Master, c("Account ID", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "CCVV 1 Date"))
+Master$`Account ID` <- as.numeric(Master$`Account ID`)
+Master = Master[complete.cases(Master$`Account ID`),]
+
+# Join the RVV dates to the Validated CAPs
+Validated_CAPs = left_join(Validated_CAPs, Master, by = "Account ID")
+
+# Reorder columns
+Validated_CAPs = Validated_CAPs[c(1:22, 28, 23, 29, 24, 30, 25, 31, 26, 32, 27, 33)]
+
+
+# setcolorder(Validated_CAPs, c("FFC ID", "Audit.ID", "Sheet", "Subheader", "Question", "Description", "Suggested Plan of Action", "Suggested Deadline Date", "Standard", "Factory CAP", "Factory CAP Deadline Date", "Factory Responsible Person", "Source of Findings", "Level"))
+
 
 # Save the file in FFC > Data Migration
 write.csv(Validated_CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated_CAPs.csv", na="")
