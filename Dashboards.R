@@ -13,7 +13,7 @@ library(tidyr) # a few pivot-table functions
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
 CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1, col_types = "text"))
-CAPs_Data[, (44:ncol(CAPs_Data))] <- list(NULL)
+CAPs_Data[, (48:ncol(CAPs_Data))] <- list(NULL)
 
 CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
 CAPs_Data$`Account ID` <- as.numeric(CAPs_Data$`Account ID`)
@@ -23,8 +23,8 @@ Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashb
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "CCVV 1 Date")]
-setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "CCVV 1 Date", "Active Brands"))
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "CCVV 1 Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "CCVV 1 Date", "Active Brands"))
 Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 
@@ -111,7 +111,7 @@ CAPs_Data = left_join(CAPs_Data, Master, by = "Account ID")
 write.csv(CAPs_Data, "CAP Data with RVV dates.csv", na="")
 
 ### Open the csv file, paste only the Question and Level columns and the join from Master into Remediation Workbook ##
-## Refresh all data in Remediation Workbook ##
+## Refresh all data in Remediation Workbook and save##
 
 #### Fetch the Remediation Workbook spreadsheets and put the results in dataframes ####
 # CAPs <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
@@ -156,12 +156,12 @@ RVV4 = CAPs_RVVs[,16:19]
 setnames(RVV4, names(RVV4), c("Account ID", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4"))
 RVV4 = RVV4[complete.cases(RVV4$`Account ID`),]
 RVV4 = RVV4[1:nrow(RVV4)-1,]
-RVV4$`Account ID` <- as.numeric(RVV4$`Account ID`)
+#RVV4$`Account ID` <- as.numeric(RVV4$`Account ID`)
 RVV5 = CAPs_RVVs[,21:24]
 setnames(RVV5, names(RVV5), c("Account ID", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5"))
 RVV5 = RVV5[complete.cases(RVV5$`Account ID`),]
 RVV5 = RVV5[1:nrow(RVV5)-1,]
-RVV5$`Account ID` <- as.numeric(RVV5$`Account ID`)
+#RVV5$`Account ID` <- as.numeric(RVV5$`Account ID`)
 
 # Join the CAP tables
 CAPs = left_join(CAPs_pivot, RVV1, by = c("Row Labels" = "Account ID"))
@@ -171,8 +171,8 @@ CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV5, by = c("Row Labels" = "Account ID"))
 
 # Fetch Highest Priority (Urgent Life Safety) NCs
-HPNCs_all <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "All Factories", skip = 3)
-HPNCs_com <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Completed", skip = 8)
+HPNCs_all <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "All Factories", skip = 4)
+HPNCs_com <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Completed", skip = 11)
 
 # Remove unnecessary columns
 HPNCs_all = HPNCs_all[complete.cases(HPNCs_all$`Row Labels`),]
@@ -228,6 +228,7 @@ Master$`Accord Shared/Alliance only info`[is.na(Master$`Accord Shared/Alliance o
 
 # Join the tables
 #Master = rbind(Master, Suspended, use.names = FALSE)
+CAPs$`Row Labels` = as.numeric(CAPs$`Row Labels`)
 Combined = left_join(Master, CAPs, by = c("Account ID" = "Row Labels"))
 
 
@@ -236,8 +237,8 @@ PR <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard
 PR$`Account ID` <- as.numeric(PR$`Account ID`)
 PR <- PR[complete.cases(PR$`Account ID`),]
 # PR$`Account ID` <- gsub("/E", "", PR$`Account ID`)
-setnames(PR, c(5,8,11,14,17,20,23,26), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
-PR = PR[, c(3,5,8,11,14,17,20,23,26)]
+setnames(PR, c(6,10,14,18,22,26,30,34), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
+PR = PR[, c(3,6,10,14,18,22,26,30,34)]
 PR[is.na(PR)] <- "Not Required or N/A"
 
 # Join the tables
@@ -297,8 +298,8 @@ SG_Training[, c(4:30, 34:37, 47:59)] <- list(NULL)
 
 # Subset initial training (phase 1)
 SG_IT = SG_Training[SG_Training$`Training Phase` == 1,]
-SG_IT = SG_IT[, c("Account ID", " Total number of security staff trained so far")]
-setnames(SG_IT, " Total number of security staff trained so far", "Initial Security Guards Trained")
+SG_IT = SG_IT[, c("Account ID", "Total number of security staff trained so far")]
+setnames(SG_IT, "Total number of security staff trained so far", "Initial Security Guards Trained")
 
 # If factory is in phase 2 and had phase 1, remove phase 1 rows
 SG_Training$`Training Phase` <- as.numeric(SG_Training$`Training Phase`)
@@ -307,7 +308,7 @@ SG_Training = distinct(SG_Training, `Account ID`, .keep_all = TRUE)
 SG_Training$`Security Guard Refresher Training` <- "No"
 SG_Training$`Security Guard Refresher Training`[!is.na(SG_Training$`Training Phase`) & SG_Training$`Training Phase` == 2] <- "Yes"
 
-SG_Training$` Total number of security staff trained so far`[SG_Training$`Security Guard Refresher Training` == "No"] <- 0
+SG_Training$`Total number of security staff trained so far`[SG_Training$`Security Guard Refresher Training` == "No"] <- 0
 
 # Join the tables
 SG_Training = left_join(SG_Training, SG_IT, by = "Account ID")
@@ -317,10 +318,11 @@ Combined = left_join(Combined, SG_Training, by = "Account ID")
 #### Helpline ####
 ## Helpline calls ##
 H_calls <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 2, skip = 1)
+H_calls$`Row Labels` <- as.numeric(H_calls$`Row Labels`)
 H_calls = H_calls[complete.cases(H_calls$`Row Labels`),]
 
 ## Helpline urgent safety calls by reason ##
-H_reasons <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 3, skip = 2)
+H_reasons <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 3, skip = 3)
 H_reasons$`Row Labels` = as.numeric(H_reasons$`Row Labels`)
 H_reasons = H_reasons[complete.cases(H_reasons$`Row Labels`),]
 
@@ -415,7 +417,7 @@ write.csv(Combined, "Combined.csv", na="")
 
 
 #### Lockable Gates ####
-LG <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Statement of Lockable Exit.xls", "Statement Lockable exits", skip = 2)
+LG <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Statement of Lockable Exit.xls", 2, skip = 2)
 LG = LG[complete.cases(LG$`Factory ID`),]
 LG = LG[, c(4, 9)]
 
@@ -430,7 +432,7 @@ Combined = Combined[!duplicated(Combined[,"Account ID"]),]
 
 
 #### Reorder the columns of Combined to match the Dashboard Workbook more closely ####
-someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion", "Number of employees to be trained.", "Province", "RENTED ", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
+someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion", "Number of employees to be trained.", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
              "Escalation Date", "Escalation Status", "Review Panel", 
              "Electrical High - Completed", "Electrical High - In progress", "Electrical High - Not Started", "Electrical High Total",
              "Electrical Medium - Completed", "Electrical Medium - In progress", "Electrical Medium - Not Started", "Electrical Medium Total",
@@ -452,20 +454,73 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 1 Result", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
-             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
-             "Initial Security Guards Trained", "Security Guard Refresher Training", " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS ", "Spot Check Results (Pass or Fail)", "Support Visit",
+             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
+             "Initial Security Guards Trained", "Security Guard Refresher Training", " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS.y", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",
-             "Fire - Active (factory)", "Fire - Danger (factory)", "Locked factory exit or blocked egress route", "Other", "Sparking / short circuit", "Structural - Cracks in beams, columns or walls", "Structural - walls or windows shaking", "Unattended / bare electric wires", "Unauthorized subcontracting", "Undisclosed",
+             "Fire - Active (factory)", "Fire - Danger (factory)", "Locked factory exit or blocked egress route", "Other", "Sparking / short circuit", "Structural - Cracks in beams, columns or walls", "Structural - walls or windows shaking", "Unattended / bare electric wires", "Unauthorized subcontracting",
              "Box Folder Link")
 
 setcolorder(Combined, c(someCol, colnames(Combined)[!(colnames(Combined) %in% someCol)]))
 
 #if the above failed, try this to see which of someCol is not in Combined. Then change the name to match.
 setdiff(someCol, colnames(Combined))
+names(Combined)
 
 # Save the combined data, then copy and paste into the appropriate columns in the Excel Dashboard Workbook
 write.csv(Combined, "Combined.csv", na="")
+
+# Change values for factories with 100% CAP completion
+Combined$`Electrical High - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Electrical High Total`
+Combined$`Electrical High - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Electrical High - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Electrical Medium - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Electrical Medium Total`
+Combined$`Electrical Medium - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Electrical Medium - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Electrical Low - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Electrical Low Total`
+Combined$`Electrical Low - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Electrical Low - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Electrical - No Level - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Electrical - No Level - Total`
+Combined$`Electrical - No Level - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Electrical - No Level - Not started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Fire High - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Fire High Total`
+Combined$`Fire High - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Fire High - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Fire Medium - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Fire Medium Total`
+Combined$`Fire Medium - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Fire Medium - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Fire Low - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Fire Low Total`
+Combined$`Fire Low - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Fire Low - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Fire - No Level - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Fire - No Level - Total`
+Combined$`Fire - No Level - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Fire - No Level - Not started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Structural High - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Structural High Total`
+Combined$`Structural High - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Structural High - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Structural Medium - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Structural Medium Total`
+Combined$`Structural Medium - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Structural Medium - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Structural Low - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Structural Low Total`
+Combined$`Structural Low - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Structural Low - Not Started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`Structural - No Level - Completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`Structural - No Level - Total`
+Combined$`Structural - No Level - In progress`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+Combined$`Structural - No Level - Not started`[Combined$`CCVV 1 % of Completion` == 1] <- NA
+
+Combined$`# of Highest Priority NCs completed`[Combined$`CCVV 1 % of Completion` == 1] <- Combined$`# of Highest Priority NCs`
+Combined$`% of Highest Priority NCs completed`[Combined$`CCVV 1 % of Completion` == 1] <- 1
 
 
 
