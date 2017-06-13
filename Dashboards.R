@@ -341,7 +341,7 @@ Combined = left_join(Combined, Helpline, by = "Account ID")
 Combined$Implemented[is.na(Combined$Implemented)] <- "No"
 
 #### Safety Committees ####
-SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/SC Implementation.xlsx", 1)
+SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/SC Implementation.xlsx", 1, col_types = "text")
 
 SC = SC[complete.cases(SC$`Account ID`),]
 setnames(SC, names(SC), gsub("\\r\\n", " ", names(SC)))
@@ -361,28 +361,24 @@ SC = SC[, c("Account ID", "PC / CBA or TU / WWA (Yes/No) %" , "SC Formation  (Ye
 setnames(SC, "SC Activity Implementation Completion Date (Total - 100 Days)", "SC Activity Implementation Completion Date")
 # SC$Status <- gsub("^([a-z])", "\\U\\1", tolower(SC$Status), perl=TRUE)
 
-# Change all to characters
-SC[] <- lapply(SC, as.character)
-# Change these back to numeric
+# Change these columns to numeric
 SC$`Total SC members` <- as.numeric(SC$`Total SC members`)
 SC$`Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators` <- as.numeric(SC$`Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators`)
 SC$`Account ID` <- as.numeric(SC$`Account ID`)
 
 # Change time values to completed, in progress, or NA
 SC[SC == "10"] <- "Completed"
-SC[SC == "1900-01-09"] <- "Completed"
-SC[SC == "1900-01-01"] <- "In progress"
-SC[SC == "1900-01-02"] <- "In progress"
-SC[SC == "1900-01-03"] <- "In progress"
-SC[SC == "1900-01-04"] <- "In progress"
-SC[SC == "1900-01-05"] <- "In progress"
-SC[SC == "1900-01-06"] <- "In progress"
-SC[SC == "1900-01-07"] <- "In progress"
-SC[SC == "1900-01-08"] <- "In progress"
-SC[SC == "1899-12-31"] <- "In progress"
+SC[SC == "1"] <- "In progress"
+SC[SC == "2"] <- "In progress"
+SC[SC == "3"] <- "In progress"
+SC[SC == "4"] <- "In progress"
+SC[SC == "5"] <- "In progress"
+SC[SC == "6"] <- "In progress"
+SC[SC == "7"] <- "In progress"
+SC[SC == "8"] <- "In progress"
+SC[SC == "9"] <- "In progress"
 SC[SC == "3.33"] <- "In progress"
 SC[SC == "6.66"] <- "In progress"
-SC[SC == "1899-12-30"] <- NA
 
 
 # SC$`TtT Received from Alliance (Yes/No) %` = ifelse(is.na(SC$`TtT Received from Alliance (Yes/No) %`) == TRUE, "No", "Yes")
