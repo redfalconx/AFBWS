@@ -111,7 +111,8 @@ CAPs_Data = left_join(CAPs_Data, Master, by = "Account ID")
 write.csv(CAPs_Data, "CAP Data with RVV dates.csv", na="")
 
 ### Open the csv file, paste only the Question and Level columns and the join from Master into Remediation Workbook ##
-## Refresh all data in Remediation Workbook and save##
+## Refresh "Current Status - no new NCs" column ##
+## Refresh all data in Remediation Workbook and save ##
 
 #### Fetch the Remediation Workbook spreadsheets and put the results in dataframes ####
 # CAPs <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
@@ -237,8 +238,8 @@ PR <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard
 PR$`Account ID` <- as.numeric(PR$`Account ID`)
 PR <- PR[complete.cases(PR$`Account ID`),]
 # PR$`Account ID` <- gsub("/E", "", PR$`Account ID`)
-setnames(PR, c(6,10,14,18,22,26,30,34), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
-PR = PR[, c(3,6,10,14,18,22,26,30,34)]
+setnames(PR, c(6,13,19,25,31,37,43,49), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
+PR = PR[, c(3,6,13,19,25,31,37,43,49)]
 PR[is.na(PR)] <- "Not Required or N/A"
 
 # Join the tables
@@ -448,10 +449,11 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 2nd RVV", "Completed - RVV2", "In progress - RVV2", "Not started - RVV2",
              "Confirmed Date of 3rd RVV", "Completed - RVV3", "In progress - RVV3", "Not started - RVV3",
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
-             "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 1 Result", 
+             "Confirmed Date of 5th RVV", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5",
+             "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
              "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
-             "Initial Security Guards Trained", "Security Guard Refresher Training", " Total number of security staff trained so far", "Percentage of security staff trained", "STATUS.y", "Spot Check Results (Pass or Fail)", "Support Visit",
+             "Initial Security Guards Trained", "Security Guard Refresher Training", "Total number of security staff trained so far", "Percentage of security staff trained", "STATUS.y", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",
              "Fire - Active (factory)", "Fire - Danger (factory)", "Locked factory exit or blocked egress route", "Other", "Sparking / short circuit", "Structural - Cracks in beams, columns or walls", "Structural - walls or windows shaking", "Unattended / bare electric wires", "Unauthorized subcontracting",
