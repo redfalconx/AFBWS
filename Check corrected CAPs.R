@@ -27,11 +27,13 @@ Audit_Scope <- rbindlist(list(Electrical, Fire, Structural))
 setnames(Audit_Scope, names(Audit_Scope), gsub("\\r\\n", " ", names(Audit_Scope)))
 
 # Load list of corrected factories #
-Cor_Factories <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 1)
+Cor_Factories_1 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 1)
 Cor_Factories_2 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 2)
+Cor_Factories_3 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 3)
+Cor_Factories_4 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 4)
 
 # Subset factories into those that have been corrected
-l = c(Cor_Factories$`Account ID`, Cor_Factories_2$`Account ID`)
+l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
 l = as.character(l)
 
 CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% l,]
@@ -151,10 +153,12 @@ write.csv(Validated_Factories, "/Users/Andrew/Box Sync/FFC/Data Migration/Valida
 Validated_CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% Validated_Factories$`Validated Factories`,]
 
 # Remove factories already uploaded to the FFC
-Cor_Factories = subset(Cor_Factories, Cor_Factories$`FFC Status` != "Uploaded")
-Cor_Factories = Cor_Factories[Cor_Factories$`FFC Status` != "Uploaded",]
-Cor_Factories_2 = Cor_Factories_2[Cor_Factories_2$`FFC Status` != "Uploaded",]
-l = c(Cor_Factories$`Account ID`, Cor_Factories_2$`Account ID`)
+Cor_Factories_1 = subset(Cor_Factories_1, is.na(`FFC Status`))
+Cor_Factories_2 = subset(Cor_Factories_2, is.na(`FFC Status`))
+Cor_Factories_3 = subset(Cor_Factories_3, is.na(`FFC Status`))
+Cor_Factories_4 = subset(Cor_Factories_4, is.na(`FFC Status`))
+
+l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
 l = as.character(l)
 
 Validated_CAPs = Validated_CAPs[Validated_CAPs$`FFC ID` %in% l,]
