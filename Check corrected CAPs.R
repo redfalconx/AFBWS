@@ -38,6 +38,14 @@ l = as.character(l)
 
 CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% l,]
 
+# Add factory names
+f = as.data.table(l)
+f$`Factory Name` = c(Cor_Factories_1$`Factory Name`, Cor_Factories_2$`Factory Name`, Cor_Factories_3$`Factory Name`, Cor_Factories_4$`Factory Name`)
+
+CAPs = left_join(CAPs, f, by = c("FFC ID" = "l"))
+
+CAPs = CAPs[, c(1:2, ncol(CAPs), 3:(ncol(CAPs)-1))]
+
 # Remove rows with no Question
 CAPs = CAPs[CAPs$Question != 0,]
 
