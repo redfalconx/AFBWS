@@ -233,6 +233,8 @@ Validated_CAPs = Validated_CAPs[complete.cases(Validated_CAPs$`FFC ID`),]
 
 # Add Audit IDs
 Audit_IDs <- read.csv("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit IDs.csv")
+Audit_IDs = subset(Audit_IDs, Type == "Initial")
+Audit_IDs = Audit_IDs[, -5]
 Audit_IDs$Account.ID <- as.character(Audit_IDs$Account.ID)
 Validated_CAPs = left_join(Validated_CAPs, Audit_IDs, by = c("FFC ID" = "Account.ID", "Sheet" = "Audit.Scope"))
 

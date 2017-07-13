@@ -35,7 +35,7 @@ logIn$clickElement()
 remDr$navigate("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
 
 # Click on the Monthly Factory List for website query
-Monthly_Factory_List <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl44$ctl00"]')
+Monthly_Factory_List <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl45$ctl00"]')
 Monthly_Factory_List$highlightElement()
 remDr$executeScript("arguments[0].click();", list(Monthly_Factory_List))
 
@@ -58,8 +58,9 @@ Sys.sleep(5)
 MFL <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
 Sys.sleep(5)
 
-# Close the browser
+# Close the browser and stop server
 remDr$close()
+rD[["server"]]$stop()
 
 # Change column names
 setnames(MFL, names(MFL), gsub("NULL.", "", names(MFL)))
