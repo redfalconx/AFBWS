@@ -370,8 +370,12 @@ setnames(SC, "SC Activity Implementation Completion Date (Total - 100 Days)", "S
 
 # Change these columns to numeric
 SC$`Total SC members` <- as.numeric(SC$`Total SC members`)
+SC$`Number of Participants` <- as.numeric(SC$`Number of Participants`)
 SC$`Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators` <- as.numeric(SC$`Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators`)
 SC$`Account ID` <- as.numeric(SC$`Account ID`)
+
+# Save number of factory facilitors and rest of SC members to re-add back in later
+SC2 = SC[, c("Account ID", "Total SC members", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators")]
 
 # Change time values to completed, in progress, or NA
 SC[SC == "10"] <- "Completed"
@@ -386,6 +390,11 @@ SC[SC == "8"] <- "In progress"
 SC[SC == "9"] <- "In progress"
 SC[SC == "3.33"] <- "In progress"
 SC[SC == "6.66"] <- "In progress"
+
+# Re-add the above three columns
+SC$`Total SC members` = SC2$`Total SC members`
+SC$`Number of Participants` = SC2$`Number of Participants`
+SC$`Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators` = SC2$`Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators`
 
 
 # SC$`TtT Received from Alliance (Yes/No) %` = ifelse(is.na(SC$`TtT Received from Alliance (Yes/No) %`) == TRUE, "No", "Yes")
