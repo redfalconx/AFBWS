@@ -141,7 +141,7 @@ setnames(CAPs_pivot, c(2:53),
 
 
 # Fetch statuses of each RVV and CCVV, remove Grand Total row, and change column names
-CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "RVV Pivots", skip = 2)
+CAPs_RVVs <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "RVV Pivots", skip = 3)
 RVV1 = CAPs_RVVs[,1:4]
 setnames(RVV1, names(RVV1), c("Account ID", "Completed - RVV1", "In progress - RVV1", "Not started - RVV1"))
 RVV1 = RVV1[1:nrow(RVV1)-1,]
@@ -163,6 +163,11 @@ setnames(RVV5, names(RVV5), c("Account ID", "Completed - RVV5", "In progress - R
 RVV5 = RVV5[complete.cases(RVV5$`Account ID`),]
 RVV5 = RVV5[1:nrow(RVV5)-1,]
 #RVV5$`Account ID` <- as.numeric(RVV5$`Account ID`)
+RVV6 = CAPs_RVVs[,26:29]
+setnames(RVV6, names(RVV6), c("Account ID", "Completed - RVV6", "In progress - RVV6", "Not started - RVV6"))
+RVV6 = RVV6[complete.cases(RVV6$`Account ID`),]
+RVV6 = RVV6[1:nrow(RVV5)-1,]
+#RVV6$`Account ID` <- as.numeric(RVV6$`Account ID`)
 
 # Join the CAP tables
 CAPs = left_join(CAPs_pivot, RVV1, by = c("Row Labels" = "Account ID"))
@@ -170,6 +175,7 @@ CAPs = left_join(CAPs, RVV2, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV3, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV5, by = c("Row Labels" = "Account ID"))
+CAPs = left_join(CAPs, RVV6, by = c("Row Labels" = "Account ID"))
 
 # Fetch Highest Priority (Urgent Life Safety) NCs
 HPNCs_all <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "All Factories", skip = 4)
@@ -197,7 +203,7 @@ Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashb
 Master$`Account ID` = as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Review Panel?`)
-Master = Master[, 1:82]
+#Master = Master[, 1:82]
 
 # Remove unnecessary columns !!! Double Check to make sure columns are correct !!!
 Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date Added to FFC (Activated as Pending)", "Deactivated brands (Date)", "Building Expanded? \r\n(if yes, list date)", "Date Approved (for factories added after April 2015)", "Thermal Scan Report Sending Date", "Linked Factories Building", "Linked Factories Compound",
@@ -450,6 +456,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 3rd RVV", "Completed - RVV3", "In progress - RVV3", "Not started - RVV3",
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
              "Confirmed Date of 5th RVV", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5",
+             "Confirmed Date of 6th RVV", "Completed - RVV6", "In progress - RVV6", "Not started - RVV6",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
              "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
