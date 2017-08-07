@@ -23,8 +23,8 @@ Master <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashb
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "CCVV 1 Date")]
-setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "CCVV 1 Date", "Active Brands"))
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "Active Brands"))
 Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 
@@ -466,6 +466,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
              "Confirmed Date of 5th RVV", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5",
              "Confirmed Date of 6th RVV", "Completed - RVV6", "In progress - RVV6", "Not started - RVV6",
+             "Confirmed Date of 7th RVV", "Completed - RVV7", "In progress - RVV7", "Not started - RVV7",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
              "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",

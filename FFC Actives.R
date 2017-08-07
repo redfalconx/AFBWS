@@ -35,7 +35,7 @@ logIn$clickElement()
 remDr$navigate("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
 
 # Click on the Alliance Factory Report 2 query
-Alliance_Factory_Report_2 <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl15$ctl00"]')
+Alliance_Factory_Report_2 <- remDr$findElement("link text", 'Alliance Factory Report 2')
 Alliance_Factory_Report_2$highlightElement()
 remDr$executeScript("arguments[0].click();", list(Alliance_Factory_Report_2))
 

@@ -265,6 +265,7 @@ Validated_CAPs = Validated_CAPs[c(1:21, 28, 22, 29, 23, 30, 24, 31, 25, 32, 26, 
 
 # setcolorder(Validated_CAPs, c("FFC ID", "Audit.ID", "Sheet", "Subheader", "Question", "Description", "Suggested Plan of Action", "Suggested Deadline Date", "Standard", "Factory CAP", "Factory CAP Deadline Date", "Factory Responsible Person", "Source of Findings", "Level"))
 
+uniqueN(Validated_CAPs$`Account ID`)
 
 # Save the file in FFC > Data Migration
 write.csv(Validated_CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated_CAPs.csv", na="")

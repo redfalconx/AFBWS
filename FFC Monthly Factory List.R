@@ -35,7 +35,7 @@ logIn$clickElement()
 remDr$navigate("http://sfi.fairfactories.org/ffcweb/Web/Reports/SavedConfiguredReportsList.aspx?id=PUBLIC")
 
 # Click on the Monthly Factory List for website query
-Monthly_Factory_List <- remDr$findElement("css selector", '[href*="ctl00$ContentPlaceHolder1$dgReport$ctl45$ctl00"]')
+Monthly_Factory_List <- remDr$findElement("link text", 'Monthly Factory List for website')
 Monthly_Factory_List$highlightElement()
 remDr$executeScript("arguments[0].click();", list(Monthly_Factory_List))
 
