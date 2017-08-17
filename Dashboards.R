@@ -13,7 +13,7 @@ library(tidyr) # a few pivot-table functions
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
 CAPs_Data <- as.data.table(read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", "Data", skip = 1, col_types = "text"))
-CAPs_Data[, (48:ncol(CAPs_Data))] <- list(NULL)
+CAPs_Data[, (52:ncol(CAPs_Data))] <- list(NULL)
 
 CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
 CAPs_Data$`Account ID` <- as.numeric(CAPs_Data$`Account ID`)
@@ -206,11 +206,13 @@ Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Rev
 #Master = Master[, 1:82]
 
 # Remove unnecessary columns !!! Double Check to make sure columns are correct !!!
-Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date Added to FFC (Activated as Pending)", "Deactivated brands (Date)", "Building Expanded? \r\n(if yes, list date)", "Date Approved (for factories added after April 2015)", "Thermal Scan Report Sending Date", "Linked Factories Building", "Linked Factories Compound",
-           "Case Team Number", "Yet to assign team number", "QAF", "Worker Compensation Required?", "FOS Status (OK, DEA Needed, Core Test Needed, Review Panel)", "DEA / Core Test Status (Not Started, In Progress, Completed)", "FOS Status (OK, DEA Needed, Core Test Needed, Review Panel) [Second Round Review]", "Access Denied?", "1st RVV Done?", 
-           "Contact information", "Contact Email", "Phone Extension", "Contacts Management", "Email of Management", "Contacts Technical staff", "Address1", "Address2", "City", "Postal Code",
-           "Number of separate buildings belonging to production facility", "Number of stories of each building", "Floors of the building which the factory occupies", "Helpline Launched", "link check 15.10.4")] <- list(NULL)
-#Master = Master[, 1:ncol(Master)-1]
+#Master[, c("Working Comments", "Factory Closed", "Factory Closure Reason", "Date Added to FFC (Activated as Pending)", "Deactivated brands (Date)", "Building Expanded? \r\n(if yes, list date)", "Date Approved (for factories added after April 2015)", "Thermal Scan Report Sending Date", "Linked Factories Building", "Linked Factories Compound",
+#           "Case Team Number", "Yet to assign team number", "QAF", "Worker Compensation Required?", "FOS Status (OK, DEA Needed, Core Test Needed, Review Panel)", "DEA / Core Test Status (Not Started, In Progress, Completed)", "FOS Status (OK, DEA Needed, Core Test Needed, Review Panel) [Second Round Review]", "Access Denied?", "1st RVV Done?", 
+#           "Contact information", "Contact Email", "Phone Extension", "Contacts Management", "Email of Management", "Contacts Technical staff", "Address1", "Address2", "City", "Postal Code",
+#           "Number of separate buildings belonging to production facility", "Number of stories of each building", "Floors of the building which the factory occupies", "Helpline Launched", "link check 15.10.4")] <- list(NULL)
+
+Master = Master[, c("Account ID", "Account Name", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", "Escalation Date", "Escalation Status", 
+                    "Recommended to Review Panel?", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV" , "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "CCVV 1 Date", "CCVV 1 % of Completion", "Box Folder Link")]
 
 # Change Subs. Completion to Initial CAP Completed and Suspended to Critical
 table(Master$`Remediation Factory Status`)
@@ -245,7 +247,7 @@ PR$`Account ID` <- as.numeric(PR$`Account ID`)
 PR <- PR[complete.cases(PR$`Account ID`),]
 # PR$`Account ID` <- gsub("/E", "", PR$`Account ID`)
 setnames(PR, c(6,13,19,25,31,37,43,49), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
-PR = PR[, c(3,6,13,19,25,31,37,43,49)]
+PR = PR[, c("Account ID", "DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status")]
 PR[is.na(PR)] <- "Not Required or N/A"
 
 # Join the tables
@@ -264,12 +266,14 @@ Combined = left_join(Combined, DEA, by = "Account ID")
 
 #### Basic Fire Safety Training ####
 ## Before loading, put in descending order with 4a and 3a first ##
-Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Basic Fire Safety & Helpline Training Implementation.xlsx", 1)
+Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Basic Fire Safety & Helpline Training Implementation.xlsx", "Factory List-BFST")
 # Check to make sure 3a and 4a phases are included
 table(Training$`Training Phase`, useNA = "ifany")
 
 # Remove unnecessary columns
-Training[, c(4:25, 27:32, 37:43, 63:72)] <- list(NULL)
+# Training[, c(4:25, 27:32, 37:43, 63:72)] <- list(NULL)
+Training = Training[, c("Account ID", "Number of employees to be trained.", "Total number of employees trained so far.", "Training Phase", "Percentage of Workers Trained", "STATUS", "Final Training Status \r\n(CCVV)",
+                        "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?")]
 
 # Subset initial training (phase 1 and 2)
 IT = Training[Training$`Training Phase` %in% c("1","2"),]
@@ -298,10 +302,11 @@ Combined = left_join(Combined, Training, by = "Account ID")
 
 
 ##### Security Guard Training ####
-SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation.xlsx", 1)
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation.xlsx", "Factory List-SBFSDT")
 
 # Remove unnecessary columns
-SG_Training[, c(4:30, 34:37, 47:59)] <- list(NULL)
+# SG_Training[, c(4:30, 34:37, 47:59)] <- list(NULL)
+SG_Training = SG_Training[, c("Account ID", "Total number of security staff trained so far", "Training Phase", "Percentage of security staff trained", "STATUS", "Spot Check Results (Pass or Fail)", "Support Visit")]
 
 # Subset initial training (phase 1)
 SG_IT = SG_Training[SG_Training$`Training Phase` == 1,]
@@ -324,17 +329,17 @@ Combined = left_join(Combined, SG_Training, by = "Account ID")
 
 #### Helpline ####
 ## Helpline calls ##
-H_calls <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 2, skip = 1)
+H_calls <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", "Caller Group breakdown", skip = 1)
 H_calls$`Row Labels` <- as.numeric(H_calls$`Row Labels`)
 H_calls = H_calls[complete.cases(H_calls$`Row Labels`),]
 
 ## Helpline urgent safety calls by reason ##
-H_reasons <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", 3, skip = 3)
+H_reasons <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", "Urgent Safety breakdown", skip = 3)
 H_reasons$`Row Labels` = as.numeric(H_reasons$`Row Labels`)
 H_reasons = H_reasons[complete.cases(H_reasons$`Row Labels`),]
 
 ## Helpline factories ##
-H_factories <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Factory Profile Update_Helpline.xlsx", 1)
+H_factories <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Factory Profile Update_Helpline.xlsx", "Helpline List")
 H_factories = H_factories[, c("Account ID", "Workers Trained")]
 H_factories = H_factories[complete.cases(H_factories$`Account ID`), ]
 H_factories$Implemented <- "Yes"
@@ -348,7 +353,7 @@ Combined = left_join(Combined, Helpline, by = "Account ID")
 Combined$Implemented[is.na(Combined$Implemented)] <- "No"
 
 #### Safety Committees ####
-SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/SC Implementation.xlsx", 1, col_types = "text")
+SC <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/SC Implementation.xlsx", "Factory List - SC", col_types = "text")
 
 SC = SC[complete.cases(SC$`Account ID`),]
 setnames(SC, names(SC), gsub("\\r\\n", " ", names(SC)))
@@ -431,7 +436,7 @@ write.csv(Combined, "Combined.csv", na="")
 #### Lockable Gates ####
 LG <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Statement of Lockable Exit.xls", 2, skip = 2)
 LG = LG[complete.cases(LG$`Factory ID`),]
-LG = LG[, c(4, 9)]
+LG = LG[, c("Factory ID", "No. of lockable Exits")]
 
 # Join the tables
 Combined = left_join(Combined, LG, by = c("Account ID" = "Factory ID"))
@@ -466,7 +471,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 4th RVV", "Completed - RVV4", "In progress - RVV4", "Not started - RVV4",
              "Confirmed Date of 5th RVV", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5",
              "Confirmed Date of 6th RVV", "Completed - RVV6", "In progress - RVV6", "Not started - RVV6",
-             "Confirmed Date of 7th RVV", "Completed - RVV7", "In progress - RVV7", "Not started - RVV7",
+             #"Confirmed Date of 7th RVV", "Completed - RVV7", "In progress - RVV7", "Not started - RVV7",
              "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
              "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",

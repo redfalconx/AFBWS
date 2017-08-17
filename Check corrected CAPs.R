@@ -1,3 +1,6 @@
+# Start the clock!
+ptm <- proc.time()
+
 # Created by Andrew Russell, 2017.
 # These packages are used at various points: 
 # install.packages("data.table", "readxl", "dplyr", "tidyr")
@@ -242,7 +245,7 @@ Validated_CAPs = left_join(Validated_CAPs, Audit_IDs, by = c("FFC ID" = "Account
 Validated_CAPs = Validated_CAPs[c((ncol(Validated_CAPs)-1):ncol(Validated_CAPs), 1:(ncol(Validated_CAPs)-2))]
 Validated_CAPs = Validated_CAPs[c(1, 3, 2, (4:ncol(Validated_CAPs)))]
 
-Validated_CAPs = Validated_CAPs[, -c(5, 21, 24, 25, 27:29, 31:33, 35:37, 39:41, 43:45, 47)]
+Validated_CAPs = Validated_CAPs[, -c(5, 21, 24, 25, 27:29, 31:33, 35:37, 39:41, 43:45, 47:49, 51)]
 
 setnames(Validated_CAPs, "FFC ID", "Account ID")
 
@@ -269,3 +272,6 @@ uniqueN(Validated_CAPs$`Account ID`)
 
 # Save the file in FFC > Data Migration
 write.csv(Validated_CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated_CAPs.csv", na="")
+
+# Stop the clock
+t = proc.time() - ptm
