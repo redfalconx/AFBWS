@@ -164,10 +164,10 @@ write.csv(Validated_Factories, "/Users/Andrew/Box Sync/FFC/Data Migration/Valida
 Validated_CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% Validated_Factories$`Validated Factories`,]
 
 # Remove factories already uploaded to the FFC
-Cor_Factories_1 = subset(Cor_Factories_1, is.na(`FFC Status`))
-Cor_Factories_2 = subset(Cor_Factories_2, is.na(`FFC Status`))
-Cor_Factories_3 = subset(Cor_Factories_3, is.na(`FFC Status`))
-Cor_Factories_4 = subset(Cor_Factories_4, is.na(`FFC Status`))
+Cor_Factories_1 = filter(Cor_Factories_1, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
+Cor_Factories_2 = filter(Cor_Factories_2, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
+Cor_Factories_3 = filter(Cor_Factories_3, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
+Cor_Factories_4 = filter(Cor_Factories_4, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 
 l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
 l = as.character(l)

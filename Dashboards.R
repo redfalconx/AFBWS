@@ -573,6 +573,23 @@ Factory_Monthly = Factory_Monthly[complete.cases(Factory_Monthly$`Account ID_1`)
 # Join old Factory Monthly to Combined
 Mon = left_join(Combined, Factory_Monthly, by = c("Account ID" = "Account ID_1"))
 
+# Sort columns
+allmisscols = apply(Mon, 2, function(x) {all(is.na(x))})
+colswithallmiss = names(allmisscols[allmisscols>0])
+colswithallmiss[3]
+
+ind = grep(paste("^", gsub("_.*","",colswithallmiss[3]), sep = ""), names(Mon))
+
+Mon[, ind[1]] = Mon$`Overall Status`
+Mon[, ind[2]] = Mon$`Remediation Status`
+Mon[, ind[3]] = Mon$`Initial & Security Guard Training Status`
+Mon[, ind[4]] = Mon$`Refresher Training Status`
+Mon[, ind[5]] = Mon$`Helpline Status`
+Mon[, ind[6]] = Mon$`Safety Committee Status`
+
+# Remove unnecessary columns
+Mon = Mon[, -c(3:8)]
+
 # Save the new Factory Monthly list, then copy and paste into the appropriate columns in the Excel Dashboard Workbook
 write.csv(Mon, "Factory Monthly.csv", na="")
 
