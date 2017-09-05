@@ -8,7 +8,6 @@ library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
-## Remove E from Account ID # Remove in Excel (does not load Account IDs with E here)
 
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
@@ -110,7 +109,7 @@ CAPs_Data = left_join(CAPs_Data, Master, by = "Account ID")
 # Save the file
 write.csv(CAPs_Data, "CAP Data with RVV dates.csv", na="")
 
-### Open the csv file, paste only the Question and Level columns and the join from Master into Remediation Workbook ##
+## Open the csv file, paste only the Question and Level columns and the join from Master into Remediation Workbook ##
 ## Refresh "Current Status - no new NCs" column ##
 ## Refresh all data in Remediation Workbook and save ##
 
@@ -246,7 +245,7 @@ PR <- read_excel("C:/Users/Andrew/Box Sync/Member Reporting/Dashboards/Dashboard
 PR$`Account ID` <- as.numeric(PR$`Account ID`)
 PR <- PR[complete.cases(PR$`Account ID`),]
 # PR$`Account ID` <- gsub("/E", "", PR$`Account ID`)
-setnames(PR, c(6,13,19,25,31,37,43,49), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
+setnames(PR, c("Status","Status__1","Status__2","Status__3","Status__4","Status__5","Status__6","Status__7"), c("DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status"))
 PR = PR[, c("Account ID", "DEA Status","Design Status","Central Fire Status","Hydrant Status","Sprinkler Status","Fire Door Status","Lightning Status","Single Line Diagram Status")]
 PR[is.na(PR)] <- "Not Required or N/A"
 
