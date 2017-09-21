@@ -13,27 +13,28 @@ library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
+wd = dirname(getwd())
 
 # Load raw CAP data #
-CAP_Tracker <- read_excel("C:/Users/Andrew/Box Sync/Database/Excel/CAP Trackers.xlsm", "CAP Trackers", skip = 1, col_types = "text")
+CAP_Tracker <- read_excel(paste(wd,"/Box Sync/Database/Excel/CAP Trackers.xlsm", sep = ""), "CAP Trackers", skip = 1, col_types = "text")
 # CAP_Tracker$`FFC ID` <- gsub("/E", "", CAP_Tracker$`FFC ID`)
 # CAP_Tracker$`FFC ID` = as.numeric(CAP_Tracker$`FFC ID`)
 # CAP_Tracker = CAP_Tracker[ , 1:43]
 
 # Load Audit Scope #
-Electrical <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit Scope.xlsx", "Electrical")
-Fire <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit Scope.xlsx", "Fire")
-Structural <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit Scope.xlsx", "Structural")
+Electrical <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/Audit Scope.xlsx",sep = ""), "Electrical")
+Fire <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/Audit Scope.xlsx", sep = ""), "Fire")
+Structural <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/Audit Scope.xlsx", sep = ""), "Structural")
 
 Audit_Scope <- rbindlist(list(Electrical, Fire, Structural))
 
 setnames(Audit_Scope, names(Audit_Scope), gsub("\\r\\n", " ", names(Audit_Scope)))
 
 # Load list of corrected factories #
-Cor_Factories_1 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 1)
-Cor_Factories_2 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 2)
-Cor_Factories_3 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 3)
-Cor_Factories_4 <- read_excel("C:/Users/Andrew/Box Sync/FFC/Data Migration/List of factories completed.xlsx", 4)
+Cor_Factories_1 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 1)
+Cor_Factories_2 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 2)
+Cor_Factories_3 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 3)
+Cor_Factories_4 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 4)
 
 # Subset factories into those that have been corrected
 l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
@@ -159,14 +160,14 @@ CAPs = CAPs[CAPs$Question_check == FALSE | CAPs$Subheader_check == FALSE | CAPs$
 CAPs = CAPs[complete.cases(CAPs$`FFC ID`),]
 
 # Save the file in FFC > Data Migration
-write.csv(CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Errors in CAPs.csv", na="")
+write.csv(CAPs, paste(wd,"/Box Sync/FFC/Data Migration/Errors in CAPs.csv", sep = ""), na="")
 
 # Created list of validated CAPs
 Validated_Factories = as.data.table(setdiff(l, CAPs$`FFC ID`))
 
 setnames(Validated_Factories, "V1", "Validated Factories")
 
-write.csv(Validated_Factories, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated Factories.csv", na="")
+write.csv(Validated_Factories, paste(wd,"/Box Sync/FFC/Data Migration/Validated Factories.csv", sep = ""), na="")
 
 
 
@@ -251,7 +252,7 @@ Validated_CAPs[, c(1:2)] <- list(NULL)
 Validated_CAPs = Validated_CAPs[complete.cases(Validated_CAPs$`FFC ID`),]
 
 # Add Audit IDs
-Audit_IDs <- read.csv("C:/Users/Andrew/Box Sync/FFC/Data Migration/Audit IDs.csv")
+Audit_IDs <- read.csv(paste(wd,"/Box Sync/FFC/Data Migration/Audit IDs.csv", sep = ""))
 Audit_IDs = subset(Audit_IDs, Type == "Initial")
 Audit_IDs = Audit_IDs[, -5]
 Audit_IDs$Account.ID <- as.character(Audit_IDs$Account.ID)
@@ -266,7 +267,7 @@ Validated_CAPs = Validated_CAPs[, -c(5, 21, 24, 25, 27:29, 31:33, 35:37, 39:41, 
 setnames(Validated_CAPs, "FFC ID", "Account ID")
 
 # Load Master Factory List #
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", "Master Factory List")
+Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
@@ -287,7 +288,7 @@ Validated_CAPs = Validated_CAPs[c(1:21, 28, 22, 29, 23, 30, 24, 31, 25, 32, 26, 
 uniqueN(Validated_CAPs$`Account ID`)
 
 # Save the file in FFC > Data Migration
-write.csv(Validated_CAPs, "/Users/Andrew/Box Sync/FFC/Data Migration/Validated_CAPs.csv", na="")
+write.csv(Validated_CAPs, paste(wd,"/Box Sync/FFC/Data Migration/Validated_CAPs.csv", sep = ""), na="")
 
 # Stop the clock
 t = proc.time() - ptm

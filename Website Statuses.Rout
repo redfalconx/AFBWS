@@ -1,0 +1,71 @@
+
+R version 3.4.1 (2017-06-30) -- "Single Candle"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # Created by Andrew Russell, 2017.
+> # These packages are used at various points: 
+> # install.packages("data.table", "readxl", "dplyr", "tidyr")
+> 
+> ## This script will pull statuses from each program area to automate the website statuses
+> 
+> #### Load packages ####
+> library(data.table) # converts to data tables
+> library(readxl) # reads Excel files
+> library(dplyr) # data manipulation
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:data.table':
+
+    between, first, last
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+> library(tidyr) # a few pivot-table functions
+> library(RCurl) #  push to ftp server
+Loading required package: bitops
+
+Attaching package: 'RCurl'
+
+The following object is masked from 'package:tidyr':
+
+    complete
+
+> 
+> 
+> #### Fetch Data ####
+> ### Master Factory List ###
+> # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
+> Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", "Master Factory List", col_types = "text")
+> Master = Master[complete.cases(Master$`Account ID`),]
+> Master = Master[, c("Account Name", "Account ID", "Remediation Factory Status", "Inspected by Alliance / Accord / All&Acc")]
+> 
+> 
+> ### Training ###
+> # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
+> Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation.xlsx", 1, col_types = "text")
+Error in read_fun(path = path, sheet = sheet, limits = limits, shim = shim,  : 
+  Evaluation error: zip file 'C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation.xlsx' cannot be opened.
+Calls: read_excel ... read_excel_ -> <Anonymous> -> <Anonymous> -> read_fun -> .Call
+Execution halted

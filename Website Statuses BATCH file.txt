@@ -1,0 +1,1 @@
+"C:\Program Files\R\R-3.4.1\bin\x64\Rcmd.exe" CMD BATCH "C:\Users\Andrew\Documents\R\AFBWS\Website Statuses.R"

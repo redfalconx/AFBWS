@@ -7,11 +7,15 @@ library(RSelenium)
 library(XML)
 library(data.table) # converts to data tables
 
+wd = dirname(getwd())
 
 #### RSelenium code ####
 # RSelenium::checkForServer() # install server if needed
 #RSelenium::startServer() # if needed
-rD <- rsDriver()
+eCaps = list(chromeOptions = list( #args = c('--headless', '--disable-gpu', '--window-size=1280,800'), 
+  prefs = list("profile.default_content_settings.popups" = 0L, "download.prompt_for_download" = FALSE,
+               "download.default_directory" = paste(wd,"/Downloads/", sep = ""))))
+rD <- rsDriver(extraCapabilities = eCaps)
 remDr <- rD[["client"]]
 Sys.sleep(3)
 # remDr <- remoteDriver(browserName = "chrome")
@@ -55,7 +59,8 @@ Alink$clickElement()
 # Open the file
 Afile <- sub(".*filename=", "", Aurl)
 Sys.sleep(5)
-Expansions <- as.data.frame(readHTMLTable(paste("C:/Users/Andrew/Downloads/", Afile, sep = "")))
+file.rename(paste(wd,"/Downloads/", Afile, sep = ""), paste(wd,"/Downloads/Expansions.xls", sep = ""))
+Expansions <- as.data.frame(readHTMLTable(paste(wd,"/Downloads/Expansions.xls", sep = "")))
 Sys.sleep(5)
 
 # Close the browser and stop server

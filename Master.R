@@ -13,10 +13,11 @@ library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
+wd = dirname(getwd())
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", "Master Factory List")
+Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
 # Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
 Master = Master[, 1:89]
 Master = Master[complete.cases(Master$`Account ID`), ]
@@ -67,6 +68,9 @@ New_Master$`Active Members (Display)` <- ifelse(grepl("member", New_Master$`Acti
 # Save the file
 write.csv(New_Master, file = "New_Master.csv", na = "")
 
+
+
+#### No need to do the following code anymore!! ####
 
 #### Training ####
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
