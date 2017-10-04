@@ -16,14 +16,14 @@ wd = dirname(getwd())
 #### Fetch Data ####
 ### Master Factory List ###
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", sep = ""), "Master Factory List", col_types = "text")
+Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", "Master Factory List", col_types = "text")
 Master = Master[complete.cases(Master$`Account ID`),]
 Master = Master[, c("Account Name", "Account ID", "Remediation Factory Status", "Inspected by Alliance / Accord / All&Acc")]
 
 
 ### Training ###
 # Fetch the Train the Trainer table from the Excel spreadsheet and put the results in a dataframe
-Training <- read_excel(paste(wd,"/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation.xlsx", sep = ""), 1, col_types = "text")
+Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Basic Fire Safety & Helpline Training Implementation.xlsx", 1, col_types = "text")
 Training = Training[complete.cases(Training$`Account ID`),]
 Training = Training[complete.cases(Training$`Training Phase`),]
 Training = Training[, c("Account ID", "Training Phase", "STATUS", "Helpline Comment")]
@@ -31,14 +31,14 @@ Training = Training[, c("Account ID", "Training Phase", "STATUS", "Helpline Comm
 
 ### Security Guard Training ###
 # Fetch the Security Guard Training table from the Excel spreadsheet and put the results in a dataframe
-SG_Training <- read_excel(paste(wd,"/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Security Guard Training Implementation.xlsx", sep = ""), 1, col_types = "text")
+SG_Training <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/Security Guard Training Implementation.xlsx", 1, col_types = "text")
 SG_Training = SG_Training[complete.cases(SG_Training$`Account ID`),]
 SG_Training = SG_Training[, c("Account ID", "Training Phase", "STATUS")]
 
 
 ### Safety Committees ###
 # Fetch the Safety Committees table from the Excel spreadsheet and put the results in a dataframe
-SC <- read_excel(paste(wd,"/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation.xlsx", sep = ""), 1, col_types = "text")
+SC <- read_excel("C:/Users/Andrew/Box Sync/Training and Worker Empowerment Programs/7. Training Implementation Trackers/SC Implementation.xlsx", 1, col_types = "text")
 SC = SC[complete.cases(SC$`Account ID`),]
 SC = SC[, c("Account ID", "Status")]
 
@@ -199,10 +199,10 @@ Statuses$`SG Refresher Training`[Statuses$`SG Refresher Training` == "Not starte
 
 
 #### Save the txt file ####
-write.table(Statuses, paste(wd,"/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", sep = ""), sep="\t", row.names=FALSE)
+write.table(Statuses, "C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", sep="\t", row.names=FALSE)
 
 
 #### Upload to FTP Server ####
 Sys.sleep(5)
 
-ftpUpload(paste(wd,"/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", sep = ""), "ftp://infactor:7fr&Ez6NVLLE@www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt")
+ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://infactor:7fr&Ez6NVLLE@www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt")

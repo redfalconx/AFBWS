@@ -12,7 +12,7 @@ wd = dirname(getwd())
 
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
-CAPs_Data <- as.data.table(read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", sep = ""), "Data", skip = 1, col_types = "text"))
+CAPs_Data <- as.data.table(read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "Data", skip = 1, col_types = "text"))
 CAPs_Data[, (52:ncol(CAPs_Data))] <- list(NULL)
 
 CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
@@ -115,7 +115,7 @@ write.csv(CAPs, "CAP Data with RVV dates.csv", na="")
 
 #### Fetch the Remediation Workbook spreadsheets and put the results in dataframes ####
 # CAPs <- read_excel("C:/Users/Andrew/Dropbox (AFBWS.org)/Member Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", 2, skip = 1)
-CAPs_pivot <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", sep = ""), "Current Status Pivot", skip = 3)
+CAPs_pivot <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "Current Status Pivot", skip = 3)
 # Remove Grand Total row and change column names
 CAPs_pivot = CAPs_pivot[1:nrow(CAPs_pivot)-1, ]
 
@@ -140,7 +140,7 @@ setnames(CAPs_pivot, c(2:53),
 
 
 # Fetch statuses of each RVV and CCVV, remove Grand Total row, and change column names
-CAPs_RVVs <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", sep = ""), "RVV Pivots", skip = 3)
+CAPs_RVVs <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "RVV Pivots", skip = 3)
 RVV1 = CAPs_RVVs[,1:4]
 setnames(RVV1, names(RVV1), c("Account ID", "Completed - RVV1", "In progress - RVV1", "Not started - RVV1"))
 RVV1 = RVV1[1:nrow(RVV1)-1,]
@@ -183,8 +183,8 @@ CAPs = left_join(CAPs, RVV6, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV7, by = c("Row Labels" = "Account ID"))
 
 # Fetch Highest Priority (Urgent Life Safety) NCs
-HPNCs_all <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", sep = ""), "All Factories", skip = 4)
-HPNCs_com <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsx", sep = ""), "Completed", skip = 11)
+HPNCs_all <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "All Factories", skip = 4)
+HPNCs_com <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "Completed", skip = 11)
 
 # Remove unnecessary columns
 HPNCs_all = HPNCs_all[complete.cases(HPNCs_all$`Row Labels`),]
@@ -271,7 +271,9 @@ Combined = left_join(Combined, DEA, by = "Account ID")
 
 #### Basic Fire Safety Training ####
 ## Before loading, put in descending order with 4a and 3a first ##
-Training <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Basic Fire Safety & Helpline Training Implementation.xlsx", sep = ""), "Factory List-BFST")
+Training <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Basic Fire Safety & Helpline Training Implementation.xlsx", sep = ""), "Factory List-BFST", col_types = "text")
+Training$`Account ID` = as.numeric(Training$`Account ID`)
+Training = Training[complete.cases(Training$`Account ID`), ]
 # Check to make sure 3a and 4a phases are included
 table(Training$`Training Phase`, useNA = "ifany")
 
@@ -280,20 +282,20 @@ table(Training$`Training Phase`, useNA = "ifany")
 Training = Training[, c("Account ID", "Number of employees to be trained.", "Total number of employees trained so far.", "Training Phase", "Percentage of Workers Trained", "STATUS", "Final Training Status \r\n(CCVV)",
                         "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?")]
 
-# Subset initial training (phase 1 and 2)
-IT = Training[Training$`Training Phase` %in% c("1","2"),]
+# Subset initial training (phase 1, 2, 3a, 4a)
+IT = Training[Training$`Training Phase` %in% c("1","2", "3a", "4a"),]
 IT = IT[, c("Account ID", "Total number of employees trained so far.")]
 setnames(IT, "Total number of employees trained so far.", "Initial Basic Fire Safety Workers Trained")
 
-# If factory is in phase 3 or 4 and had phase 1 or 2, remove phase 1 or 2 rows
-Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
-Training$`Training Phase`[Training$`Training Phase` == "4a"] <- "4"
-Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
+# If factory is in phase 3 or 4 and had phase 1, 2, 3a, or 4a remove phase 1, 2, 3a, or 4a rows
+# Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
+# Training$`Training Phase`[Training$`Training Phase` == "4a"] <- "4"
+# Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
 Training = arrange(Training, desc(`Training Phase`))
 Training = distinct(Training, `Account ID`, .keep_all = TRUE)
 Training$`Refresher Training` <- "No"
-Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 3] <- "Yes"
-Training$`Refresher Training`[!is.na(Training$`Training Phase`) & Training$`Training Phase` == 4] <- "Yes"
+Training$`Refresher Training`[Training$`Training Phase` == "3"] <- "Yes"
+Training$`Refresher Training`[Training$`Training Phase` == "4"] <- "Yes"
 
 Training$`Total number of employees trained so far.`[Training$`Refresher Training` == "No"] <- 0
 
