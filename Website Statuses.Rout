@@ -42,6 +42,8 @@ The following objects are masked from 'package:base':
 
     intersect, setdiff, setequal, union
 
+Warning message:
+package 'dplyr' was built under R version 3.4.2 
 > library(tidyr) # a few pivot-table functions
 > library(RCurl) #  push to ftp server
 Loading required package: bitops
@@ -96,15 +98,15 @@ The following object is masked from 'package:tidyr':
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
                   Completed                    Critical 
-                        203                          16 
+                        247                           8 
 Expansion of a new building          Needs intervention 
-                          6                         171 
+                          5                         185 
                         New                    On track 
-                         35                         160 
+                         38                         115 
                 Pending RVV                     Removed 
-                         38                         116 
+                         35                         115 
                   Suspended                Under Accord 
-                        160                         230 
+                        162                         231 
 > 
 > 
 > ### Helpline ###
@@ -132,7 +134,7 @@ Expansion of a new building          Needs intervention
 > table(Helpline$Helpline, useNA = "ifany")
 
   Completed Not started 
-        936          91 
+        944          91 
 > 
 > 
 > ### Training ###
@@ -162,18 +164,10 @@ Expansion of a new building          Needs intervention
 > 
 > table(Training$`Training Status`, useNA = "ifany")
 
-                               Completed 
-                                     733 
-                                Critical 
-                                     111 
-Invited for Phase-4 but did not response 
-                                       1 
-                      Needs intervention 
-                                       5 
-                             Not started 
-                                       5 
-                                On track 
-                                     172 
+         Completed           Critical Needs intervention Needs Intervention 
+               764                108                 13                  2 
+       Not started           On track 
+                 8                140 
 > 
 > 
 > ### SG Training ###
@@ -204,18 +198,10 @@ Invited for Phase-4 but did not response
 > 
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
-                                    Completed 
-                                          771 
-                                     Critical 
-                                           34 
-Invited for BFST Training but didn't response 
-                                            1 
-                           Needs intervention 
-                                            1 
-                                  Not started 
-                                           13 
-                                     On track 
-                                          135 
+         Completed           Critical Needs intervention        Not started 
+               809                 28                 28                 12 
+          On track 
+                88 
 > 
 > 
 > ### SC ###
@@ -270,12 +256,9 @@ Invited for BFST Training but didn't response
 > Statuses$`Overall Status`[Statuses$`Remediation Factory Status` == "Removed"] = "Removed"
 > 
 > 
-> #### Reorder columns, remove /E, and missing values = "Not started" ####
+> #### Reorder columns and missing values = "Not started" ####
 > Statuses = Statuses[, c("Account ID", "Account Name", "Inspection", "Remediation Factory Status", "Training Status", "SG Training Status", "Helpline", #"SC Status", 
 +                         "Overall Status", "Refresher Training", "SG Refresher Training")]
-> Statuses$`Account ID` = as.numeric(Statuses$`Account ID`)
-Warning message:
-NAs introduced by coercion 
 > Statuses = Statuses[complete.cases(Statuses$`Account ID`), ]
 > Statuses[is.na(Statuses)] = "Not started"
 > Statuses$`Refresher Training`[Statuses$`Refresher Training` == "Not started"] = "No"
@@ -295,7 +278,7 @@ OK
 > 
 > proc.time()
    user  system elapsed 
-   1.90    0.43    8.68 
+   2.15    0.37    8.92 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:

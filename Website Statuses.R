@@ -188,10 +188,9 @@ Statuses$`Overall Status`[Statuses$`Remediation Factory Status` == "Suspended"] 
 Statuses$`Overall Status`[Statuses$`Remediation Factory Status` == "Removed"] = "Removed"
 
 
-#### Reorder columns, remove /E, and missing values = "Not started" ####
+#### Reorder columns and missing values = "Not started" ####
 Statuses = Statuses[, c("Account ID", "Account Name", "Inspection", "Remediation Factory Status", "Training Status", "SG Training Status", "Helpline", #"SC Status", 
                         "Overall Status", "Refresher Training", "SG Refresher Training")]
-Statuses$`Account ID` = as.numeric(Statuses$`Account ID`)
 Statuses = Statuses[complete.cases(Statuses$`Account ID`), ]
 Statuses[is.na(Statuses)] = "Not started"
 Statuses$`Refresher Training`[Statuses$`Refresher Training` == "Not started"] = "No"

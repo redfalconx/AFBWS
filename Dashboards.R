@@ -205,7 +205,6 @@ CAPs = left_join(CAPs, HPNCs, by = "Row Labels")
 
 #### Master Factory List ####
 Master <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
-Master$`Account ID` = as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Review Panel?`)
 #Master = Master[, 1:82]
@@ -229,6 +228,24 @@ Master$`Remediation Factory Status` = ifelse(grepl("Subs", Master$`Remediation F
 # Clean up Review Panel data 
 Master$`Review Panel` <- ifelse(!is.na(Master$`Recommended to Review Panel?`), Master$`CAP Approved by Alliance`, NA)
 
+# Separate out Expansions to get Remediation Status
+Master_Exp = Master[grepl("/E", Master$`Account ID`, ignore.case = TRUE) == TRUE, ]
+Master$`Account ID` = as.numeric(Master$`Account ID`)
+Master = Master[complete.cases(Master$`Account ID`),]
+
+Master_Exp = Master_Exp[, c("Account ID", "Remediation Factory Status")]
+setnames(Master_Exp, "Remediation Factory Status", "Expansion Remediation Status")
+
+Master_Exp$`Expansion Remediation Status` = ifelse(grepl("building", Master_Exp$`Expansion Remediation Status`, ignore.case = TRUE) == TRUE, NA, Master_Exp$`Expansion Remediation Status`)
+
+#Master_Exp$`Account ID` = arrange(Master_Exp, desc(`Account ID`))
+Master_Exp$`Account ID` = gsub("/E[^a-z]", "", Master_Exp$`Account ID`)
+Master_Exp$`Account ID` = gsub("/E", "", Master_Exp$`Account ID`)
+
+Master_Exp = aggregate(Master_Exp["Expansion Remediation Status"], Master_Exp["Account ID"], paste, collapse = ", ")
+
+Master_Exp$`Account ID` = as.numeric(Master_Exp$`Account ID`)
+
 # Clean up Number of Active Members data
 Master$`Number of Active Members.2` <- ifelse(grepl("*", Master$`Number of Active Members`, fixed = TRUE) == TRUE, 
                                               "*", "")
@@ -242,6 +259,7 @@ Master$`Number of Active Members` <- ifelse(grepl("*", Master$`Number of Active 
 Master$`Accord Shared/Alliance only info`[is.na(Master$`Accord Shared/Alliance only info`)] <- "Alliance Only"
 
 # Join the tables
+Master = left_join(Master, Master_Exp, by = "Account ID")
 CAPs$`Row Labels` = as.numeric(CAPs$`Row Labels`)
 Combined = left_join(Master, CAPs, by = c("Account ID" = "Row Labels"))
 
@@ -268,6 +286,8 @@ DEA = DEA[ , c("Account ID", "Retrofitting Status")]
 # Join the tables
 Combined = left_join(Combined, DEA, by = "Account ID")
 
+# Change to Completed if Remediation has been completed
+Combined$`Retrofitting Status`[grepl("completed", Combined$`Remediation Factory Status`, ignore.case = TRUE) == TRUE] = "Completed"
 
 #### Basic Fire Safety Training ####
 ## Before loading, put in descending order with 4a and 3a first ##
@@ -290,7 +310,7 @@ setnames(IT, "Total number of employees trained so far.", "Initial Basic Fire Sa
 # If factory is in phase 3 or 4 and had phase 1, 2, 3a, or 4a remove phase 1, 2, 3a, or 4a rows
 # Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
 # Training$`Training Phase`[Training$`Training Phase` == "4a"] <- "4"
-# Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
+Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
 Training = arrange(Training, desc(`Training Phase`))
 Training = distinct(Training, `Account ID`, .keep_all = TRUE)
 Training$`Refresher Training` <- "No"
@@ -309,7 +329,7 @@ Combined = left_join(Combined, Training, by = "Account ID")
 
 
 ##### Security Guard Training ####
-SG_Training <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation.xlsx", sep = ""), "Factory List-SBFSDT")
+SG_Training <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Security Guard Training Implementation.xlsx", sep = ""), "Factory List-SBFST")
 
 # Remove unnecessary columns
 # SG_Training[, c(4:30, 34:37, 47:59)] <- list(NULL)
@@ -331,6 +351,7 @@ SG_Training$`Total number of security staff trained so far`[SG_Training$`Securit
 
 # Join the tables
 SG_Training = left_join(SG_Training, SG_IT, by = "Account ID")
+SG_Training$`Account ID` = as.numeric(SG_Training$`Account ID`)
 Combined = left_join(Combined, SG_Training, by = "Account ID")
 
 
@@ -366,7 +387,7 @@ SC = SC[complete.cases(SC$`Account ID`),]
 setnames(SC, names(SC), gsub("\\r\\n", " ", names(SC)))
 # SC = SC[SC$`SC Formation  (Yes/No) %` > 0,]
 # SC = SC[!is.na(SC$`SC Formation  (Yes/No) %`),]
-SC = SC[, c("Account ID", "PC / CBA or TU / WWA (Yes/No) %" , "SC Formation  (Yes/No) %", "SC Formation Date", 
+SC = SC[, c("Account ID", "PC / CBA or TU / WWA (Yes/No) % (10)" , "SC Formation  (Yes/No) % (10)", "SC Formation Date", 
             "SC Formation Process", "Total SC members", "TtT Received from Alliance (Yes/No) % (10)", 
             "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", 
             "SC Activity Implementation Completion Date (Total - 100 Days)", "Action Plan Submitted (Yes/No) % (Total % - 5)", 
@@ -432,6 +453,9 @@ Combined = left_join(Combined, Expansions, by = "Account ID")
 # Add column for Yes
 Combined$Expansion = ifelse(is.na(Combined$`Audit Scope`) == TRUE, "No", "Yes")
 
+# If in Master Factory List but not an expansion inspection in the FFC, remove Expansion Remediation Status
+Combined$`Expansion Remediation Status` = ifelse(Combined$Expansion == "Yes", Combined$`Expansion Remediation Status`, NA)
+
 # Remove duplicate rows
 Combined = Combined[!duplicated(Combined[,"Account ID"]),]
 
@@ -456,7 +480,7 @@ Combined = Combined[!duplicated(Combined[,"Account ID"]),]
 
 
 #### Reorder the columns of Combined to match the Dashboard Workbook more closely ####
-someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion", "Number of employees to be trained.", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
+someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion Remediation Status", "Number of employees to be trained.", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
              "Escalation Date", "Escalation Status", "Review Panel", 
              "Electrical High - Completed", "Electrical High - In progress", "Electrical High - Not Started", "Electrical High Total",
              "Electrical Medium - Completed", "Electrical Medium - In progress", "Electrical Medium - Not Started", "Electrical Medium Total",
@@ -483,7 +507,7 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
              "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
              "Initial Security Guards Trained", "Security Guard Refresher Training", "Total number of security staff trained so far", "Percentage of security staff trained", "STATUS.y", "Spot Check Results (Pass or Fail)", "Support Visit",
-             "PC / CBA or TU / WWA (Yes/No) %", "SC Formation  (Yes/No) %", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
+             "PC / CBA or TU / WWA (Yes/No) % (10)", "SC Formation  (Yes/No) % (10)", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",
              "Fire - Active (factory)", "Fire - Danger (factory)", "Locked factory exit or blocked egress route", "Other", "Sparking / short circuit", "Structural - Cracks in beams, columns or walls", "Structural - walls or windows shaking", "Unattended / bare electric wires", "Unauthorized subcontracting",
              "Box Folder Link")
@@ -556,6 +580,8 @@ library(data.table) # converts to data tables
 library(readxl) # reads Excel files
 library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
+
+wd = dirname(getwd())
 
 Combined <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Dashboard Workbook.xlsm", sep = ""), "Combined", skip = 2)
 
