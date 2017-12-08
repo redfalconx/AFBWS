@@ -56,9 +56,6 @@ table(Master$`Remediation Factory Status`, useNA = "ifany")
 
 ### Helpline ###
 # Sort by Training Phase
-Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
-Training$`Training Phase`[Training$`Training Phase` == "4a"] <- "4"
-Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
 Training = arrange(Training, desc(`Training Phase`))
 
 # Create Helpline column with "Not started" as default
@@ -69,9 +66,7 @@ Helpline$Helpline = "Not started"
 Helpline$Helpline[grepl("pilot", Training$`Helpline Comment`, ignore.case = TRUE) == TRUE] = "Completed"
 
 # If in anything but phase 1 or blank, then status is "Completed"
-Helpline$Helpline[Helpline$`Training Phase` == 2] = "Completed"
-Helpline$Helpline[Helpline$`Training Phase` == 3] = "Completed"
-Helpline$Helpline[Helpline$`Training Phase` == 4] = "Completed"
+Helpline$Helpline[Helpline$`Training Phase` != "1"] = "Completed"
 
 # Subset, and remove duplicates
 Helpline = distinct(Helpline, `Account ID`, .keep_all = TRUE)
@@ -83,8 +78,8 @@ table(Helpline$Helpline, useNA = "ifany")
 # If factory is in phase 3 or 4 and had phase 1 or 2, remove phase 1 or 2 rows
 Training = distinct(Training, `Account ID`, .keep_all = TRUE)
 Training$`Refresher Training` = "No"
-Training$`Refresher Training`[Training$`Training Phase` == 3] = "Yes"
-Training$`Refresher Training`[Training$`Training Phase` == 4] = "Yes"
+Training$`Refresher Training`[Training$`Training Phase` == "3"] = "Yes"
+Training$`Refresher Training`[Training$`Training Phase` == "4"] = "Yes"
 
 Training = Training[, c("Account ID", "STATUS", "Refresher Training")]
 setnames(Training, "STATUS", "Training Status")
@@ -92,8 +87,8 @@ setnames(Training, "STATUS", "Training Status")
 # If status is "critical" or "unwilling", then "Critical"
 Training$`Training Status`[grepl("critical", Training$`Training Status`, ignore.case = TRUE) == TRUE | grepl("unwilling", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "Critical"
 
-# If status is "not on track", then "Needs intervention"
-Training$`Training Status`[grepl("not on track", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "Needs intervention"
+# If status is "not on track" or "Needs intervention", then "Needs intervention"
+Training$`Training Status`[grepl("not on track", Training$`Training Status`, ignore.case = TRUE) == TRUE | grepl("needs intervention", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "Needs intervention"
 
 # If status is "on track", then "On track"
 Training$`Training Status`[grepl("on track", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "On track"
@@ -204,4 +199,5 @@ write.table(Statuses, "C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website
 #### Upload to FTP Server ####
 Sys.sleep(5)
 
-ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://infactor:7fr&Ez6NVLLE@www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt")
+ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "infactor:A!FBWS007$%2018")
+

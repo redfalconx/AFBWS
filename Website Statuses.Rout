@@ -25,6 +25,8 @@ Type 'q()' to quit R.
 > 
 > #### Load packages ####
 > library(data.table) # converts to data tables
+Warning message:
+package 'data.table' was built under R version 3.4.2 
 > library(readxl) # reads Excel files
 > library(dplyr) # data manipulation
 
@@ -45,6 +47,8 @@ The following objects are masked from 'package:base':
 Warning message:
 package 'dplyr' was built under R version 3.4.2 
 > library(tidyr) # a few pivot-table functions
+Warning message:
+package 'tidyr' was built under R version 3.4.2 
 > library(RCurl) #  push to ftp server
 Loading required package: bitops
 
@@ -98,22 +102,19 @@ The following object is masked from 'package:tidyr':
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
                   Completed                    Critical 
-                        247                           8 
+                        276                          70 
 Expansion of a new building          Needs intervention 
-                          5                         185 
+                          2                          89 
                         New                    On track 
-                         38                         115 
+                         33                         120 
                 Pending RVV                     Removed 
-                         35                         115 
+                         52                         117 
                   Suspended                Under Accord 
-                        162                         231 
+                        165                         237 
 > 
 > 
 > ### Helpline ###
 > # Sort by Training Phase
-> Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
-> Training$`Training Phase`[Training$`Training Phase` == "4a"] <- "4"
-> Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
 > Training = arrange(Training, desc(`Training Phase`))
 > 
 > # Create Helpline column with "Not started" as default
@@ -124,9 +125,7 @@ Expansion of a new building          Needs intervention
 > Helpline$Helpline[grepl("pilot", Training$`Helpline Comment`, ignore.case = TRUE) == TRUE] = "Completed"
 > 
 > # If in anything but phase 1 or blank, then status is "Completed"
-> Helpline$Helpline[Helpline$`Training Phase` == 2] = "Completed"
-> Helpline$Helpline[Helpline$`Training Phase` == 3] = "Completed"
-> Helpline$Helpline[Helpline$`Training Phase` == 4] = "Completed"
+> Helpline$Helpline[Helpline$`Training Phase` != "1"] = "Completed"
 > 
 > # Subset, and remove duplicates
 > Helpline = distinct(Helpline, `Account ID`, .keep_all = TRUE)
@@ -134,15 +133,15 @@ Expansion of a new building          Needs intervention
 > table(Helpline$Helpline, useNA = "ifany")
 
   Completed Not started 
-        944          91 
+        952          91 
 > 
 > 
 > ### Training ###
 > # If factory is in phase 3 or 4 and had phase 1 or 2, remove phase 1 or 2 rows
 > Training = distinct(Training, `Account ID`, .keep_all = TRUE)
 > Training$`Refresher Training` = "No"
-> Training$`Refresher Training`[Training$`Training Phase` == 3] = "Yes"
-> Training$`Refresher Training`[Training$`Training Phase` == 4] = "Yes"
+> Training$`Refresher Training`[Training$`Training Phase` == "3"] = "Yes"
+> Training$`Refresher Training`[Training$`Training Phase` == "4"] = "Yes"
 > 
 > Training = Training[, c("Account ID", "STATUS", "Refresher Training")]
 > setnames(Training, "STATUS", "Training Status")
@@ -150,8 +149,8 @@ Expansion of a new building          Needs intervention
 > # If status is "critical" or "unwilling", then "Critical"
 > Training$`Training Status`[grepl("critical", Training$`Training Status`, ignore.case = TRUE) == TRUE | grepl("unwilling", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "Critical"
 > 
-> # If status is "not on track", then "Needs intervention"
-> Training$`Training Status`[grepl("not on track", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "Needs intervention"
+> # If status is "not on track" or "Needs intervention", then "Needs intervention"
+> Training$`Training Status`[grepl("not on track", Training$`Training Status`, ignore.case = TRUE) == TRUE | grepl("needs intervention", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "Needs intervention"
 > 
 > # If status is "on track", then "On track"
 > Training$`Training Status`[grepl("on track", Training$`Training Status`, ignore.case = TRUE) == TRUE] = "On track"
@@ -164,10 +163,10 @@ Expansion of a new building          Needs intervention
 > 
 > table(Training$`Training Status`, useNA = "ifany")
 
-         Completed           Critical Needs intervention Needs Intervention 
-               764                108                 13                  2 
-       Not started           On track 
-                 8                140 
+               Completed                 Critical       Needs intervention 
+                     769                      106                       15 
+             Not started                 On track Suspended - Address Only 
+                       2                      136                       15 
 > 
 > 
 > ### SG Training ###
@@ -198,10 +197,10 @@ Expansion of a new building          Needs intervention
 > 
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
-         Completed           Critical Needs intervention        Not started 
-               809                 28                 28                 12 
-          On track 
-                88 
+               Completed                 Critical       Needs intervention 
+                     863                       33                        6 
+             Not started                 On track Suspended - Address Only 
+                      17                       41                       16 
 > 
 > 
 > ### SC ###
@@ -272,13 +271,14 @@ Expansion of a new building          Needs intervention
 > #### Upload to FTP Server ####
 > Sys.sleep(5)
 > 
-> ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://infactor:7fr&Ez6NVLLE@www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt")
+> ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "infactor:A!FBWS007$%2018")
 OK 
  0 
 > 
+> 
 > proc.time()
    user  system elapsed 
-   2.15    0.37    8.92 
+   2.48    0.34    9.34 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:
