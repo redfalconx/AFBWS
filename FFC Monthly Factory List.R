@@ -59,12 +59,7 @@ Alink$clickElement()
 # Open the file
 Afile <- sub(".*filename=", "", Aurl)
 Sys.sleep(5)
-if (file.exists(paste(wd,"/Downloads/", Afile, sep = ""))) {
-  file.rename(paste(wd,"/Downloads/", Afile, sep = ""), paste(wd,"/Downloads/Monthly Factory List.xls", sep = ""))
-} else {
-    Sys.sleep(5)
-}
-
+file.rename(paste(wd,"/Downloads/", Afile, sep = ""), paste(wd,"/Downloads/Monthly Factory List.xls", sep = ""))
 MFL <- as.data.frame(readHTMLTable(paste(wd,"/Downloads/Monthly Factory List.xls", sep = "")))
 Sys.sleep(5)
 

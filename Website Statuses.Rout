@@ -45,7 +45,7 @@ The following objects are masked from 'package:base':
     intersect, setdiff, setequal, union
 
 Warning message:
-package 'dplyr' was built under R version 3.4.2 
+package 'dplyr' was built under R version 3.4.3 
 > library(tidyr) # a few pivot-table functions
 Warning message:
 package 'tidyr' was built under R version 3.4.2 
@@ -58,6 +58,8 @@ The following object is masked from 'package:tidyr':
 
     complete
 
+Warning message:
+package 'RCurl' was built under R version 3.4.3 
 > 
 > wd = dirname(getwd())
 > 
@@ -101,21 +103,19 @@ The following object is masked from 'package:tidyr':
 > 
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
-                  Completed                    Critical 
-                        276                          70 
-Expansion of a new building          Needs intervention 
-                          2                          89 
-                        New                    On track 
-                         33                         120 
-                Pending RVV                     Removed 
-                         52                         117 
-                  Suspended                Under Accord 
-                        165                         237 
+         Completed           Critical Needs intervention                New 
+               332                 48                 82                 24 
+          On track        Pending RVV            Removed          Suspended 
+               102                 63                115                165 
+      Under Accord 
+               246 
 > 
 > 
 > ### Helpline ###
 > # Sort by Training Phase
-> Training = arrange(Training, desc(`Training Phase`))
+> Training = Training %>%
++   mutate(`Training Phase` =  factor(`Training Phase`, levels = c("4", "3", "4a", "3a", "2", "1"))) %>%
++   arrange(`Training Phase`)
 > 
 > # Create Helpline column with "Not started" as default
 > Helpline = Training
@@ -133,7 +133,7 @@ Expansion of a new building          Needs intervention
 > table(Helpline$Helpline, useNA = "ifany")
 
   Completed Not started 
-        952          91 
+        964          89 
 > 
 > 
 > ### Training ###
@@ -164,9 +164,9 @@ Expansion of a new building          Needs intervention
 > table(Training$`Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     769                      106                       15 
+                     774                      110                       12 
              Not started                 On track Suspended - Address Only 
-                       2                      136                       15 
+                       3                      139                       15 
 > 
 > 
 > ### SG Training ###
@@ -198,9 +198,9 @@ Expansion of a new building          Needs intervention
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     863                       33                        6 
+                     895                       34                        4 
              Not started                 On track Suspended - Address Only 
-                      17                       41                       16 
+                      11                       30                       16 
 > 
 > 
 > ### SC ###
@@ -278,7 +278,7 @@ OK
 > 
 > proc.time()
    user  system elapsed 
-   2.48    0.34    9.34 
+   3.48    0.59   14.67 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:

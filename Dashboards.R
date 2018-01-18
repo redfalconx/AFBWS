@@ -217,11 +217,14 @@ Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Rev
 
 Master = Master[, c("Account ID", "Account Name", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", "Escalation Date", "Escalation Status", 
                     "Recommended to Review Panel?", "CAP Approved by Alliance", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV" , "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", 
-                    "CCVV 1 Date", "CCVV 1 Result", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 % of Completion", "Box Folder Link")]
+                    "CCVV 1 Date", "CCVV 1 Result", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 Result", "CCVV 2 % of Completion", "Box Folder Link")]
 
 # Change Subs. Completion to Initial CAP Completed
 table(Master$`Remediation Factory Status`)
 Master$`Remediation Factory Status` = ifelse(grepl("Subs", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE, "Initial CAP Completed", Master$`Remediation Factory Status`)
+
+# Change from "CCVV Pending Awaiting CAP Closure of Unoccupied Expansion" to "On track"
+Master$`Remediation Factory Status`[grepl("CCVV Pending", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE] = "On track"
 
 # Master$`Remediation Factory Status` = ifelse(grepl("Suspended", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE, "Critical", Master$`Remediation Factory Status`)
 
@@ -300,7 +303,7 @@ table(Training$`Training Phase`, useNA = "ifany")
 # Remove unnecessary columns
 # Training[, c(4:25, 27:32, 37:43, 63:72)] <- list(NULL)
 Training = Training[, c("Account ID", "Number of employees to be trained.", "Total number of employees trained so far.", "Training Phase", "Percentage of Workers Trained", "STATUS", "Final Training Status \r\n(CCVV)",
-                        "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?")]
+                        "Final Training Assessment (CCVV) \r\nCurrent Results \r\n(Pass or Fail)", "Support Visit Required?")]
 
 # Subset initial training (phase 1, 2, 3a, 4a)
 IT = Training[Training$`Training Phase` %in% c("1","2", "3a", "4a"),]
@@ -310,8 +313,11 @@ setnames(IT, "Total number of employees trained so far.", "Initial Basic Fire Sa
 # If factory is in phase 3 or 4 and had phase 1, 2, 3a, or 4a remove phase 1, 2, 3a, or 4a rows
 # Training$`Training Phase`[Training$`Training Phase` == "3a"] <- "3"
 # Training$`Training Phase`[Training$`Training Phase` == "4a"] <- "4"
-Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
-Training = arrange(Training, desc(`Training Phase`))
+# Training$`Training Phase` <- as.numeric(Training$`Training Phase`)
+# Training = arrange(Training, desc(`Training Phase`))
+Training = Training %>%
+  mutate(`Training Phase` =  factor(`Training Phase`, levels = c("4", "3", "4a", "3a", "2", "1"))) %>%
+  arrange(`Training Phase`)
 Training = distinct(Training, `Account ID`, .keep_all = TRUE)
 Training$`Refresher Training` <- "No"
 Training$`Refresher Training`[Training$`Training Phase` == "3"] <- "Yes"
@@ -369,6 +375,7 @@ H_reasons = H_reasons[complete.cases(H_reasons$`Row Labels`),]
 ## Helpline factories ##
 H_factories <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Factory Profile Update_Helpline.xlsx", sep = ""), "Helpline List")
 H_factories = H_factories[, c("Account ID", "Workers Trained")]
+H_factories$`Account ID` = as.numeric(H_factories$`Account ID`)
 H_factories = H_factories[complete.cases(H_factories$`Account ID`), ]
 H_factories$Implemented <- "Yes"
 
@@ -503,9 +510,9 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 5th RVV", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5",
              "Confirmed Date of 6th RVV", "Completed - RVV6", "In progress - RVV6", "Not started - RVV6",
              "Confirmed Date of 7th RVV", "Completed - RVV7", "In progress - RVV7", "Not started - RVV7",
-             "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", 
+             "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 2 Result", 
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
-             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) Results \r\n(Pass or Fail)", "Support Visit Required?",
+             "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) \r\nCurrent Results \r\n(Pass or Fail)", "Support Visit Required?",
              "Initial Security Guards Trained", "Security Guard Refresher Training", "Total number of security staff trained so far", "Percentage of security staff trained", "STATUS.y", "Spot Check Results (Pass or Fail)", "Support Visit",
              "PC / CBA or TU / WWA (Yes/No) % (10)", "SC Formation  (Yes/No) % (10)", "SC Formation Date", "SC Formation Process", "TtT Received from Alliance (Yes/No) % (10)", "Number of Participants", "Total Number of Participants in Factory Training for rest of SC members by Factory Facilitators", "SC Activity Implementation Completion Date", "Status",
              "Implemented", "Workers Trained", "General Inquiries", "No Category", "Non-urgent: Non-safety", "Non-urgent: Safety", "Urgent: Non-safety", "Urgent: Safety",

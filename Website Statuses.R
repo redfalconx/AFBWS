@@ -51,12 +51,17 @@ Master$`Remediation Factory Status`[grepl("Subs", Master$`Remediation Factory St
 # Change from "Completed Under Accord" to "Completed"
 Master$`Remediation Factory Status`[grepl("completed", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE] = "Completed"
 
+# Change from "CCVV Pending Awaiting CAP Closure of Unoccupied Expansion" to "On track"
+Master$`Remediation Factory Status`[grepl("CCVV Pending", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE] = "On track"
+
 table(Master$`Remediation Factory Status`, useNA = "ifany")
 
 
 ### Helpline ###
 # Sort by Training Phase
-Training = arrange(Training, desc(`Training Phase`))
+Training = Training %>%
+  mutate(`Training Phase` =  factor(`Training Phase`, levels = c("4", "3", "4a", "3a", "2", "1"))) %>%
+  arrange(`Training Phase`)
 
 # Create Helpline column with "Not started" as default
 Helpline = Training
