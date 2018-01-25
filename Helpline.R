@@ -28,9 +28,14 @@ RS <- read_excel(paste(wd, "/Box Sync/Member Reporting/Dashboards/Dashboard Work
 # Convert Date to date format
 Helpline$`Call Date` = as.Date(as.numeric(Helpline$`Call Date`), origin = "1899-12-30")
 
+# Change NA to "N/A" for Resolution Status
+Helpline$`Resolution Status`[is.na(Helpline$`Resolution Status`)] = "N/A"
+
 # Create new column that combines Caller Group and Reason
 Helpline = mutate(Helpline, `Caller Group: Reason` = paste(`Caller Group`, Reason, sep = ": "))
 
+# Create new column that combines Caller Group and Resolution Status
+Helpline = mutate(Helpline, `Caller Group: Resolution Status` = paste(`Caller Group`, `Resolution Status`, sep = ": "))
 
 # Get sum totals for reasons and resoltuions by month by category
 
@@ -50,9 +55,19 @@ H_caller_group_resolution_count = Helpline %>%
 
 H_caller_group_resolution_count = mutate(H_caller_group_resolution_count, Date = as.POSIXct(paste(year, month, "01", sep = "-")))
 
+H_substantive_resolution_count = Helpline %>%
+  filter(`Caller Group` == "Non-urgent: Non-safety" | `Caller Group` == "Non-urgent: Safety" | `Caller Group` == "Urgent: Non-safety" | `Caller Group` == "Urgent: Safety") %>%
+  group_by(`Factory FFC Number`, year = year(`Call Date`), month = month(`Call Date`), `Caller Group: Resolution Status`) %>%
+  summarise(count = n_distinct(Sl.)) %>%
+  spread(c(`Caller Group: Resolution Status`), count, fill = 0) %>%
+  arrange(`Factory FFC Number`, year, month)
+
+H_substantive_resolution_count = mutate(H_substantive_resolution_count, Date = as.POSIXct(paste(year, month, "01", sep = "-")))
+
 # Convert to data table
 H_caller_group_reason_count = as.data.table(H_caller_group_reason_count)
 H_caller_group_resolution_count = as.data.table(H_caller_group_resolution_count)
+H_substantive_resolution_count = as.data.table(H_substantive_resolution_count)
 
 # All of the relevant dates
 # ts <- seq.POSIXt(as.POSIXlt("2014-12-01"), as.POSIXlt(Sys.Date() - 30), by="month")
@@ -61,29 +76,46 @@ dates.all = H_caller_group_reason_count[, ts, by = `Factory FFC Number`]
 
 # Set the key and merge filling in the blanks with missing dates
 setkey(H_caller_group_reason_count, `Factory FFC Number`, Date)
-H_caller_group_reason_count <- H_caller_group_reason_count[dates.all, roll = T]
+H_caller_group_reason_count <- H_caller_group_reason_count[dates.all, roll = F]
 
 setkey(H_caller_group_resolution_count, `Factory FFC Number`, Date)
-H_caller_group_resolution_count = H_caller_group_resolution_count[dates.all, roll = T]
+H_caller_group_resolution_count = H_caller_group_resolution_count[dates.all, roll = F]
+
+setkey(H_substantive_resolution_count, `Factory FFC Number`, Date)
+H_substantive_resolution_count = H_substantive_resolution_count[dates.all, roll = F]
 
 # Format Timestamp to yyyy-mm
 H_caller_group_reason_count$Date <- format(H_caller_group_reason_count$Date, "%b-%Y")
 H_caller_group_resolution_count$Date <- format(H_caller_group_resolution_count$Date, "%b-%Y")
+H_substantive_resolution_count$Date <- format(H_substantive_resolution_count$Date, "%b-%Y")
 
 # Remove year and month columns
 H_caller_group_reason_count[, 2:3] <- list(NULL)
 H_caller_group_resolution_count[, 2:3] <- list(NULL)
+H_substantive_resolution_count[, 2:3] <- list(NULL)
 
 # Move Date to second column
 H_caller_group_reason_count <- subset(H_caller_group_reason_count, select=c(1, ncol(H_caller_group_reason_count), 2:(ncol(H_caller_group_reason_count)-1)))
 H_caller_group_resolution_count <- subset(H_caller_group_resolution_count, select=c(1, ncol(H_caller_group_resolution_count), 2:(ncol(H_caller_group_resolution_count)-1)))
+H_substantive_resolution_count <- subset(H_substantive_resolution_count, select=c(1, ncol(H_substantive_resolution_count), 2:(ncol(H_substantive_resolution_count)-1)))
 
-# Join with Resolution Statuses
+# Join with Resolution Statuses and Substantive Calls Resolution Statuses
 # RS$`Row Labels` <- as.character(RS$`Row Labels`)
 Helpline_calls_by_factory_by_month = left_join(H_caller_group_reason_count, H_caller_group_resolution_count, by = c("Factory FFC Number", "Date"))
+Helpline_calls_by_factory_by_month = left_join(Helpline_calls_by_factory_by_month, H_substantive_resolution_count, by = c("Factory FFC Number", "Date"))
 
 # Remove <NA> columns
-Helpline_calls_by_factory_by_month[, c("<NA>")] = list(NULL)
+# Helpline_calls_by_factory_by_month[, "<NA>"] = list(NULL)
+
+# Load Master Factory List for Factory Names
+Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
+Master = Master[, 1:2]
+
+# Join Factory Names to Helpline data
+Helpline_calls_by_factory_by_month = left_join(Helpline_calls_by_factory_by_month, Master, by = c("Factory FFC Number" = "Account ID"))
+
+# Move Factory Names to first column
+Helpline_calls_by_factory_by_month = Helpline_calls_by_factory_by_month[, c(ncol(Helpline_calls_by_factory_by_month), 1:(ncol(Helpline_calls_by_factory_by_month)-1))]
 
 # Save the file, and copy/paste the results into "Helpline calls by factory by month.xlsm" in Analysis folder in Dashboard Workbooks.
 # Then run macro script to generate individual factory files

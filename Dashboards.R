@@ -23,8 +23,8 @@ Master <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard W
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date")]
-setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "Active Brands"))
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "CCVV 2 Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "CCVV 2 Date", "Active Brands"))
 Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 

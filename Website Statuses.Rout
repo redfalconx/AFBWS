@@ -101,14 +101,17 @@ package 'RCurl' was built under R version 3.4.3
 > # Change from "Completed Under Accord" to "Completed"
 > Master$`Remediation Factory Status`[grepl("completed", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE] = "Completed"
 > 
+> # Change from "CCVV Pending Awaiting CAP Closure of Unoccupied Expansion" to "On track"
+> Master$`Remediation Factory Status`[grepl("CCVV Pending", Master$`Remediation Factory Status`, ignore.case = TRUE) == TRUE] = "On track"
+> 
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
          Completed           Critical Needs intervention                New 
-               332                 48                 82                 24 
+               332                 48                 83                 25 
           On track        Pending RVV            Removed          Suspended 
-               102                 63                115                165 
+               102                 62                115                165 
       Under Accord 
-               246 
+               247 
 > 
 > 
 > ### Helpline ###
@@ -198,9 +201,9 @@ package 'RCurl' was built under R version 3.4.3
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     895                       34                        4 
+                     904                       37                        4 
              Not started                 On track Suspended - Address Only 
-                      11                       30                       16 
+                      12                       20                       16 
 > 
 > 
 > ### SC ###
@@ -278,7 +281,7 @@ OK
 > 
 > proc.time()
    user  system elapsed 
-   3.48    0.59   14.67 
+   2.96    0.51   15.07 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:
