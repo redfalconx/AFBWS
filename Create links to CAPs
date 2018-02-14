@@ -30,13 +30,16 @@ If intResult <> 0 Then
         
         For Each objSubFolder In objFolder.SubFolders
             For Each objFile In objSubFolder.Files
+                On Error GoTo NextFile:
                 If Right(objFile.Name, 3) = "xls" Or Right(objFile.Name, 4) = "xlsx" Then
+                
+                    If InStr(1, objFile.Name, "2017") = 0 And InStr(1, objFile.Name, "2018") = 0 Then
                     
                     Application.ScreenUpdating = False
                     Application.Calculation = xlCalculationManual
         
                 
-                    If WorksheetFunction.CountIf(wsDEST.Range("A:A"), objFile.Name) = 0 Then
+                    If WorksheetFunction.CountIf(wsDEST.Range("A:A"), objFile.Path) = 0 Then
                 
                     MyFormula = "='" & objSubFolder.Path & "\[" & objFile.Name & "]Electrical'!"
         
@@ -45,7 +48,7 @@ If intResult <> 0 Then
                         wsDEST.Range("A" & NR).Value = objFile.Path                            'add filename to empty row
                         wsDEST.Range("B" & NR).Value = objSubFolder.Path & "\"
                         wsDEST.Range("D" & NR).Value = "Electrical"
-                        For c = 1 To 40
+                        For c = 1 To 67
                             Cells(NR, c + 4).Formula = MyFormula & Cells(r, c).Address
                         Next c
                     Next r
@@ -56,7 +59,7 @@ If intResult <> 0 Then
                         wsDEST.Range("A" & NR).Value = objFile.Path                            'add filename to empty row
                         wsDEST.Range("B" & NR).Value = objSubFolder.Path & "\"
                         wsDEST.Range("D" & NR).Value = "Fire"
-                        For c = 1 To 40
+                        For c = 1 To 67
                             Cells(NR, c + 4).Formula = MyFormula & Cells(r, c).Address
                         Next c
                     Next r
@@ -67,25 +70,33 @@ If intResult <> 0 Then
                         wsDEST.Range("A" & NR).Value = objFile.Path                           'add filename to empty row
                         wsDEST.Range("B" & NR).Value = objSubFolder.Path & "\"
                         wsDEST.Range("D" & NR).Value = "Structural"
-                        For c = 1 To 40
+                        For c = 1 To 67
                             Cells(NR, c + 4).Formula = MyFormula & Cells(r, c).Address
                         Next c
                     Next r
                
                     End If
+                    
+                    End If
         
                 
                 End If
+NextFile:
+            Resume NextFile2
+NextFile2:
             Next objFile
         
         Next objSubFolder
         
-    
+
 End If
 
 Application.Calculation = xlCalculationAutomatic
 Application.ScreenUpdating = True
 
 End Sub
+
+
+
 
 
