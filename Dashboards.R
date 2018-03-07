@@ -13,7 +13,7 @@ wd = dirname(getwd())
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
 CAPs_Data <- as.data.table(read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "Data", skip = 1, col_types = "text"))
-CAPs_Data[, (52:ncol(CAPs_Data))] <- list(NULL)
+CAPs_Data[, (72:ncol(CAPs_Data))] <- list(NULL)
 
 CAPs_Data$`Account ID` <- gsub("/E", "", CAPs_Data$`Account ID`)
 CAPs_Data$`Account ID` <- as.numeric(CAPs_Data$`Account ID`)
@@ -172,6 +172,11 @@ setnames(RVV7, names(RVV7), c("Account ID", "Completed - RVV7", "In progress - R
 RVV7 = RVV7[complete.cases(RVV7$`Account ID`),]
 RVV7 = RVV7[1:nrow(RVV7)-1,]
 #RVV7$`Account ID` <- as.numeric(RVV7$`Account ID`)
+RVV8 = CAPs_RVVs[,36:39]
+setnames(RVV8, names(RVV8), c("Account ID", "Completed - RVV8", "In progress - RVV8", "Not started - RVV8"))
+RVV8 = RVV8[complete.cases(RVV8$`Account ID`),]
+RVV8 = RVV8[1:nrow(RVV8)-1,]
+#RVV7$`Account ID` <- as.numeric(RVV7$`Account ID`)
 
 # Join the CAP tables
 CAPs = left_join(CAPs_pivot, RVV1, by = c("Row Labels" = "Account ID"))
@@ -181,6 +186,7 @@ CAPs = left_join(CAPs, RVV4, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV5, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV6, by = c("Row Labels" = "Account ID"))
 CAPs = left_join(CAPs, RVV7, by = c("Row Labels" = "Account ID"))
+CAPs = left_join(CAPs, RVV8, by = c("Row Labels" = "Account ID"))
 
 # Fetch Highest Priority (Urgent Life Safety) NCs
 HPNCs_all <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Remediation Workbook.xlsm", sep = ""), "All Factories", skip = 4)
@@ -242,7 +248,7 @@ setnames(Master_Exp, "Remediation Factory Status", "Expansion Remediation Status
 Master_Exp$`Expansion Remediation Status` = ifelse(grepl("building", Master_Exp$`Expansion Remediation Status`, ignore.case = TRUE) == TRUE, NA, Master_Exp$`Expansion Remediation Status`)
 
 #Master_Exp$`Account ID` = arrange(Master_Exp, desc(`Account ID`))
-Master_Exp$`Account ID` = gsub("/E[^a-z]", "", Master_Exp$`Account ID`)
+Master_Exp$`Account ID` = gsub("/E.*", "", Master_Exp$`Account ID`)
 Master_Exp$`Account ID` = gsub("/E", "", Master_Exp$`Account ID`)
 
 Master_Exp = aggregate(Master_Exp["Expansion Remediation Status"], Master_Exp["Account ID"], paste, collapse = ", ")
@@ -470,20 +476,6 @@ Combined = Combined[!duplicated(Combined[,"Account ID"]),]
 # Save the combined data, then copy and paste into the appropriate columns in the Excel Dashboard Workbook
 write.csv(Combined, "Combined.csv", na="")
 
-
-#### Lockable Gates ####
-LG <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Statement of Lockable Exit.xls", sep = ""), 2, skip = 2)
-LG = LG[complete.cases(LG$`Factory ID`),]
-LG = LG[, c("Factory ID", "No. of lockable Exits")]
-
-# Join the tables
-Combined = left_join(Combined, LG, by = c("Account ID" = "Factory ID"))
-
-# Add "Not visited yet" to factories not in lockable gates tracker
-Combined$`No. of lockable Exits`[is.na(Combined$`No. of lockable Exits`)] <- "Not visited yet"
-
-# Remove Duplicate rows
-Combined = Combined[!duplicated(Combined[,"Account ID"]),]
 
 
 #### Reorder the columns of Combined to match the Dashboard Workbook more closely ####

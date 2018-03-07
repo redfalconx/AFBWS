@@ -48,7 +48,7 @@ Warning message:
 package 'dplyr' was built under R version 3.4.3 
 > library(tidyr) # a few pivot-table functions
 Warning message:
-package 'tidyr' was built under R version 3.4.2 
+package 'tidyr' was built under R version 3.4.3 
 > library(RCurl) #  push to ftp server
 Loading required package: bitops
 
@@ -107,11 +107,11 @@ package 'RCurl' was built under R version 3.4.3
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
          Completed           Critical Needs intervention                New 
-               332                 48                 83                 25 
+               343                 47                 90                 44 
           On track        Pending RVV            Removed          Suspended 
-               102                 62                115                165 
+               108                 36                121                166 
       Under Accord 
-               247 
+               249 
 > 
 > 
 > ### Helpline ###
@@ -136,7 +136,7 @@ package 'RCurl' was built under R version 3.4.3
 > table(Helpline$Helpline, useNA = "ifany")
 
   Completed Not started 
-        964          89 
+        989          89 
 > 
 > 
 > ### Training ###
@@ -167,9 +167,9 @@ package 'RCurl' was built under R version 3.4.3
 > table(Training$`Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     774                      110                       12 
+                     808                      111                       15 
              Not started                 On track Suspended - Address Only 
-                       3                      139                       15 
+                      18                      110                       16 
 > 
 > 
 > ### SG Training ###
@@ -201,9 +201,9 @@ package 'RCurl' was built under R version 3.4.3
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     904                       37                        4 
+                     911                       36                        6 
              Not started                 On track Suspended - Address Only 
-                      12                       20                       16 
+                      14                       16                       16 
 > 
 > 
 > ### SC ###
@@ -281,7 +281,7 @@ OK
 > 
 > proc.time()
    user  system elapsed 
-   2.96    0.51   15.07 
+   3.09    0.51   13.31 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:

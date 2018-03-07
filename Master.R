@@ -43,6 +43,7 @@ new_factories = anti_join(New_Actives, Master, by = "Account ID")
 write.csv(new_factories, "New_Factories.csv", na = "")
 
 # Check if any of the factories have new members or if members left
+New_Master$`Active Members (Display)` = gsub("Carter's ", "Carter's", New_Master$`Active Members (Display)`)
 New_Master$Diff_Members <- ifelse(New_Master$`Active Members (Display)` != New_Master$`Active Brands`, 1, 0)
 
 # If there are differences, the sum will be more than zero
@@ -61,6 +62,9 @@ New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Maste
 
 # If expansion (i.e. an E in the Account ID), then put previous member data back in
 New_Master$`Active Members (Display)` <- ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master$`Active Brands`, New_Master$`Active Members (Display)`)
+New_Master$`New_Number of Active Members` <- ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master$`Number of Active Members.x`, New_Master$`New_Number of Active Members`)
+
+# New_Master$`New_Number of Active Members` = ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master[match(gsub("/E.*", "", New_Master$`Account ID`), New_Master$`Account ID`), ncol(New_Master)], New_Master$`New_Number of Active Members`)
 
 # Update Accord Shared Factories
 # New_Master$`ACTIVE Accord Shared Factories` <- replace(New_Master$`ACTIVE Accord Shared Factories`, New_Master$`ACTIVE Accord Shared Factories` == "No", "Yes")

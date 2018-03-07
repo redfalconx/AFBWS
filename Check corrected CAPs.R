@@ -35,16 +35,17 @@ Cor_Factories_1 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of fac
 Cor_Factories_2 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 2)
 Cor_Factories_3 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 3)
 Cor_Factories_4 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 4)
+Cor_Factories_5 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 5)
 
 # Subset factories into those that have been corrected
-l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
+l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`, Cor_Factories_5$`Account ID`)
 l = as.character(l)
 
 CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% l,]
 
 # Add factory names
 f = as.data.table(l)
-f$`Factory Name` = c(Cor_Factories_1$`Factory Name`, Cor_Factories_2$`Factory Name`, Cor_Factories_3$`Factory Name`, Cor_Factories_4$`Factory Name`)
+f$`Factory Name` = c(Cor_Factories_1$`Factory Name`, Cor_Factories_2$`Factory Name`, Cor_Factories_3$`Factory Name`, Cor_Factories_4$`Factory Name`, Cor_Factories_5$`Factory Name`)
 
 CAPs = left_join(CAPs, f, by = c("FFC ID" = "l"))
 
@@ -80,6 +81,11 @@ table(CAPs$`Alliance Remarks 4`, useNA = "ifany")
 table(CAPs$`Alliance Remarks 5`, useNA = "ifany")
 table(CAPs$`Alliance Remarks 6`, useNA = "ifany")
 table(CAPs$`Alliance Remarks 7`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 8`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 9`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 10`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 11`, useNA = "ifany")
+table(CAPs$`Alliance Remarks 12`, useNA = "ifany")
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "completed"] <- "Completed"
 CAPs$`Alliance Remarks 2`[CAPs$`Alliance Remarks 2` == "completed"] <- "Completed"
@@ -88,6 +94,11 @@ CAPs$`Alliance Remarks 4`[CAPs$`Alliance Remarks 4` == "completed"] <- "Complete
 CAPs$`Alliance Remarks 5`[CAPs$`Alliance Remarks 5` == "completed"] <- "Completed"
 CAPs$`Alliance Remarks 6`[CAPs$`Alliance Remarks 6` == "completed"] <- "Completed"
 CAPs$`Alliance Remarks 7`[CAPs$`Alliance Remarks 7` == "completed"] <- "Completed"
+CAPs$`Alliance Remarks 8`[CAPs$`Alliance Remarks 8` == "completed"] <- "Completed"
+CAPs$`Alliance Remarks 9`[CAPs$`Alliance Remarks 9` == "completed"] <- "Completed"
+CAPs$`Alliance Remarks 10`[CAPs$`Alliance Remarks 10` == "completed"] <- "Completed"
+CAPs$`Alliance Remarks 11`[CAPs$`Alliance Remarks 11` == "completed"] <- "Completed"
+CAPs$`Alliance Remarks 12`[CAPs$`Alliance Remarks 12` == "completed"] <- "Completed"
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "In-Progress"] <- "In-progress"
 CAPs$`Alliance Remarks 2`[CAPs$`Alliance Remarks 2` == "In-Progress"] <- "In-progress"
@@ -96,6 +107,11 @@ CAPs$`Alliance Remarks 4`[CAPs$`Alliance Remarks 4` == "In-Progress"] <- "In-pro
 CAPs$`Alliance Remarks 5`[CAPs$`Alliance Remarks 5` == "In-Progress"] <- "In-progress"
 CAPs$`Alliance Remarks 6`[CAPs$`Alliance Remarks 6` == "In-Progress"] <- "In-progress"
 CAPs$`Alliance Remarks 7`[CAPs$`Alliance Remarks 7` == "In-Progress"] <- "In-progress"
+CAPs$`Alliance Remarks 8`[CAPs$`Alliance Remarks 8` == "In-Progress"] <- "In-progress"
+CAPs$`Alliance Remarks 9`[CAPs$`Alliance Remarks 9` == "In-Progress"] <- "In-progress"
+CAPs$`Alliance Remarks 10`[CAPs$`Alliance Remarks 10` == "In-Progress"] <- "In-progress"
+CAPs$`Alliance Remarks 11`[CAPs$`Alliance Remarks 11` == "In-Progress"] <- "In-progress"
+CAPs$`Alliance Remarks 12`[CAPs$`Alliance Remarks 12` == "In-Progress"] <- "In-progress"
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "Not started"] <- "Not Started"
 CAPs$`Alliance Remarks 2`[CAPs$`Alliance Remarks 2` == "Not started"] <- "Not Started"
@@ -104,6 +120,11 @@ CAPs$`Alliance Remarks 4`[CAPs$`Alliance Remarks 4` == "Not started"] <- "Not St
 CAPs$`Alliance Remarks 5`[CAPs$`Alliance Remarks 5` == "Not started"] <- "Not Started"
 CAPs$`Alliance Remarks 6`[CAPs$`Alliance Remarks 6` == "Not started"] <- "Not Started"
 CAPs$`Alliance Remarks 7`[CAPs$`Alliance Remarks 7` == "Not started"] <- "Not Started"
+CAPs$`Alliance Remarks 8`[CAPs$`Alliance Remarks 8` == "Not started"] <- "Not Started"
+CAPs$`Alliance Remarks 9`[CAPs$`Alliance Remarks 9` == "Not started"] <- "Not Started"
+CAPs$`Alliance Remarks 10`[CAPs$`Alliance Remarks 10` == "Not started"] <- "Not Started"
+CAPs$`Alliance Remarks 11`[CAPs$`Alliance Remarks 11` == "Not started"] <- "Not Started"
+CAPs$`Alliance Remarks 12`[CAPs$`Alliance Remarks 12` == "Not started"] <- "Not Started"
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "Not Applicable"] <- "N/A"
 CAPs$`Alliance Remarks 2`[CAPs$`Alliance Remarks 2` == "Not Applicable"] <- "N/A"
@@ -112,6 +133,11 @@ CAPs$`Alliance Remarks 4`[CAPs$`Alliance Remarks 4` == "Not Applicable"] <- "N/A
 CAPs$`Alliance Remarks 5`[CAPs$`Alliance Remarks 5` == "Not Applicable"] <- "N/A"
 CAPs$`Alliance Remarks 6`[CAPs$`Alliance Remarks 6` == "Not Applicable"] <- "N/A"
 CAPs$`Alliance Remarks 7`[CAPs$`Alliance Remarks 7` == "Not Applicable"] <- "N/A"
+CAPs$`Alliance Remarks 8`[CAPs$`Alliance Remarks 8` == "Not Applicable"] <- "N/A"
+CAPs$`Alliance Remarks 9`[CAPs$`Alliance Remarks 9` == "Not Applicable"] <- "N/A"
+CAPs$`Alliance Remarks 10`[CAPs$`Alliance Remarks 10` == "Not Applicable"] <- "N/A"
+CAPs$`Alliance Remarks 11`[CAPs$`Alliance Remarks 11` == "Not Applicable"] <- "N/A"
+CAPs$`Alliance Remarks 12`[CAPs$`Alliance Remarks 12` == "Not Applicable"] <- "N/A"
 
 CAPs$`Alliance Remarks 1`[CAPs$`Alliance Remarks 1` == "NA"] <- "N/A"
 CAPs$`Alliance Remarks 2`[CAPs$`Alliance Remarks 2` == "NA"] <- "N/A"
@@ -120,6 +146,11 @@ CAPs$`Alliance Remarks 4`[CAPs$`Alliance Remarks 4` == "NA"] <- "N/A"
 CAPs$`Alliance Remarks 5`[CAPs$`Alliance Remarks 5` == "NA"] <- "N/A"
 CAPs$`Alliance Remarks 6`[CAPs$`Alliance Remarks 6` == "NA"] <- "N/A"
 CAPs$`Alliance Remarks 7`[CAPs$`Alliance Remarks 7` == "NA"] <- "N/A"
+CAPs$`Alliance Remarks 8`[CAPs$`Alliance Remarks 8` == "NA"] <- "N/A"
+CAPs$`Alliance Remarks 9`[CAPs$`Alliance Remarks 9` == "NA"] <- "N/A"
+CAPs$`Alliance Remarks 10`[CAPs$`Alliance Remarks 10` == "NA"] <- "N/A"
+CAPs$`Alliance Remarks 11`[CAPs$`Alliance Remarks 11` == "NA"] <- "N/A"
+CAPs$`Alliance Remarks 12`[CAPs$`Alliance Remarks 12` == "NA"] <- "N/A"
 
 # Add columns that check whether the Alliance Remarks statuses match Completed, In-progress, Not Started, or N/A
 Statuses = c("Completed", "In-progress", "Not Started", "N/A", "0")
@@ -131,6 +162,11 @@ CAPs$RVV4_check = CAPs$`Alliance Remarks 4` %in% Statuses
 CAPs$RVV5_check = CAPs$`Alliance Remarks 5` %in% Statuses
 CAPs$RVV6_check = CAPs$`Alliance Remarks 6` %in% Statuses
 CAPs$RVV7_check = CAPs$`Alliance Remarks 7` %in% Statuses
+CAPs$RVV8_check = CAPs$`Alliance Remarks 8` %in% Statuses
+CAPs$RVV9_check = CAPs$`Alliance Remarks 9` %in% Statuses
+CAPs$RVV10_check = CAPs$`Alliance Remarks 10` %in% Statuses
+CAPs$RVV11_check = CAPs$`Alliance Remarks 11` %in% Statuses
+CAPs$RVV12_check = CAPs$`Alliance Remarks 12` %in% Statuses
 
 # Do not mark as FALSE if previous RVVs not conducted
 CAPs$RVV2_check = ifelse(CAPs$`Alliance Remarks 1` != "0" & CAPs$`Alliance Remarks 3` != "0" & CAPs$`Alliance Remarks 2` == "0", FALSE, CAPs$RVV2_check)
@@ -138,16 +174,26 @@ CAPs$RVV3_check = ifelse(CAPs$`Alliance Remarks 2` != "0" & CAPs$`Alliance Remar
 CAPs$RVV4_check = ifelse(CAPs$`Alliance Remarks 3` != "0" & CAPs$`Alliance Remarks 5` != "0" & CAPs$`Alliance Remarks 4` == "0", FALSE, CAPs$RVV4_check)
 CAPs$RVV5_check = ifelse(CAPs$`Alliance Remarks 4` != "0" & CAPs$`Alliance Remarks 6` != "0" & CAPs$`Alliance Remarks 5` == "0", FALSE, CAPs$RVV5_check)
 CAPs$RVV6_check = ifelse(CAPs$`Alliance Remarks 5` != "0" & CAPs$`Alliance Remarks 7` != "0" & CAPs$`Alliance Remarks 6` == "0", FALSE, CAPs$RVV6_check)
-CAPs$RVV7_check = ifelse(CAPs$`Alliance Remarks 6` != "0" & is.na(CAPs$`Alliance Remarks 7`) == TRUE, FALSE, CAPs$RVV7_check)
+CAPs$RVV7_check = ifelse(CAPs$`Alliance Remarks 6` != "0" & CAPs$`Alliance Remarks 8` != "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV7_check)
+CAPs$RVV8_check = ifelse(CAPs$`Alliance Remarks 7` != "0" & CAPs$`Alliance Remarks 9` != "0" & CAPs$`Alliance Remarks 8` == "0", FALSE, CAPs$RVV8_check)
+CAPs$RVV9_check = ifelse(CAPs$`Alliance Remarks 8` != "0" & CAPs$`Alliance Remarks 10` != "0" & CAPs$`Alliance Remarks 9` == "0", FALSE, CAPs$RVV9_check)
+CAPs$RVV10_check = ifelse(CAPs$`Alliance Remarks 9` != "0" & CAPs$`Alliance Remarks 11` != "0" & CAPs$`Alliance Remarks 10` == "0", FALSE, CAPs$RVV10_check)
+CAPs$RVV11_check = ifelse(CAPs$`Alliance Remarks 10` != "0" & CAPs$`Alliance Remarks 12` != "0" & CAPs$`Alliance Remarks 11` == "0", FALSE, CAPs$RVV11_check)
+CAPs$RVV12_check = ifelse(CAPs$`Alliance Remarks 11` != "0" & is.na(CAPs$`Alliance Remarks 12`) == TRUE, FALSE, CAPs$RVV12_check)
 
 # Mark each RVV check as FALSE if all are blank
-CAPs$RVV1_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV1_check)
-CAPs$RVV2_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV2_check)
-CAPs$RVV3_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV3_check)
-CAPs$RVV4_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV4_check)
-CAPs$RVV5_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV5_check)
-CAPs$RVV6_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV6_check)
-CAPs$RVV7_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0", FALSE, CAPs$RVV7_check)
+CAPs$RVV1_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV1_check)
+CAPs$RVV2_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV2_check)
+CAPs$RVV3_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV3_check)
+CAPs$RVV4_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV4_check)
+CAPs$RVV5_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV5_check)
+CAPs$RVV6_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV6_check)
+CAPs$RVV7_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV7_check)
+CAPs$RVV8_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV8_check)
+CAPs$RVV9_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV9_check)
+CAPs$RVV10_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV10_check)
+CAPs$RVV11_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV11_check)
+CAPs$RVV12_check = ifelse(CAPs$`Alliance Remarks 1` == "0" & CAPs$`Alliance Remarks 2` == "0" & CAPs$`Alliance Remarks 3` == "0" & CAPs$`Alliance Remarks 4` == "0" & CAPs$`Alliance Remarks 5` == "0" & CAPs$`Alliance Remarks 6` == "0" & CAPs$`Alliance Remarks 7` == "0" & CAPs$`Alliance Remarks 8` == "0" & CAPs$`Alliance Remarks 9` == "0" & CAPs$`Alliance Remarks 10` == "0" & CAPs$`Alliance Remarks 11` == "0" & CAPs$`Alliance Remarks 12` == "0", FALSE, CAPs$RVV12_check)
 
 # Remove unnecessary columns
 CAPs[, c(1:2)] <- list(NULL)
@@ -156,7 +202,8 @@ CAPs[, c(1:2)] <- list(NULL)
 CAPs = CAPs[CAPs$Question_check == FALSE | CAPs$Subheader_check == FALSE | CAPs$Level_check == FALSE 
             | CAPs$RVV1_check == FALSE | CAPs$RVV2_check == FALSE | CAPs$RVV3_check == FALSE 
             | CAPs$RVV4_check == FALSE | CAPs$RVV5_check == FALSE | CAPs$RVV6_check == FALSE
-            | CAPs$RVV7_check == FALSE, ]
+            | CAPs$RVV7_check == FALSE | CAPs$RVV8_check == FALSE | CAPs$RVV9_check == FALSE
+            | CAPs$RVV10_check == FALSE | CAPs$RVV11_check == FALSE | CAPs$RVV12_check == FALSE, ]
 CAPs = CAPs[complete.cases(CAPs$`FFC ID`),]
 
 # Save the file in FFC > Data Migration
@@ -179,8 +226,9 @@ Cor_Factories_1 = filter(Cor_Factories_1, `FFC Status` != "Uploaded" | is.na(`FF
 Cor_Factories_2 = filter(Cor_Factories_2, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 Cor_Factories_3 = filter(Cor_Factories_3, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 Cor_Factories_4 = filter(Cor_Factories_4, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
+Cor_Factories_5 = filter(Cor_Factories_5, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 
-l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
+l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`, Cor_Factories_5$`Account ID`)
 l = as.character(l)
 
 Validated_CAPs = Validated_CAPs[Validated_CAPs$`FFC ID` %in% l,]
@@ -206,6 +254,11 @@ Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "comp
 Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "completed"] <- "Completed"
 Validated_CAPs$`Alliance Remarks 6`[Validated_CAPs$`Alliance Remarks 6` == "completed"] <- "Completed"
 Validated_CAPs$`Alliance Remarks 7`[Validated_CAPs$`Alliance Remarks 7` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 8`[Validated_CAPs$`Alliance Remarks 8` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 9`[Validated_CAPs$`Alliance Remarks 9` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 10`[Validated_CAPs$`Alliance Remarks 10` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 11`[Validated_CAPs$`Alliance Remarks 11` == "completed"] <- "Completed"
+Validated_CAPs$`Alliance Remarks 12`[Validated_CAPs$`Alliance Remarks 12` == "completed"] <- "Completed"
 
 Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "In-Progress"] <- "In-progress"
 Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "In-Progress"] <- "In-progress"
@@ -214,6 +267,11 @@ Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "In-P
 Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "In-Progress"] <- "In-progress"
 Validated_CAPs$`Alliance Remarks 6`[Validated_CAPs$`Alliance Remarks 6` == "In-Progress"] <- "In-progress"
 Validated_CAPs$`Alliance Remarks 7`[Validated_CAPs$`Alliance Remarks 7` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 8`[Validated_CAPs$`Alliance Remarks 8` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 9`[Validated_CAPs$`Alliance Remarks 9` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 10`[Validated_CAPs$`Alliance Remarks 10` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 11`[Validated_CAPs$`Alliance Remarks 11` == "In-Progress"] <- "In-progress"
+Validated_CAPs$`Alliance Remarks 12`[Validated_CAPs$`Alliance Remarks 12` == "In-Progress"] <- "In-progress"
 
 Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "Not started"] <- "Not Started"
 Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "Not started"] <- "Not Started"
@@ -222,6 +280,11 @@ Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "Not 
 Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "Not started"] <- "Not Started"
 Validated_CAPs$`Alliance Remarks 6`[Validated_CAPs$`Alliance Remarks 6` == "Not started"] <- "Not Started"
 Validated_CAPs$`Alliance Remarks 7`[Validated_CAPs$`Alliance Remarks 7` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 8`[Validated_CAPs$`Alliance Remarks 8` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 9`[Validated_CAPs$`Alliance Remarks 9` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 10`[Validated_CAPs$`Alliance Remarks 10` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 11`[Validated_CAPs$`Alliance Remarks 11` == "Not started"] <- "Not Started"
+Validated_CAPs$`Alliance Remarks 12`[Validated_CAPs$`Alliance Remarks 12` == "Not started"] <- "Not Started"
 
 Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "Not Applicable"] <- "N/A"
 Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "Not Applicable"] <- "N/A"
@@ -230,6 +293,11 @@ Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "Not 
 Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "Not Applicable"] <- "N/A"
 Validated_CAPs$`Alliance Remarks 6`[Validated_CAPs$`Alliance Remarks 6` == "Not Applicable"] <- "N/A"
 Validated_CAPs$`Alliance Remarks 7`[Validated_CAPs$`Alliance Remarks 7` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 8`[Validated_CAPs$`Alliance Remarks 8` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 9`[Validated_CAPs$`Alliance Remarks 9` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 10`[Validated_CAPs$`Alliance Remarks 10` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 11`[Validated_CAPs$`Alliance Remarks 11` == "Not Applicable"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 12`[Validated_CAPs$`Alliance Remarks 12` == "Not Applicable"] <- "N/A"
 
 Validated_CAPs$`Alliance Remarks 1`[Validated_CAPs$`Alliance Remarks 1` == "NA"] <- "N/A"
 Validated_CAPs$`Alliance Remarks 2`[Validated_CAPs$`Alliance Remarks 2` == "NA"] <- "N/A"
@@ -238,6 +306,11 @@ Validated_CAPs$`Alliance Remarks 4`[Validated_CAPs$`Alliance Remarks 4` == "NA"]
 Validated_CAPs$`Alliance Remarks 5`[Validated_CAPs$`Alliance Remarks 5` == "NA"] <- "N/A"
 Validated_CAPs$`Alliance Remarks 6`[Validated_CAPs$`Alliance Remarks 6` == "NA"] <- "N/A"
 Validated_CAPs$`Alliance Remarks 7`[Validated_CAPs$`Alliance Remarks 7` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 8`[Validated_CAPs$`Alliance Remarks 8` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 9`[Validated_CAPs$`Alliance Remarks 9` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 10`[Validated_CAPs$`Alliance Remarks 10` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 11`[Validated_CAPs$`Alliance Remarks 11` == "NA"] <- "N/A"
+Validated_CAPs$`Alliance Remarks 12`[Validated_CAPs$`Alliance Remarks 12` == "NA"] <- "N/A"
 
 table(Validated_CAPs$`Alliance Remarks 1`, useNA = "ifany")
 table(Validated_CAPs$`Alliance Remarks 2`, useNA = "ifany")
@@ -246,6 +319,11 @@ table(Validated_CAPs$`Alliance Remarks 4`, useNA = "ifany")
 table(Validated_CAPs$`Alliance Remarks 5`, useNA = "ifany")
 table(Validated_CAPs$`Alliance Remarks 6`, useNA = "ifany")
 table(Validated_CAPs$`Alliance Remarks 7`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 8`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 9`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 10`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 11`, useNA = "ifany")
+table(Validated_CAPs$`Alliance Remarks 12`, useNA = "ifany")
 
 # Remove unnecessary columns and rows
 Validated_CAPs[, c(1:2)] <- list(NULL)
@@ -262,7 +340,7 @@ Validated_CAPs = left_join(Validated_CAPs, Audit_IDs, by = c("FFC ID" = "Account
 Validated_CAPs = Validated_CAPs[c((ncol(Validated_CAPs)-1):ncol(Validated_CAPs), 1:(ncol(Validated_CAPs)-2))]
 Validated_CAPs = Validated_CAPs[c(1, 3, 2, (4:ncol(Validated_CAPs)))]
 
-Validated_CAPs = Validated_CAPs[, -c(5, 21, 24, 25, 27:29, 31:33, 35:37, 39:41, 43:45, 47:49, 51)]
+Validated_CAPs = Validated_CAPs[, -c(5, 21, 24, 25, 27:29, 31:33, 35:37, 39:41, 43:45, 47:49, 51:53, 55:57, 59:61, 63:65, 67:69, 71)]
 
 setnames(Validated_CAPs, "FFC ID", "Account ID")
 
@@ -271,8 +349,8 @@ Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Fact
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date")]
-setcolorder(Master, c("Account ID", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date"))
+Master = Master[, c("Account ID", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "CCVV 2 Date")]
+setcolorder(Master, c("Account ID", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "CCVV 2 Date"))
 # Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 
@@ -280,7 +358,7 @@ Master = Master[complete.cases(Master$`Account ID`),]
 Validated_CAPs = left_join(Validated_CAPs, Master, by = "Account ID")
 
 # Reorder columns
-Validated_CAPs = Validated_CAPs[c(1:21, 28, 22, 29, 23, 30, 24, 31, 25, 32, 26, 33, 27, 34, 28, 35:36)]
+Validated_CAPs = Validated_CAPs[c(1:21, 34, 22, 35, 23, 36, 24, 37, 25, 38, 26, 39, 27, 40, 28, 29:33, 41:42)]
 
 
 # setcolorder(Validated_CAPs, c("FFC ID", "Audit.ID", "Sheet", "Subheader", "Question", "Description", "Suggested Plan of Action", "Suggested Deadline Date", "Standard", "Factory CAP", "Factory CAP Deadline Date", "Factory Responsible Person", "Source of Findings", "Level"))
