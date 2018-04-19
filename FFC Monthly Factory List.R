@@ -55,10 +55,16 @@ Alink <- remDr$findElement("xpath", "//*[@id='flexExportStatus']/a")
 Aurl <- Alink$getElementAttribute("href")[[1]]
 Alink$highlightElement()
 Alink$clickElement()
+Sys.sleep(5)
 
 # Open the file
 Afile <- sub(".*filename=", "", Aurl)
 Sys.sleep(5)
+
+while (file.exists(paste(wd,"/Downloads/", Afile, sep = "")) == FALSE) {
+  Sys.sleep(5)
+}
+
 file.rename(paste(wd,"/Downloads/", Afile, sep = ""), paste(wd,"/Downloads/Monthly Factory List.xls", sep = ""))
 MFL <- as.data.frame(readHTMLTable(paste(wd,"/Downloads/Monthly Factory List.xls", sep = "")))
 Sys.sleep(5)

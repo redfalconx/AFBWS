@@ -274,7 +274,7 @@ Combined = left_join(Master, CAPs, by = c("Account ID" = "Row Labels"))
 
 
 #### Plan Review Tracker ####
-PR <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Master Tracker - Drawing Design.xls", sep = ""), "Master Tracker", skip = 1)
+PR <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Master Tracker - Drawing Design_Without Suspended & Under Accord Factories.xls", sep = ""), "Master Tracker", skip = 1)
 PR$`Account ID` <- as.numeric(PR$`Account ID`)
 PR <- PR[complete.cases(PR$`Account ID`),]
 # PR$`Account ID` <- gsub("/E", "", PR$`Account ID`)

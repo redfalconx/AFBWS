@@ -1,5 +1,5 @@
 
-R version 3.4.1 (2017-06-30) -- "Single Candle"
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
 Copyright (C) 2017 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
@@ -25,8 +25,6 @@ Type 'q()' to quit R.
 > 
 > #### Load packages ####
 > library(data.table) # converts to data tables
-Warning message:
-package 'data.table' was built under R version 3.4.2 
 > library(readxl) # reads Excel files
 > library(dplyr) # data manipulation
 
@@ -44,11 +42,7 @@ The following objects are masked from 'package:base':
 
     intersect, setdiff, setequal, union
 
-Warning message:
-package 'dplyr' was built under R version 3.4.3 
 > library(tidyr) # a few pivot-table functions
-Warning message:
-package 'tidyr' was built under R version 3.4.3 
 > library(RCurl) #  push to ftp server
 Loading required package: bitops
 
@@ -58,8 +52,6 @@ The following object is masked from 'package:tidyr':
 
     complete
 
-Warning message:
-package 'RCurl' was built under R version 3.4.3 
 > 
 > wd = dirname(getwd())
 > 
@@ -107,11 +99,11 @@ package 'RCurl' was built under R version 3.4.3
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
          Completed           Critical Needs intervention                New 
-               343                 47                 90                 44 
+               371                 45                116                 57 
           On track        Pending RVV            Removed          Suspended 
-               108                 36                121                166 
+                75                 34                199                169 
       Under Accord 
-               249 
+               178 
 > 
 > 
 > ### Helpline ###
@@ -136,7 +128,7 @@ package 'RCurl' was built under R version 3.4.3
 > table(Helpline$Helpline, useNA = "ifany")
 
   Completed Not started 
-        989          89 
+        998          89 
 > 
 > 
 > ### Training ###
@@ -167,9 +159,9 @@ package 'RCurl' was built under R version 3.4.3
 > table(Training$`Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     808                      111                       15 
+                     827                      120                       20 
              Not started                 On track Suspended - Address Only 
-                      18                      110                       16 
+                      14                       90                       16 
 > 
 > 
 > ### SG Training ###
@@ -201,9 +193,9 @@ package 'RCurl' was built under R version 3.4.3
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     911                       36                        6 
+                     919                       40                        5 
              Not started                 On track Suspended - Address Only 
-                      14                       16                       16 
+                      21                        7                       16 
 > 
 > 
 > ### SC ###
@@ -281,7 +273,7 @@ OK
 > 
 > proc.time()
    user  system elapsed 
-   3.09    0.51   13.31 
+   3.64    0.64   11.50 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:
