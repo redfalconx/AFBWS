@@ -19,7 +19,7 @@ wd = dirname(getwd())
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
 Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
 # Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
-Master = Master[, 1:89]
+# Master = Master[, 1:89]
 Master = Master[complete.cases(Master$`Account ID`), ]
 # Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Actives$`Account ID` <- as.character(Actives$`Account ID`)

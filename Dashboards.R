@@ -23,8 +23,8 @@ Master <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard W
 
 # Clean up Master, remove unnecessary columns
 Master = Master[complete.cases(Master$`Account ID`),]
-Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "CCVV 2 Date")]
-setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "CCVV 1 Date", "CCVV 2 Date", "Active Brands"))
+Master = Master[, c("Account ID", "Active Brands", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "Confirmed Date of 8th RVV", "CCVV 1 Date", "CCVV 2 Date", "CCVV 3 Date")]
+setcolorder(Master, c("Account ID", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV", "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "Confirmed Date of 8th RVV", "CCVV 1 Date", "CCVV 2 Date", "CCVV 3 Date", "Active Brands"))
 Master$`Account ID` <- as.numeric(Master$`Account ID`)
 Master = Master[complete.cases(Master$`Account ID`),]
 
@@ -222,8 +222,8 @@ Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Rev
 #           "Number of separate buildings belonging to production facility", "Number of stories of each building", "Floors of the building which the factory occupies", "Helpline Launched", "link check 15.10.4")] <- list(NULL)
 
 Master = Master[, c("Account ID", "Account Name", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", "Escalation Date", "Escalation Status", 
-                    "Recommended to Review Panel?", "CAP Approved by Alliance", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV" , "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", 
-                    "CCVV 1 Date", "CCVV 1 Result", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 Result", "CCVV 2 % of Completion", "Box Folder Link")]
+                    "Recommended to Review Panel?", "CAP Approved by Alliance", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV" , "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "Confirmed Date of 8th RVV",
+                    "CCVV 1 Date", "CCVV 1 Result", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 Result", "CCVV 2 % of Completion", "CCVV 3 Date", "CCVV 3 Result", "CCVV 3 % of Completion", "Box Folder Link")]
 
 # Change Subs. Completion to Initial CAP Completed
 table(Master$`Remediation Factory Status`)
@@ -502,7 +502,8 @@ someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active 
              "Confirmed Date of 5th RVV", "Completed - RVV5", "In progress - RVV5", "Not started - RVV5",
              "Confirmed Date of 6th RVV", "Completed - RVV6", "In progress - RVV6", "Not started - RVV6",
              "Confirmed Date of 7th RVV", "Completed - RVV7", "In progress - RVV7", "Not started - RVV7",
-             "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 2 Result", 
+             "Confirmed Date of 8th RVV", "Completed - RVV8", "In progress - RVV8", "Not started - RVV8",
+             "CCVV 1 Date", "CCVV 1 % of Completion", "CCVV 1 Result", "CCVV 2 Date", "CCVV 2 % of Completion", "CCVV 2 Result", "CCVV 3 Date", "CCVV 3 % of Completion", "CCVV 3 Result",
              "Retrofitting Status", "DEA Status", "Design Status", "Central Fire Status", "Hydrant Status", "Sprinkler Status", "Fire Door Status", "Lightning Status", "Single Line Diagram Status",
              "Initial Basic Fire Safety Workers Trained", "Refresher Training", "Total number of employees trained so far.", "Percentage of Workers Trained", "STATUS.x", "Final Training Status \r\n(CCVV)", "Final Training Assessment (CCVV) \r\nCurrent Results \r\n(Pass or Fail)", "Support Visit Required?",
              "Initial Security Guards Trained", "Security Guard Refresher Training", "Total number of security staff trained so far", "Percentage of security staff trained", "STATUS.y", "Spot Check Results (Pass or Fail)", "Support Visit",
