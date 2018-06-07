@@ -35,17 +35,17 @@ Cor_Factories_1 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of fac
 Cor_Factories_2 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 2)
 Cor_Factories_3 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 3)
 Cor_Factories_4 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 4)
-Cor_Factories_5 <- read_excel(paste(wd,"/Box Sync/FFC/Data Migration/List of factories completed.xlsx", sep = ""), 5)
+
 
 # Subset factories into those that have been corrected
-l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`, Cor_Factories_5$`Account ID`)
+l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
 l = as.character(l)
 
 CAPs = CAP_Tracker[CAP_Tracker$`FFC ID` %in% l,]
 
 # Add factory names
 f = as.data.table(l)
-f$`Factory Name` = c(Cor_Factories_1$`Factory Name`, Cor_Factories_2$`Factory Name`, Cor_Factories_3$`Factory Name`, Cor_Factories_4$`Factory Name`, Cor_Factories_5$`Factory Name`)
+f$`Factory Name` = c(Cor_Factories_1$`Factory Name`, Cor_Factories_2$`Factory Name`, Cor_Factories_3$`Factory Name`, Cor_Factories_4$`Factory Name`)
 
 CAPs = left_join(CAPs, f, by = c("FFC ID" = "l"))
 
@@ -226,9 +226,8 @@ Cor_Factories_1 = filter(Cor_Factories_1, `FFC Status` != "Uploaded" | is.na(`FF
 Cor_Factories_2 = filter(Cor_Factories_2, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 Cor_Factories_3 = filter(Cor_Factories_3, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 Cor_Factories_4 = filter(Cor_Factories_4, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
-Cor_Factories_5 = filter(Cor_Factories_5, `FFC Status` != "Uploaded" | is.na(`FFC Status`))
 
-l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`, Cor_Factories_5$`Account ID`)
+l = c(Cor_Factories_1$`Account ID`, Cor_Factories_2$`Account ID`, Cor_Factories_3$`Account ID`, Cor_Factories_4$`Account ID`)
 l = as.character(l)
 
 Validated_CAPs = Validated_CAPs[Validated_CAPs$`FFC ID` %in% l,]

@@ -3,7 +3,6 @@
 
 library(data.table) # converts to data tables
 library(readxl) # reads Excel files
-library(openxlsx) # writes Excel files
 library(dplyr) # data manipulation
 
 wd = dirname(getwd())
