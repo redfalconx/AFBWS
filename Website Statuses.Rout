@@ -99,11 +99,11 @@ The following object is masked from 'package:tidyr':
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
          Completed           Critical Needs intervention                New 
-               392                100                 58                 46 
+               413                 95                 54                 47 
           On track        Pending RVV            Removed          Suspended 
-                65                 60                201                169 
+                56                 59                202                169 
       Under Accord 
-               183 
+               182 
 > 
 > 
 > ### Helpline ###
@@ -159,9 +159,9 @@ The following object is masked from 'package:tidyr':
 > table(Training$`Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     862                      117                       10 
+                     870                      117                       12 
              Not started                 On track Suspended - Address Only 
-                      25                       67                       16 
+                      23                       59                       16 
 > 
 > 
 > ### SG Training ###
@@ -193,9 +193,9 @@ The following object is masked from 'package:tidyr':
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     923                       40                        4 
+                     899                       40                        5 
              Not started                 On track Suspended - Address Only 
-                      26                        8                       16 
+                      24                       33                       16 
 > 
 > 
 > ### SC ###
@@ -273,7 +273,7 @@ OK
 > 
 > proc.time()
    user  system elapsed 
-   2.95    0.53   14.46 
+   2.39    0.43    8.89 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:
