@@ -17,6 +17,7 @@ library(dygraphs) # for making interactive graphs
 library(xts) # time-series functions
 
 wd = dirname(getwd())
+wd = sub("/OneDrive", "", wd)
 
 #### Load Helpline data ####
 Helpline <- read_excel(paste(wd, "/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Amader Kotha - Helpline Data.xlsx", sep = ""), 1, col_types = "text")

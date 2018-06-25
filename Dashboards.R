@@ -9,6 +9,7 @@ library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
 wd = dirname(getwd())
+wd = sub("/OneDrive", "", wd)
 
 #### Tracking individual NCs over time ####
 # Load raw CAP data #
@@ -583,6 +584,7 @@ library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
 wd = dirname(getwd())
+wd = sub("/OneDrive", "", wd)
 
 Combined <- read_excel(paste(wd,"/Box Sync/Member Reporting/Dashboards/Dashboard Workbook/Dashboard Workbook.xlsm", sep = ""), "Combined", skip = 2)
 

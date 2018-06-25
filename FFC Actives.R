@@ -14,7 +14,7 @@ wd = dirname(getwd())
 #RSelenium::startServer() # if needed
 eCaps = list(chromeOptions = list( #args = c('--headless', '--disable-gpu', '--window-size=1280,800'), 
   prefs = list("profile.default_content_settings.popups" = 0L, "download.prompt_for_download" = FALSE,
-               "download.default_directory" = paste(wd,"/Downloads/", sep = ""))))
+               "download.default_directory" = paste(wd,"/Documents/", sep = ""))))
 rD <- rsDriver(extraCapabilities = eCaps)
 remDr <- rD[["client"]]
 Sys.sleep(3)
@@ -61,12 +61,12 @@ Sys.sleep(5)
 Afile <- sub(".*filename=", "", Aurl)
 Sys.sleep(5)
 
-while (file.exists(paste(wd,"/Downloads/", Afile, sep = "")) == FALSE) {
+while (file.exists(paste(wd,"/Documents/", Afile, sep = "")) == FALSE) {
   Sys.sleep(5)
 }
 
-file.rename(paste(wd,"/Downloads/", Afile, sep = ""), paste(wd,"/Downloads/Active Factories.xls", sep = ""))
-Actives <- as.data.frame(readHTMLTable(paste(wd,"/Downloads/Active Factories.xls", sep = "")))
+file.rename(paste(wd,"/Documents/", Afile, sep = ""), paste(wd,"/Documents/Active Factories.xls", sep = ""))
+Actives <- as.data.frame(readHTMLTable(paste(wd,"/Documents/Active Factories.xls", sep = "")))
 Sys.sleep(5)
 
 # Close the browser and stop server

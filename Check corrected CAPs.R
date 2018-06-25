@@ -14,6 +14,7 @@ library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
 wd = dirname(getwd())
+wd = sub("/OneDrive", "", wd)
 
 # Load raw CAP data #
 CAP_Tracker <- read_excel(paste(wd,"/Box Sync/Database/Excel/CAP Trackers.xlsm", sep = ""), "CAP Trackers", skip = 1, col_types = "text")
