@@ -14,7 +14,7 @@ library(dplyr) # data manipulation
 library(tidyr) # a few pivot-table functions
 
 wd = dirname(getwd())
-wd2 = sub("/OneDrive", "", wd)
+wd = sub("/OneDrive", "", wd)
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe

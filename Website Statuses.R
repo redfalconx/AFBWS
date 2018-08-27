@@ -13,7 +13,7 @@ library(RCurl) #  push to ftp server
 
 wd = dirname(getwd())
 
-#### Fetch Data ####
+#### Fetch Data #### 
 ### Master Factory List ###
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
 Master <- read_excel("C:/Users/Andrew/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", "Master Factory List", col_types = "text")
