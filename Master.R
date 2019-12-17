@@ -3,7 +3,7 @@
 # install.packages("data.table", "readxl", "dplyr", "tidyr")
 
 # Load Active factories from FFC.R script
-source('~/R/AFBWS/FFC Actives.R', echo=TRUE)
+# source('~/R/AFBWS/FFC Actives.R', echo=TRUE)
 # source('~/R/AFBWS/FFC Monthly Factory List.R', echo=TRUE)
 # source('~/R/AFBWS/FFC Expansions Audits.R', echo=TRUE)
 
@@ -18,8 +18,8 @@ wd = sub("/OneDrive", "", wd)
 
 #### Master Factory List ####
 # Fetch the Master table from the Excel spreadsheet and put the results in a dataframe
-Master <- read_excel(paste(wd,"/Box Sync/Alliance Factory info sheet/Master Factory Status/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
-# Actives <- read_excel("C:/Users/Andrew/Desktop/FFC Actives.xlsx", 1)
+Master <- read_excel(paste("C:/Users/Andrew/OneDrive/Desktop/MASTER Factory Status.xlsx", sep = ""), "Master Factory List")
+Actives <- read_excel("C:/Users/Andrew/OneDrive/Desktop/Monthly Factory List for website.xlsx", 1)
 # Master = Master[, 1:89]
 Master = Master[complete.cases(Master$`Account ID`), ]
 # Master$`Account ID` <- as.numeric(Master$`Account ID`)
@@ -34,8 +34,6 @@ Actives$`Active Members (Display)` <- gsub(" ,", ",", Actives$`Active Members (D
 New_Master = left_join(Master, Actives, by = "Account ID")
 
 ## Do an anti-join to check if there are new factories
-# Remove Li & Fung
-New_Actives = subset(Actives, Actives$`Active Members (Display)` != "Li & Fung")
 # Remove NAs
 # New_Actives = New_Actives[complete.cases(Actives$`Active Members (Display)`),]
 New_Actives = subset(Actives, Actives$`Active Members (Display)` != "")
@@ -51,19 +49,9 @@ New_Master$Diff_Members <- ifelse(New_Master$`Active Members (Display)` != New_M
 sum(New_Master$Diff_Members, na.rm = TRUE)
 
 
-# If Li & Fung is one of the members, substract 1 from number of brands and add *
-New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Master$`Active Members (Display)`) == TRUE, 
-                                                   New_Master$`Number of Active Members.y` - 1, New_Master$`Number of Active Members.y`)
-# Remove Li & Fung
-# New_Master$`Active Members (Display)` <- replace(New_Master$`Active Members (Display)`, New_Master$`Active Members (Display)` == "Li & Fung", NA)
-# Add *
-New_Master$`New_Number of Active Members` <- as.character(New_Master$`New_Number of Active Members`)
-New_Master$`New_Number of Active Members` <- ifelse(grepl("Li & Fung", New_Master$`Active Members (Display)`) == TRUE, 
-                                                   paste(New_Master$`New_Number of Active Members`, "*"), New_Master$`New_Number of Active Members`)
-
 # If expansion (i.e. an E in the Account ID), then put previous member data back in
 New_Master$`Active Members (Display)` <- ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master$`Active Brands`, New_Master$`Active Members (Display)`)
-New_Master$`New_Number of Active Members` <- ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master$`Number of Active Members.x`, New_Master$`New_Number of Active Members`)
+New_Master$`New_Number of Active Members` <- ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master$`Number of Active Members.x`, New_Master$`Number of Active Members.y`)
 
 # New_Master$`New_Number of Active Members` = ifelse(grepl("member", New_Master$`Active Brands`) == TRUE, New_Master[match(gsub("/E.*", "", New_Master$`Account ID`), New_Master$`Account ID`), ncol(New_Master)], New_Master$`New_Number of Active Members`)
 

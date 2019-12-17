@@ -107,11 +107,11 @@ package 'RCurl' was built under R version 3.5.1
 > table(Master$`Remediation Factory Status`, useNA = "ifany")
 
          Completed           Critical Needs intervention                New 
-               514                 73                 33                 50 
+               587                 36                 21                 46 
           On track        Pending RVV            Removed          Suspended 
-                28                 67                240                182 
+                21                 57                250                184 
       Under Accord 
-               178 
+               174 
 > 
 > 
 > ### Helpline ###
@@ -136,7 +136,7 @@ package 'RCurl' was built under R version 3.5.1
 > table(Helpline$Helpline, useNA = "ifany")
 
   Completed Not started 
-       1027          89 
+       1037          89 
 > 
 > 
 > ### Training ###
@@ -167,9 +167,9 @@ package 'RCurl' was built under R version 3.5.1
 > table(Training$`Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     882                      132                        3 
+                     903                      132                        3 
              Not started                 On track Suspended - Address Only 
-                      15                       68                       16 
+                      25                       47                       16 
 > 
 > 
 > ### SG Training ###
@@ -201,9 +201,9 @@ package 'RCurl' was built under R version 3.5.1
 > table(SG_Training$`SG Training Status`, useNA = "ifany")
 
                Completed                 Critical       Needs intervention 
-                     942                       40                        4 
+                     955                       40                        3 
              Not started                 On track Suspended - Address Only 
-                      31                        5                       16 
+                      22                       12                       16 
 > 
 > 
 > ### SC ###
@@ -274,14 +274,15 @@ package 'RCurl' was built under R version 3.5.1
 > #### Upload to FTP Server ####
 > Sys.sleep(5)
 > 
-> ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "infactor:A!FBWS007$%2018")
+> # ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "infactor:A!FBWS007$%2018")
+> 
+> ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "sftp://www.afbws.org/home/infactor/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "root:ELEVATE2017@usa")
 OK 
  0 
 > 
-> 
 > proc.time()
    user  system elapsed 
-   1.06    0.34   11.62 
+   1.71    0.46    9.90 
 Error in gzfile(file, "wb") : cannot open the connection
 Calls: sys.save.image -> save.image -> save -> gzfile
 In addition: Warning message:

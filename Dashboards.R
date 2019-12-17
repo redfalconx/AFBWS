@@ -222,7 +222,7 @@ Master$`Recommended to Review Panel?` <- as.character(Master$`Recommended to Rev
 #           "Contact information", "Contact Email", "Phone Extension", "Contacts Management", "Email of Management", "Contacts Technical staff", "Address1", "Address2", "City", "Postal Code",
 #           "Number of separate buildings belonging to production facility", "Number of stories of each building", "Floors of the building which the factory occupies", "Helpline Launched", "link check 15.10.4")] <- list(NULL)
 
-Master = Master[, c("Account ID", "Account Name", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", "Escalation Date", "Escalation Status", 
+Master = Master[, c("Account ID", "Account Name", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Accord Shared/Alliance Only info", "Inspected by Alliance / Accord / All&Acc", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", "Escalation Date", "Escalation Status", 
                     "Recommended to Review Panel?", "CAP Approved by Alliance", "Date of Initial Inspection", "CAP Approval Date", "Actual Date of 1st RVV", "Confirmed Date of 2nd RVV", "Confirmed Date of 3rd RVV" , "Confirmed Date of 4th RVV", "Confirmed Date of 5th RVV", "Confirmed Date of 6th RVV", "Confirmed Date of 7th RVV", "Confirmed Date of 8th RVV",
                     "CCVV 1 Date", "CCVV 1 Result", "CCVV 1 % of Completion", "CCVV 2 Date", "CCVV 2 Result", "CCVV 2 % of Completion", "CCVV 3 Date", "CCVV 3 Result", "CCVV 3 % of Completion", "Safety Management Visit Date", "Safety Management Visit Status", "Box Folder Link")]
 
@@ -266,7 +266,7 @@ Master$`Number of Active Members` <- ifelse(grepl("*", Master$`Number of Active 
 
 # Clean up Shared with Accord data
 # Master$`Shared with Accord` <- ifelse(Master$`Shared with Accord` == "Yes", "Yes", "No")
-Master$`Accord Shared/Alliance only info`[is.na(Master$`Accord Shared/Alliance only info`)] <- "Alliance Only"
+Master$`Accord Shared/Alliance Only info`[is.na(Master$`Accord Shared/Alliance Only info`)] <- "Alliance Only"
 
 # Join the tables
 Master = left_join(Master, Master_Exp, by = "Account ID")
@@ -480,7 +480,7 @@ write.csv(Combined, "Combined.csv", na="")
 
 
 #### Reorder the columns of Combined to match the Dashboard Workbook more closely ####
-someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Safety Management Visit Status", "Accord Shared/Alliance only info", "Inspected by Alliance / Accord / All&Acc", "Expansion Remediation Status", "Number of employees to be trained.", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
+someCol <- c("Account ID", "Account Name.x", "Active Brands", "Number of Active Members", "Remediation Factory Status", "Safety Management Visit Status", "Accord Shared/Alliance Only info", "Inspected by Alliance / Accord / All&Acc", "Expansion Remediation Status", "Number of employees to be trained.", "Province", "RENTED", "Mixed Occupancy", "Factory housing in multi-factory building", "Case Group", 
              "Escalation Date", "Escalation Status", "Review Panel", 
              "Electrical High - Completed", "Electrical High - In progress", "Electrical High - Not Started", "Electrical High Total",
              "Electrical Medium - Completed", "Electrical Medium - In progress", "Electrical Medium - Not Started", "Electrical Medium Total",

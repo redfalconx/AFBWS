@@ -204,5 +204,6 @@ write.table(Statuses, "C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website
 #### Upload to FTP Server ####
 Sys.sleep(5)
 
-ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "infactor:A!FBWS007$%2018")
+# ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "ftp://www.afbws.org/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "infactor:A!FBWS007$%2018")
 
+ftpUpload("C:/Users/Andrew/Box Sync/FFC/Factory List/Monthly Website Lists/Status Lists/factory-statuses.txt", "sftp://www.afbws.org/home/infactor/public_html/alliance/files/factory-lists/factory-statuses.txt", userpwd = "root:ELEVATE2017@usa")
